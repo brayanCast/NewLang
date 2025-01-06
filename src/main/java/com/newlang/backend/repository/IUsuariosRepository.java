@@ -11,7 +11,7 @@ public interface IUsuariosRepository extends JpaRepository<User, Long> {
     //Metodo para poder buscar un usuario mediante su email
     Optional<User> findByEmail(String email);
 
-    //Metodo para ppoder verificar si un usuario existe en la base de datos
+    //Metodo para poder verificar si un usuario existe en la base de datos
     Boolean existByEmail(String email);
 
 }

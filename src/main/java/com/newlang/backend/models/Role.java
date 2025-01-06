@@ -1,9 +1,7 @@
 package com.newlang.backend.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -16,5 +14,9 @@ public class Role {
     @Column(name="id_role")
     private Long idRole;
     private String nameRole;
+
+    public String getNameRole() {
+        return nameRole;
+    }
 
 }
