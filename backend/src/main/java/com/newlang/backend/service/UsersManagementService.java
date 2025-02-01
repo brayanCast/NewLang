@@ -41,7 +41,7 @@ public class UsersManagementService {
 
             if (userResult.getIdUser()>0) {
                 resp.setUsers((userResult));
-                resp.setMessage("User Saver Successfully");
+                resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
             }
 

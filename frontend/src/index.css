@@ -90,6 +90,7 @@ html, body {
   margin-bottom: 5px;
   font-size: 20px;
   font-weight: bold;
+  font-family: 'Jua' , sans-serif;
 }
 
 .input_container input {
@@ -134,25 +135,12 @@ html, body {
   margin-bottom: 20px;
 }
 
-#other_login_form, #other_register_form {
+#register-link{
   text-align: center;
   color: #000739;
-  margin-top: 5%;
+  margin-top: 15%;
   font-size: 20px;
   font-weight: bold;
-}
-
-.link_logo img {
-  width: 40px;
-  height: 40px;
-  margin: 0 10px;
-  cursor: pointer;
-  margin-top: 5%;
-  transition: transform 0.3s;
-}
-
-.link_logo img:hover {
-  transform: scale(1.2);
 }
 
 .select_user_type{
@@ -172,11 +160,11 @@ html, body {
 }
 
 #modal-window{
-  width: 50%;
-  height: 90%;
+  width: 30%;
+  height: 50%;
   position: fixed;
   top: 50%;
-  left: 50%; /* Centra horizontalmente */
+  left: 30%; /* Centra horizontalmente */
   transform: translate(-50%, -50%);
   border: #000739 solid 2px;
   border-radius: 10px;
@@ -187,8 +175,16 @@ html, body {
   font-size: 20px;
 }
 
-#modal-window button {
-  margin-top: 3%;
+#change-pass-submit {
+  margin-top: 10%;
+  width: 40%;
+  padding: 10px;
+  border: #000739 solid 2px;
+  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  background-color: #000739;
+  color: #FFFFFF;
 }
 
 .btn-cancel-change{

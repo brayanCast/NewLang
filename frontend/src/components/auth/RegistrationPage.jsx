@@ -56,7 +56,7 @@ function RegistrationPage() {
             </div>
 
             <div id="right_page">
-                <form id="form-user" className="disappeared" onSubmit={handleSubmit}>
+                <form id="form-user" className="registerForm" onSubmit={handleSubmit}>
                     <div className="input_container">
                         <label htmlFor="">Nombre Completo</label>
                         <input id="name-user" type="text" placeholder="John Doe" onChange={handleInputChange} required />
@@ -72,15 +72,6 @@ function RegistrationPage() {
                     </div>
 
                     <button className="button" type="submit">Crear</button>
-
-                    <div id="other_register_form">
-                        <label htmlFor="#">O puedes crear el usuario usando:</label>
-                        <div class="link_logo">
-                            <a href="#"><img src="./img/google_logo.webp" alt="Ingreso por cuenta Google" /></a>
-                            <a href="#"><img src="./img/outlook_log.png" alt="Ingreso por cuenta Outlook" /></a>
-                            <a href="#"><img src="./img/apple_logo.png" alt="Ingreso por cuenta Apple" /></a>
-                        </div>
-                    </div>
                 </form>
 
                 <form id="form-user-admin" className="disappeared">
@@ -104,14 +95,6 @@ function RegistrationPage() {
 
                     <button className="button" type="submit">Crear</button>
 
-                    <div id="other_register_form">
-                        <label htmlFor="#">O puedes crear el usuario usando:</label>
-                        <div className="link_logo">
-                            <a href="#"><img src="./img/google_logo.webp" alt="Ingreso por cuenta Google" /></a>
-                            <a href="#"><img src="./img/outlook_log.png" alt="Ingreso por cuenta Outlook" /></a>
-                            <a href="#"><img src="./img/apple_logo.png" alt="Ingreso por cuenta Apple" /></a>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>

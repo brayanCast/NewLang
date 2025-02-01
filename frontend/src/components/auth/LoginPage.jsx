@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
+import VerifyOtp from "./VerifyOtp";
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ function LoginPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
+    const [otpSent, setOtpSent] = useState(false);
 
     const navigate = useNavigate();
 
@@ -42,8 +44,24 @@ function LoginPage() {
         if (setIsModalOpen(true)) {
             document.getElementById("email-login").required = "false";
             document.getElementById("password-login").required = "false";
-        } 
+        }
     };
+
+    const handleSendOtp = async () => {
+        try {
+            await UserService.sendOtp(email);
+            setOtpSent(true);
+            setError('OTP enviado al correo electrónico');
+        } catch (error) {
+            console.error('Error enviando el OTP', error);
+            alert('Error al enviar el OTP');
+        }
+    };
+
+    const handleRegisterRedirect = () => {
+        navigate('/register');
+    };
+
 
     return (
         <div className="auth-container">
@@ -58,81 +76,63 @@ function LoginPage() {
                 </div>
 
                 {error && <p className="error-message">{error}</p>}
-                <form className="form_login form-content" id="formLogin" onSubmit={handleSubmit}>
-                    <div className="input_container">
-                        <label htmlFor="email-login">Email</label>
-                        <input
-                            id="email-login"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="newexample@newmail.com"
-                            required
-                        />
-                    </div>
 
-                    <div className="input_container">
-                        <label htmlFor="password-login">Contraseña</label>
-                        <input
-                            id="password-login"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="***********************"
-                            required />
-                    </div>
+                {!otpSent ? (
 
-                    <div className="forgot_password">
-                        <button type="button" onClick={() => setIsModalOpen(true)}>¿Olvidó la Contraseña?</button>
-                    </div>
-
-                    <button className="button" type="submit">Ingresar</button>
-
-                    <div id="other_login_form">
-                        <p>O puedes ingresar usando:</p>
-                        <div className="link_logo">
-                            <a href="#"><img src="./img/google_logo.webp" alt="Ingreso por cuenta Google" /></a>
-                            <a href="#"><img src="./img/outlook_log.png" alt="Ingreso por cuenta Outlook" /></a>
-                            <a href="#"><img src="./img/apple_logo.png" alt="Ingreso por cuenta Apple" /></a>
+                    <form className="form_login form-content" id="formLogin" onSubmit={handleSubmit}>
+                        <div className="input_container">
+                            <label htmlFor="email-login">Email</label>
+                            <input
+                                id="email-login"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="newexample@newmail.com"
+                                required
+                            />
                         </div>
-                    </div>
 
-                    <dialog id="modal-window" open={isModalOpen}>
-                        <button id="btn-close-modal" className="btn-cancel-change" onClick={() => setIsModalOpen(false)}>X</button>
-                        <div className="title-change-password">
-                            <h2>Cambiar la contraseña</h2>
+                        <div className="input_container">
+                            <label htmlFor="password-login">Contraseña</label>
+                            <input
+                                id="password-login"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="***********************"
+                                required />
                         </div>
-                        <form className="change-password-form form-content" id="password-form" onSubmit={handleChangePasswordSubmit}>
-                            <div className="input_container">
-                                <label htmlFor="email-change">Email</label>
-                                <input id="email-change" type="email" value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
+
+                        <div className="forgot_password">
+                            <button type="button" onClick={() => setIsModalOpen(true)}>¿Olvidó la Contraseña?</button>
+                        </div>
+
+                        <button className="button" type="submit">Ingresar</button>
+
+                        <div id="register-link">
+                            <p>¿Aún no tienes una cuenta? <button type="button" onClick={handleRegisterRedirect}>Registrarse</button></p>
+                        </div>
+                    </form>
+                ) : (
+                    <VerifyOtp email={email} setOtpSent={setOtpSent} />
+                )}
+
+                <dialog id="modal-window" open={isModalOpen}>
+                    <button id="btn-close-modal" className="btn-cancel-change" onClick={() => setIsModalOpen(false)}>X</button>
+                    <div className="title-change-password">
+                        <h2>Cambiar la contraseña</h2>
+                    </div>
+                    <form className="change-password-form form-content" id="password-form" onSubmit={handleChangePasswordSubmit}>
+                        <div className="input_container">
+                            <label htmlFor="email-change">Email</label>
+                            <input id="email-change" type="email" value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="newexample@newmail.com" />
-                            </div>
-                            <div className="input_container">
-                                <label htmlFor="current-password-change">Contraseña Actual</label>
-                                <input id="current-password-change" type="password" 
-                                value={password} onChange={(e) => setPassword(e.target.value)} 
-                                placeholder="***********************" />
-                            </div>
-                            <div className="input_container">
-                                <label htmlFor="new-password-change">Nueva Contraseña</label>
-                                <input id="new-password-change" type="password" 
-                                value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="***********************" />
-                            </div>
-                            <div className="input_container">
-                                <label htmlFor="confirm-password-change">Confirmar Contraseña</label>
-                                <input id="confirm-password-change" type="password"  
-                                value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="***********************" />
-                            </div>
-                            <button className="button" type="submit">Confirmar</button>
-                            
-                        </form>
-                    </dialog>
+                        </div>
+                        <button id="change-pass-submit" type="button" onClick={handleSendOtp}>Confirmar</button>
+                    </form>
+                </dialog>
 
-                </form>
             </div>
         </div>
     );

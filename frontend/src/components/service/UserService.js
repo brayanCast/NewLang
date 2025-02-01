@@ -28,6 +28,27 @@ class UserService {
         }
     }
 
+    static async sendOtp(email){
+        try {
+            const response = await axios.post(`${UserService.BASE_URL}/auth/send-otp`, {email})
+            return response.data;
+            
+        } catch (err) {
+            throw err;
+            
+        }
+    }
+
+    static async verifyOtp(email, otp){
+        try{
+            const response = await axios.post(`${UserService.BASE_URL}/auth/verify-otp`, {email, otp})
+            return response.data;
+        } 
+        catch (err){
+            throw err;
+        }
+    }
+
     static async getAllUsers(token){
         try {
 
