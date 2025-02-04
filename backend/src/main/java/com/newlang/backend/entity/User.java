@@ -1,6 +1,5 @@
 package com.newlang.backend.entity;
 
-
 import com.newlang.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +25,7 @@ public class User implements UserDetails {
     private String nameUser;
     private String email;
     private String password;
+    private int idNumber;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user"))
@@ -62,6 +62,14 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(int idNumber) {
+        this.idNumber = idNumber;
     }
 
     public Set<Role> getRole() {
@@ -103,5 +111,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
-
 }

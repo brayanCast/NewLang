@@ -24,6 +24,7 @@ public class RequestResp {
     private Set<Role> role;
     private String email;
     private String password;
+    private int idNumber;
     private User users;
     private List<User> userList;
 
@@ -83,14 +84,6 @@ public class RequestResp {
         this.nameUser = nameUser;
     }
 
-    public Set<Role> getRole() {
-        return role;
-    }
-
-    public void setRole(Set<Role> role) {
-        this.role = role;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -99,12 +92,28 @@ public class RequestResp {
         this.email = email;
     }
 
+    public Set<Role> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<Role> role) {
+        this.role = role;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(int idNumber) {
+        this.idNumber = idNumber;
     }
 
     public User getUsers() {

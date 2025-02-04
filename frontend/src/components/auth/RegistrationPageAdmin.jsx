@@ -5,17 +5,17 @@ import { useNavigate } from 'react-router-dom';
 function RegistrationPage() {
     const navigate = useNavigate();
 
-    const [fomrData, setFormData] = useState({
+    const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        role: ''
+        role: 'ADMIN'
     });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
-            ...fomrData,
+            ...formData,
             [name]: value
         });
     };
@@ -25,7 +25,7 @@ function RegistrationPage() {
 
         try {
             const token = localStorage.getItem('token');
-            await UserService.register(fomrData, token);
+            await UserService.register(formData, token);
 
             //Limpia la información del formulario después del registro exitoso
 
@@ -56,23 +56,6 @@ function RegistrationPage() {
             </div>
 
             <div id="right_page">
-                <form id="form-user" className="registerForm" onSubmit={handleSubmit}>
-                    <div className="input_container">
-                        <label htmlFor="">Nombre Completo</label>
-                        <input id="name-user" type="text" placeholder="John Doe" onChange={handleInputChange} required />
-                    </div>
-                    <div className="input_container">
-                        <label htmlFor="email-user">Email</label>
-                        <input id="email-user" type="email" placeholder="newexample@newmail.com" onChange={handleInputChange} required />
-                    </div>
-
-                    <div className="input_container">
-                        <label htmlFor="password-user">Contraseña</label>
-                        <input id="password-user" type="password" placeholder="***********************" onChange={handleInputChange} required />
-                    </div>
-
-                    <button className="button" type="submit">Crear</button>
-                </form>
 
                 <form id="form-user-admin" className="disappeared">
                     <div className="input_container">

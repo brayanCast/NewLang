@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class UserManagementController {
 
@@ -23,8 +24,13 @@ public class UserManagementController {
     private OtpService otpService;
 
     @PostMapping ("/auth/register")
-    public ResponseEntity<RequestResp> register(@RequestBody RequestResp regist) {
+    public ResponseEntity<RequestResp> registerAdmin(@RequestBody RequestResp regist) {
         return ResponseEntity.ok(usersManagementService.register(regist));
+    }
+
+    @PostMapping ("/register")
+    public ResponseEntity<RequestResp> registerUser(@RequestBody RequestResp registerUser) {
+        return ResponseEntity.ok(usersManagementService.register(registerUser));
     }
 
     @PostMapping ("/auth/login")

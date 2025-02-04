@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class UserService {
-    static BASE_URL = "http://localhost:8080/";
+    static BASE_URL = "http://localhost:8080";
 
     static async login(email, password){
         try {
@@ -14,7 +14,7 @@ class UserService {
         }
     }
 
-    static async register(userData, token){
+    static async registerAdmin(userData, token){
         try {
 
             const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,
@@ -27,6 +27,18 @@ class UserService {
             throw err;
         }
     }
+
+    static async registerUser(userData){
+        try {
+
+            const response = await axios.post(`${UserService.BASE_URL}/register`, userData,);
+            return response.data;
+
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
     static async sendOtp(email){
         try {
