@@ -14,13 +14,10 @@ class UserService {
         }
     }
 
-    static async registerAdmin(userData, token){
+    static async registerAdmin(userData){
         try {
 
-            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        })
+            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,)
             return response.data;
 
         } catch (err) {

@@ -13,20 +13,20 @@ import ProfilePage from './components/userspage/ProfilePage';
 
 function App() {
   return (
-<BrowserRouter>
+    <BrowserRouter>
       <div className="App">
         <Navbar />
         <div className="content">
           <Routes>
             <Route exact path="/" element={<LoginPage />} />
             <Route exact path="/login" element={<LoginPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/register" element={<RegistrationPageUser />} />
+            <Route path="/register-admin" element={<RegistrationPageAdmin />} />
 
             {/* Check if user is authenticated and admin before rendering admin-only routes */}
             {UserService.adminOnly() && (
               <>
-                <Route path="/register-admin" element={<RegistrationPageAdmin />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin/user-management" element={<UserManagementPage />} />
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
               </>

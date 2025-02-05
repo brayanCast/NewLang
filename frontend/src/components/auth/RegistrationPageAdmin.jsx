@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import UserService from "../service/UserService";
 import { useNavigate } from 'react-router-dom';
 
-function RegistrationPage() {
+function RegistrationPageAdmin() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        name: '',
+        nameUser: '',
         email: '',
         password: '',
-        role: 'ADMIN'
+        idNumber: '',
+        role: ['ADMIN']
     });
 
     const handleInputChange = (e) => {
@@ -23,16 +24,19 @@ function RegistrationPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const token = localStorage.getItem('token');
-            await UserService.register(formData, token);
+        try {           
+            await UserService.registerAdmin(formData);
+
+            console.log("Datos a enviar: ", formData);
+
 
             //Limpia la información del formulario después del registro exitoso
 
             setFormData({
-                name: '',
+                nameUser: '',
                 email: '',
                 password: '',
+                idNumber: '',
                 role: ''
             });
 
@@ -57,23 +61,30 @@ function RegistrationPage() {
 
             <div id="right_page">
 
-                <form id="form-user-admin" className="disappeared">
+                <form id="form-user-admin" className="registerForm form-content" onSubmit={handleSubmit}>
                     <div className="input_container">
                         <label htmlFor="name-user-admin">Nombre Completo</label>
-                        <input id="name-user-admin" type="text" placeholder="John Doe" onChange={handleInputChange} required />
+                        <input id="name-user-admin" type="text" placeholder="John Doe" value={formData.nameUser} name="nameUser"
+                        onChange={handleInputChange} required />
                     </div>
                     <div className="input_container">
                         <label htmlFor="id-user-admin">Número de Identificación</label>
-                        <input id="id-user-admin" type="number" placeholder="123456789" min-lenght="0" max="9999999999" onChange={handleInputChange} required />
+                        <input id="id-user-admin" type="number" placeholder="123456789" min-lenght="0" max="9999999999"
+                        value={formData.idNumber} name="idNumber"
+                        onChange={handleInputChange} required />
                     </div>
                     <div className="input_container">
                         <label htmlFor="email-user-admin">Email</label>
-                        <input id="email-user-admin" type="email" placeholder="newexample@newmail.com" onChange={handleInputChange} required />
+                        <input id="email-user-admin" type="email" placeholder="newexample@newmail.com" 
+                        value={formData.email} name="email"
+                        onChange={handleInputChange} required />
                     </div>
 
                     <div className="input_container">
                         <label htmlFor="password-user-admin">Contraseña</label>
-                        <input id="password-user-admin" type="password" placeholder="***********************" onChange={handleInputChange} required />
+                        <input id="password-user-admin" type="password" placeholder="***********************" 
+                        value={formData.password} name="password"
+                        onChange={handleInputChange} required />
                     </div>
 
                     <button className="button" type="submit">Crear</button>
@@ -86,4 +97,4 @@ function RegistrationPage() {
 
 }
 
-export default RegistrationPage;
+export default RegistrationPageAdmin;
