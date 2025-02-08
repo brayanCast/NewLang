@@ -4,6 +4,7 @@ import com.newlang.backend.dto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.service.OtpService;
 import com.newlang.backend.service.UsersManagementService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +47,16 @@ public class UserManagementController {
     @PostMapping("/auth/send-otp")
     public ResponseEntity<String> sendOtp(@RequestBody Map<String, String> request)  {
         String email = request.get("email");
-        otpService.sendOtp(email); //Llama al servicio para realizar el envío del otp al correo
-        return ResponseEntity.ok("OTP enviado a " + email);
+
+        try {
+            otpService.sendOtp(email); //Llama al servicio para realizar el envío del otp al correo
+            return ResponseEntity.ok("OTP enviado a " + email);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error enviando el correo: " + e.getMessage());
+        }
     }
 
     @PostMapping("/auth/verify-otp")

@@ -41,7 +41,7 @@ function RegistrationPageAdmin() {
             });
 
             alert('User registered successfully');
-            navigate('/admin/user-management');
+            navigate('/login');
 
         } catch (error) {
             console.error('Error registering user', error);

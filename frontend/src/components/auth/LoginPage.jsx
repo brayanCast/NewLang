@@ -16,21 +16,22 @@ function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const userData = await UserService.login(email, password);
-
             if (userData.token) {
                 localStorage.setItem('token', userData.token);
                 localStorage.setItem('role', userData.role);
                 navigate('/profile');
+            } else{
+                alert("Usuario o contraseña incorrectos");
             }
 
         } catch (error) {
-            console.log(error);
-            setError(error.message || 'Error en el inicio de sesión');
+            setError(error.message);
             setTimeout(() => {
                 setError('');
-            }, 500);
+            }, 5000);
         }
     };
 
@@ -65,6 +66,7 @@ function LoginPage() {
 
     return (
         <div className="auth-container">
+            
             <div id="left_page">
                 <img id="language_icon" src="./img/iconolang.png" alt="idiomas" />
                 <p id="phrase_app">...Open your mind to the new opportunities</p>
