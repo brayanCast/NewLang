@@ -4,7 +4,6 @@ import com.newlang.backend.dto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.service.OtpService;
 import com.newlang.backend.service.UsersManagementService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,11 +63,32 @@ public class UserManagementController {
         String email = request.get("email");
         String otp = request.get("otp");
 
-        if (otpService.verifyOtp(otp)){
+        if (otpService.verifyOtp(otp, email)){
             return ResponseEntity.ok("OTP verificado con exito");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP inválido");
         }
+    }
+
+    //Metodo para la actualización de la contraseña siempre que el email esté verificado
+    @PutMapping("/auth/update-password")
+    public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> request) {
+        String password = request.get("password");
+        String verifiedEmail = otpService.getVerifiedEmail();
+
+        if(verifiedEmail == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se ha verificado el OTP");
+        }
+
+        try{
+            otpService.updatePassword(verifiedEmail, password);
+            otpService.clearVerifiedUser();
+            return ResponseEntity.ok("La contraseña se actualizó correctamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al actualizar la contraseña " + e.getMessage());
+        }
+
     }
 
     @GetMapping("/admin/get-all-users")

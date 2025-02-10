@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,7 +22,13 @@ public class OtpService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     private String generatedOtp;
+    private String emailChangePassword;
+    private String verifiedUserEmail;
 
     public void sendOtp(String email) {
         RequestResp resp = new RequestResp();
@@ -54,6 +61,35 @@ public class OtpService {
     }
 
     //Valida que el otp generado no esté vacío y que sea igual al otp digitado
-    public boolean verifyOtp(String otp) {return generatedOtp != null && generatedOtp.equals(otp);
+    public boolean verifyOtp(String otp, String email) {
+        boolean isValid = generatedOtp != null && generatedOtp.equals(otp);
+        if (isValid) {
+            verifiedUserEmail = email;
+        }
+
+        return isValid;
+    }
+
+
+    public void updatePassword(String email, String password) {
+        Optional<User> userEmail = userRepository.findByEmail(email);
+
+        if(userEmail.isEmpty()) {
+            throw new IllegalArgumentException("El usuario no existe");
+        }
+
+        User user = userEmail.get();
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+
+    }
+
+    public String getVerifiedEmail() {
+        return verifiedUserEmail;
+    }
+
+    public void clearVerifiedUser(){
+        verifiedUserEmail = null;
+        generatedOtp = null;
     }
 }

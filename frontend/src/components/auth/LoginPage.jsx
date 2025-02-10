@@ -52,7 +52,8 @@ function LoginPage() {
         try {
             await UserService.sendOtp(email);
             setOtpSent(true);
-            setError('OTP enviado al correo electrónico');
+            alert('OTP enviado al correo electrónico');
+            navigate('/verify-otp');
         } catch (error) {
             console.error('Error enviando el OTP', error);
             alert('Error al enviar el OTP');
