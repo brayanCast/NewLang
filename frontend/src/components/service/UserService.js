@@ -58,6 +58,16 @@ class UserService {
         }
     }
 
+    static async updatePassword(email, password){
+        try{
+            const response = await axios.put(`${UserService.BASE_URL}/auth/update-password`, {email, password})
+            return response.data;
+        } 
+        catch (err){
+            throw err;
+        }
+    }
+
     static async getAllUsers(token){
         try {
 

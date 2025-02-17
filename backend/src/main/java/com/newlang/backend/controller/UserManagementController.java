@@ -63,8 +63,8 @@ public class UserManagementController {
         String email = request.get("email");
         String otp = request.get("otp");
 
-        if (otpService.verifyOtp(otp, email)){
-            return ResponseEntity.ok("OTP verificado con exito");
+        if (otpService.verifyOtp(email, otp)){
+            return ResponseEntity.ok().body("OTP verificado con exito");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP inválido");
         }
@@ -88,7 +88,6 @@ public class UserManagementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al actualizar la contraseña " + e.getMessage());
         }
-
     }
 
     @GetMapping("/admin/get-all-users")

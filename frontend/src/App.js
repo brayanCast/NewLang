@@ -8,6 +8,7 @@ import UpdateUser from './components/userspage/UpdateUser';
 import UserManagementPage from './components/userspage/UserManagementPage';
 import ProfilePage from './components/userspage/ProfilePage';
 import VerifyOtp from './components/auth/VerifyOtp';
+import UpdatePassword from './components/auth/UpdatePassword';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/register" element={<RegistrationPageUser />} />
             <Route path="/register-admin" element={<RegistrationPageAdmin />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/update-password" element={<UpdatePassword />} />
 
             {/* Check if user is authenticated and admin before rendering admin-only routes */}
             {UserService.adminOnly() && (

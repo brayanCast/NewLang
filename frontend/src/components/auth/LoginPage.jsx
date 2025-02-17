@@ -6,8 +6,6 @@ import VerifyOtp from "./VerifyOtp";
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
     const [otpSent, setOtpSent] = useState(false);
@@ -41,22 +39,23 @@ function LoginPage() {
         // Por ejemplo, enviar los datos a tu servicio
         console.log("Cambio de contraseña solicitado");
         setIsModalOpen(false); // Cerrar el modal después de enviar
-
-        if (setIsModalOpen(true)) {
-            document.getElementById("email-login").required = "false";
-            document.getElementById("password-login").required = "false";
-        }
     };
 
     const handleSendOtp = async () => {
         try {
+            if (!email) {
+                alert('Por favor, ingrese un correo electrónico');
+                return;
+            }
+
             await UserService.sendOtp(email);
             setOtpSent(true);
             alert('OTP enviado al correo electrónico');
-            navigate('/verify-otp');
+            navigate('/verify-otp', { state: {email}});
+
         } catch (error) {
-            console.error('Error enviando el OTP', error);
-            alert('Error al enviar el OTP');
+            const errorMessage = error.response.data.message || "Error al enviar el OTP";
+            alert(errorMessage)
         }
     };
 

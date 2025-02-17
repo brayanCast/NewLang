@@ -27,7 +27,6 @@ public class OtpService {
 
 
     private String generatedOtp;
-    private String emailChangePassword;
     private String verifiedUserEmail;
 
     public void sendOtp(String email) {
@@ -61,12 +60,11 @@ public class OtpService {
     }
 
     //Valida que el otp generado no esté vacío y que sea igual al otp digitado
-    public boolean verifyOtp(String otp, String email) {
+    public boolean verifyOtp(String email, String otp) {
         boolean isValid = generatedOtp != null && generatedOtp.equals(otp);
         if (isValid) {
             verifiedUserEmail = email;
         }
-
         return isValid;
     }
 
