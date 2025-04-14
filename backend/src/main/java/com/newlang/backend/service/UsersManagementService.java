@@ -32,6 +32,7 @@ public class UsersManagementService {
 
     public RequestResp register(RequestResp registrationRequest) {
         RequestResp resp = new RequestResp();
+        RequestResp error = new RequestResp();
         Set<Role> roles = registrationRequest.getRole();
         String email = registrationRequest.getEmail();
 
@@ -40,6 +41,7 @@ public class UsersManagementService {
             if (existEmail.isPresent()) {
                 resp.setMessage("This email already exist");
                 resp.setStatusCode(400);
+                return resp;
             } else {
                 User user = new User();
                 user.setEmail(registrationRequest.getEmail());

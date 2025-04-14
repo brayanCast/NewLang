@@ -24,7 +24,7 @@ public class RequestResp {
     private Set<Role> role;
     private String email;
     private String password;
-    private int idNumber;
+    private String idNumber;
     private User users;
     private List<User> userList;
 
@@ -108,11 +108,11 @@ public class RequestResp {
         this.password = password;
     }
 
-    public int getIdNumber() {
+    public String getIdNumber() {
         return idNumber;
     }
 
-    public void setIdNumber(int idNumber) {
+    public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
     }
 

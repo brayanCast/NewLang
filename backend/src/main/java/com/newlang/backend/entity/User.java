@@ -25,7 +25,7 @@ public class User implements UserDetails {
     private String nameUser;
     private String email;
     private String password;
-    private int idNumber;
+    private String idNumber;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user"))
@@ -64,11 +64,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public int getIdNumber() {
+    public String getIdNumber() {
         return idNumber;
     }
 
-    public void setIdNumber(int idNumber) {
+    public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
     }
 
