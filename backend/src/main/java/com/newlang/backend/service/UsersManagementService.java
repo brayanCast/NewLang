@@ -3,6 +3,8 @@ package com.newlang.backend.service;
 import com.newlang.backend.dto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
+
+import com.newlang.backend.exceptions.EmailAlreadyExistException;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,37 +34,29 @@ public class UsersManagementService {
 
     public RequestResp register(RequestResp registrationRequest) {
         RequestResp resp = new RequestResp();
-        RequestResp error = new RequestResp();
         Set<Role> roles = registrationRequest.getRole();
         String email = registrationRequest.getEmail();
 
-        try {
-            Optional<User> existEmail = userRepository.findByEmail(email);
-            if (existEmail.isPresent()) {
-                resp.setMessage("This email already exist");
-                resp.setStatusCode(400);
-                return resp;
-            } else {
-                User user = new User();
-                user.setEmail(registrationRequest.getEmail());
-                user.setNameUser(registrationRequest.getNameUser());
-                user.setRole(registrationRequest.getRole());
-                if (roles.contains(Role.ADMIN)) {
-                    user.setIdNumber(registrationRequest.getIdNumber());
-                }
-                user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-                User userResult = userRepository.save(user);
 
-                if (userResult.getIdUser() > 0) {
-                    resp.setUsers((userResult));
-                    resp.setMessage("User Saved Successfully");
-                    resp.setStatusCode(200);
-                }
-            }
+        Optional<User> existEmail = userRepository.findByEmail(email);
+        if (existEmail.isPresent()) {
+            throw new EmailAlreadyExistException("El email ya existe");
+        }
 
-        } catch (Exception e) {
-            resp.setStatusCode(500);
-            resp.setError(e.getMessage());
+        User user = new User();
+        user.setEmail(registrationRequest.getEmail());
+        user.setNameUser(registrationRequest.getNameUser());
+        user.setRole(registrationRequest.getRole());
+        if (roles.contains(Role.ADMIN)) {
+            user.setIdNumber(registrationRequest.getIdNumber());
+        }
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        User userResult = userRepository.save(user);
+
+        if (userResult.getIdUser() > 0) {
+            resp.setUsers((userResult));
+            resp.setMessage("User Saved Successfully");
+            resp.setStatusCode(200);
         }
         return resp;
     }

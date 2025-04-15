@@ -2,6 +2,7 @@ package com.newlang.backend.controller;
 
 import com.newlang.backend.dto.RequestResp;
 import com.newlang.backend.entity.User;
+import com.newlang.backend.exceptions.EmailAlreadyExistException;
 import com.newlang.backend.service.OtpService;
 import com.newlang.backend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,46 @@ public class UserManagementController {
     private OtpService otpService;
 
     @PostMapping ("/auth/register")
-    public ResponseEntity<RequestResp> registerAdmin(@RequestBody RequestResp regist) {
-        return ResponseEntity.ok(usersManagementService.register(regist));
+    public ResponseEntity<RequestResp> registerAdmin(@RequestBody RequestResp registerUser) {
+        RequestResp errorResponse = new RequestResp();
+        try{
+            RequestResp response = usersManagementService.register(registerUser);
+            return ResponseEntity.ok(response);
+
+        } catch (EmailAlreadyExistException e) {
+            errorResponse.setStatusCode(400);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+
+        } catch (Exception e) {
+            errorResponse.setStatusCode(500);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
     }
 
     @PostMapping ("/register")
     public ResponseEntity<RequestResp> registerUser(@RequestBody RequestResp registerUser) {
-        return ResponseEntity.ok(usersManagementService.register(registerUser));
+        RequestResp errorResponse = new RequestResp();
+        
+        try{
+            RequestResp response = usersManagementService.register(registerUser);
+            return ResponseEntity.ok(usersManagementService.register(response));
+
+        } catch (EmailAlreadyExistException e) {
+            errorResponse.setStatusCode(400);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+
+        } catch (Exception e) {
+            errorResponse.setStatusCode(500);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
     }
 
     @PostMapping ("/auth/login")
-    public ResponseEntity<RequestResp> login(@RequestBody RequestResp request) {
+    public ResponseEntity<RequestResp> login(@RequestBody RequestResp request) throws Exception{
         return ResponseEntity.ok(usersManagementService.login(request));
     }
 
