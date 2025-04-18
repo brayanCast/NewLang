@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import UserService from "../service/UserService";
 import { useNavigate } from 'react-router-dom';
+import { HttpStatusCode } from 'axios';
 
 function RegistrationPageUser() {
     const navigate = useNavigate();
@@ -24,9 +25,7 @@ function RegistrationPageUser() {
         e.preventDefault();
 
         try {
-
-
-
+            //Llama al servicio para registrar el usuario
             await UserService.registerUser(formData);
             console.log("Datos a enviar: ", formData);
 
@@ -42,9 +41,16 @@ function RegistrationPageUser() {
             alert('User registered successfully');
             navigate('/login');
 
-        } catch (error) {
-            console.error('Error registering user', error);
-            alert('An error occurred while registering user');
+        }
+        catch (error) {
+
+            if (HttpStatusCode.BadRequest) {
+                console.error('Email already exist', error);
+                alert('Ya existe un usuario con ese email');
+            } else {
+                console.error('Error registering user', error);
+                alert('An error occurred while registering user');
+            }
 
         }
     }
@@ -62,22 +68,22 @@ function RegistrationPageUser() {
                 <form id="form-user" className="registerForm form-content" onSubmit={handleSubmit}>
                     <div className="input_container">
                         <label htmlFor="name-user">Nombre Completo</label>
-                        <input id="name-user" type="text" placeholder="John Doe" 
-                        value = {formData.nameUser} name="nameUser"
-                        onChange={handleInputChange} required />
+                        <input id="name-user" type="text" placeholder="John Doe"
+                            value={formData.nameUser} name="nameUser"
+                            onChange={handleInputChange} required />
                     </div>
                     <div className="input_container">
                         <label htmlFor="email-user">Email</label>
-                        <input id="email-user" type="email" placeholder="newexample@newmail.com" 
-                        value={formData.email} name="email"
-                        onChange={handleInputChange} required />
+                        <input id="email-user" type="email" placeholder="newexample@newmail.com"
+                            value={formData.email} name="email"
+                            onChange={handleInputChange} required />
                     </div>
 
                     <div className="input_container">
                         <label htmlFor="password-user">Contraseña</label>
-                        <input id="password-user" type="password" placeholder="***********************" 
-                        value={formData.password} name="password"
-                        onChange={handleInputChange} required />
+                        <input id="password-user" type="password" placeholder="***********************"
+                            value={formData.password} name="password"
+                            onChange={handleInputChange} required />
                     </div>
 
                     <button className="button" type="submit">Crear</button>

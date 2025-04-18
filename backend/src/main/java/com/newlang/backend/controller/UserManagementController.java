@@ -49,7 +49,7 @@ public class UserManagementController {
         
         try{
             RequestResp response = usersManagementService.register(registerUser);
-            return ResponseEntity.ok(usersManagementService.register(response));
+            return ResponseEntity.ok(response);
 
         } catch (EmailAlreadyExistException e) {
             errorResponse.setStatusCode(400);

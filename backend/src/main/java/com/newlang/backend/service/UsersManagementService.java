@@ -36,6 +36,7 @@ public class UsersManagementService {
         RequestResp resp = new RequestResp();
         Set<Role> roles = registrationRequest.getRole();
         String email = registrationRequest.getEmail();
+        System.out.println("Valor email" + email);
 
 
         Optional<User> existEmail = userRepository.findByEmail(email);
