@@ -27,13 +27,12 @@ function VerifyOtp() {
             if (userData && userData.includes('OTP verificado con exito')) {
                 localStorage.setItem('email', email);
                 navigate('/update-password', { state: { email: email } });
-            } else {
-                setError(userData.message || 'Otp incorrecto, inténtalo de nuevo');
             }
 
         } catch (error) {
             console.log(error);
-            setError(error.message || 'Error en la verificación del OTP');
+            const errorMessage = error.response?.data?.message || 'Error en la verificación del OTP';
+            alert(errorMessage);
         }
     };
 

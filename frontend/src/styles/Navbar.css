@@ -1,0 +1,145 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+/*Parte de la página que corresponde a la cabeza de la página o header*/
+
+/*Logo y menú de Navegación*/
+
+.menu-header{
+    margin: auto;
+    background-color: #000739;
+    font-family: 'Jua';
+    display: flex;
+    align-items: center;
+    padding: 1% 5%;
+}
+
+.menu-header img{
+    margin-right: 20px;
+    width: 120px;
+    height: 70px;
+}
+
+#img-logo{
+    width: 110px;
+    height: 80px;
+}
+
+ul, ol{
+    list-style: none;
+}
+.nav-bar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    z-index: 100;
+}
+
+.nav-bar li a{
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: block;
+    font-size: 23px;
+
+}
+
+.nav-bar li a:hover {
+    background-color: #495083;
+}
+
+.nav-bar > li {
+    position: relative;
+}
+
+
+.nav-bar li ul{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background-color: #000739;
+}
+
+.nav-bar li:hover > ul {
+    display: block;
+}
+
+.nav-bar li ul li {
+    width: 100%;
+    display: block;
+}
+
+
+.nav-bar li ul li a {
+    padding: 10px 15px;
+    font-size: 20px;
+    background-color: #000739;
+    text-align: left;
+}
+
+
+.nav-bar li ul li a:hover {
+    background-color: #495083;
+}
+
+/*Ícono del perfil*/
+
+.profile-icon {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-icon img {
+    width: 40%;
+    height:50%;
+    margin-top: 10%;
+    margin-left: 20%;
+    display: block;
+}
+
+/*Menú bar para el tamaño movil, en tamaño tablet y computador se dejará invisible este menú y el checkbox*/
+.checkbtn{
+    display: none;
+    position: relative;
+    margin-left: 3%;
+    color: #FFFFFF;
+    right: 4%;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#check{
+    display: none;
+}
+
+
+.menu-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    background-color: #000739;
+}
+
+.menu-option {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 23px;
+}
+
+.menu-option:hover {
+    background-color:#495083;
+}
+
+.profile-icon:hover .menu-options {
+    display: block;
+}

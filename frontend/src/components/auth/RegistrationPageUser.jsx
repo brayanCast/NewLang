@@ -47,6 +47,7 @@ function RegistrationPageUser() {
             if (HttpStatusCode.BadRequest) {
                 console.error('Email already exist', error);
                 alert('Ya existe un usuario con ese email');
+                
             } else {
                 console.error('Error registering user', error);
                 alert('An error occurred while registering user');

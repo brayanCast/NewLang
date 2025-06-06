@@ -20,7 +20,7 @@ function LoginPage() {
             if (userData.token) {
                 localStorage.setItem('token', userData.token);
                 localStorage.setItem('role', userData.role);
-                navigate('/profile');
+                navigate('/homepage');
             } else{
                 alert("Usuario o contraseña incorrectos");
             }

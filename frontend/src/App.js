@@ -26,8 +26,19 @@ function App() {
             <Route path="/update-password" element={<UpdatePassword />} />
 
             {/* Check if user is authenticated and admin before rendering admin-only routes */}
-            {UserService.adminOnly() && (
+            {UserService.isAuthenticated() (
               <>
+                <Route path='/homepage' element={<HomePage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </>
+            )}
+            
+            {/* Check if user is authenticated before rendering user-only routes */}
+
+
+            {UserService.adminOnly()(
+              <>
+                <Route path="/homepage" element={<HomePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin/user-management" element={<UserManagementPage />} />
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
