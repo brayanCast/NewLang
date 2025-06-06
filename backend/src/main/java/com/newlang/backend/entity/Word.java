@@ -16,8 +16,12 @@ public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idWord;
-    private String word;
-    private String wordStatus;
+
+    @Column(nullable = false)
+    private String englishWord;
+
+    @Column(nullable = false)
+    private String spanishWord;
 
     public Long getIdWord() {
         return idWord;
@@ -27,19 +31,19 @@ public class Word {
         this.idWord = idWord;
     }
 
-    public String getWord() {
-        return word;
+    public String getEnglishWord() {
+        return englishWord;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setEnglishWord(String englishWord) {
+        this.englishWord = englishWord;
     }
 
-    public String getWordStatus() {
-        return wordStatus;
+    public String getSpanishWord() {
+        return spanishWord;
     }
 
-    public void setWordStatus(String wordStatus) {
-        this.wordStatus = wordStatus;
+    public void setSpanishWord(String spanishWord) {
+        this.spanishWord = spanishWord;
     }
 }
