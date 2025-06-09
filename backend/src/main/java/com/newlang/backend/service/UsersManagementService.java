@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UsersManagementService {
@@ -34,7 +33,7 @@ public class UsersManagementService {
 
     public RequestResp register(RequestResp registrationRequest) {
         RequestResp resp = new RequestResp();
-        Set<Role> roles = registrationRequest.getRole();
+        Role role = registrationRequest.getRole();
         String email = registrationRequest.getEmail();
         System.out.println("Valor email" + email);
 
@@ -47,8 +46,7 @@ public class UsersManagementService {
         User user = new User();
         user.setEmail(registrationRequest.getEmail());
         user.setNameUser(registrationRequest.getNameUser());
-        user.setRole(registrationRequest.getRole());
-        if (roles.contains(Role.ADMIN)) {
+        if (registrationRequest.getRole() == Role.ADMIN) {
             user.setIdNumber(registrationRequest.getIdNumber());
         }
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));

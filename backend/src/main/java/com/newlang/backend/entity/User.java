@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
 
 @Data
 @AllArgsConstructor
@@ -27,10 +27,8 @@ public class User implements UserDetails {
     private String password;
     private String idNumber;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user"))
     @Enumerated(EnumType.STRING)
-    private Set<Role> role;
+    private Role role;
 
     public Long getIdUser() {
         return idUser;
@@ -72,19 +70,26 @@ public class User implements UserDetails {
         this.idNumber = idNumber;
     }
 
-    public Set<Role> getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(Set<Role> role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.stream()
-                .map(rol -> new SimpleGrantedAuthority(rol.name()))
-                .toList();
+        // Si el usuario tiene un rol, devuelve una colección que contenga ese único rol.
+        // Si el rol es nulo, devuelve una colección vacía.
+        if (this.role == null) {
+            return Collections.emptyList(); // Devuelve una lista vacía si no hay rol
+        }
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role.name()));
+        // Alternativamente, puedes usar:
+        // ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+        // authorities.add(new SimpleGrantedAuthority(this.role.name()));
+        // return authorities;
     }
 
     @Override

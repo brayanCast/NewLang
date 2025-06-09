@@ -18,8 +18,7 @@ public class WordManagementService {
 
     // Función para guardar la información de la palabra, validando que esta no exista
     public Word saveWord(Word word) {
-        Long id = word.getIdWord();
-        Optional<Word> existingWordByText = wordRepository.findByWord(word.getEnglishWord());
+        Optional<Word> existingWordByText = wordRepository.findByEnglishWord(word.getEnglishWord());
 
         if(existingWordByText.isPresent()){
             throw new WordAlreadyExistException("La palabra " + word.getEnglishWord() + " ya existe");
@@ -40,7 +39,7 @@ public class WordManagementService {
 
     //Función para hacer la búsqueda por la palabra
     public Optional<Word> getByWord(String word){
-        return wordRepository.findByWord(word);
+        return wordRepository.findByEnglishWord(word);
     }
 
     //Función para actualizar la palabra
@@ -54,7 +53,7 @@ public class WordManagementService {
 
     //Función para eliminar las palabras, validando si estas existen en la base de datos
     public void deleteWord(String word){
-        Optional<Word> foundWord = wordRepository.findByWord(word.toLowerCase());
+        Optional<Word> foundWord = wordRepository.findByEnglishWord(word.toLowerCase());
          foundWord.ifPresentOrElse(
                  wordToDelete -> wordRepository.deleteById(wordToDelete.getIdWord()),
                  () -> { throw new WordNotFoundException("La palabra " + foundWord + "no fue encontrada para eliminar");

@@ -14,14 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
+@RequestMapping("/auth/word")
 @RestController
 public class WordManagementController {
 
     @Autowired
     private WordManagementService wordManagementService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createWord(@RequestBody Word word){
         try {
             return new ResponseEntity<>(wordManagementService.saveWord(word), HttpStatus.CREATED);
@@ -33,7 +34,7 @@ public class WordManagementController {
 
     }
 
-    @PutMapping
+    @PutMapping("/update-word/{id}")
     public ResponseEntity<?> updateEnglishWord(@PathVariable Long id, @RequestBody Word word){
         try {
             return ResponseEntity.ok(wordManagementService.updateEnglishWord(id, word));
@@ -44,27 +45,27 @@ public class WordManagementController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/get-all-words")
     public ResponseEntity<List<Word>> getAllWords(){
         List<Word> words = wordManagementService.getAllWords();
         return new ResponseEntity<>(words, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/get-word/{id}")
     public ResponseEntity<Word> getWordById(@PathVariable Long id){
         Optional<Word> word = wordManagementService.getWordById(id);
         return word.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping
+    @GetMapping("/get-word")
     public ResponseEntity<Word> getByWord(@RequestParam("word") String word){
         Optional<Word> wordText = wordManagementService.getByWord(word);
         return wordText.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete-word")
     public ResponseEntity<?> deleteByWord(@PathVariable String word){
         try {
             wordManagementService.deleteWord(word);

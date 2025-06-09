@@ -1,7 +1,7 @@
 package com.newlang.backend.config;
 
 import com.newlang.backend.service.JwtUtils;
-import com.newlang.backend.service.UsersDetailsSevice;
+import com.newlang.backend.service.UsersDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private UsersDetailsSevice usersDetailsSevice;
+    private UsersDetailsService usersDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         userEmail = jwtUtils.extractUsername(jwtToken);
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = usersDetailsSevice.loadUserByUsername(userEmail);
+            UserDetails userDetails = usersDetailsService.loadUserByUsername(userEmail);
 
             if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

@@ -21,7 +21,7 @@ public class RequestResp {
     private String refreshToken;
     private String expirationTime;
     private String nameUser;
-    private Set<Role> role;
+    private Role role;
     private String email;
     private String password;
     private String idNumber;
@@ -92,11 +92,11 @@ public class RequestResp {
         this.email = email;
     }
 
-    public Set<Role> getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(Set<Role> role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
