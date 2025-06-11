@@ -1,5 +1,6 @@
 package com.newlang.backend.config;
 
+import com.newlang.backend.entity.User;
 import com.newlang.backend.service.JwtUtils;
 import com.newlang.backend.service.UsersDetailsService;
 import jakarta.servlet.FilterChain;
@@ -43,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = usersDetailsService.loadUserByUsername(userEmail);
 
-            if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
+            if (jwtUtils.isTokenValid(jwtToken, (User) userDetails)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token  = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()

@@ -85,11 +85,8 @@ public class User implements UserDetails {
         if (this.role == null) {
             return Collections.emptyList(); // Devuelve una lista vacía si no hay rol
         }
-        return Collections.singletonList(new SimpleGrantedAuthority(this.role.name()));
-        // Alternativamente, puedes usar:
-        // ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        // authorities.add(new SimpleGrantedAuthority(this.role.name()));
-        // return authorities;
+        return Collections.singletonList(
+                new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override

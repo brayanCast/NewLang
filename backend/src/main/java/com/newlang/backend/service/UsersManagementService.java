@@ -5,8 +5,10 @@ import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
 
 import com.newlang.backend.exceptions.EmailAlreadyExistException;
+import com.newlang.backend.exceptions.IDNumberCannotBeVoidException;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,8 +49,12 @@ public class UsersManagementService {
         user.setEmail(registrationRequest.getEmail());
         user.setNameUser(registrationRequest.getNameUser());
         if (registrationRequest.getRole() == Role.ADMIN) {
+            if(registrationRequest.getIdNumber() == null || registrationRequest.getIdNumber() == "") {
+                throw new IDNumberCannotBeVoidException("El núnero de identificación del usuario no puede esta vacío");
+            }
             user.setIdNumber(registrationRequest.getIdNumber());
         }
+        user.setRole(registrationRequest.getRole());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         User userResult = userRepository.save(user);
 
@@ -73,7 +79,7 @@ public class UsersManagementService {
             response.setToken(jwt);
             response.setRole(user.getRole());
             response.setRefreshToken(refreshToken);
-            response.setExpirationTime("60 min");
+            response.setExpirationTime("24 Hrs");
             response.setMessage("Successful Logged In");
 
         } catch (Exception e) {
@@ -176,7 +182,7 @@ public class UsersManagementService {
                 existingUser.setEmail(updateUser.getEmail());
                 existingUser.setNameUser(updateUser.getNameUser());
 
-                //revisa si la contraseña está presente en la solcitud
+                //revisa si la contraseña está presente en la solicitud
                 if (updateUser.getPassword() != null && !updateUser.getPassword().isEmpty()) {
                     //Decodifica la contraseña y la actualiza
                     existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));

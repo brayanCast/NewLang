@@ -38,25 +38,30 @@ public class WordManagementService {
     }
 
     //Función para hacer la búsqueda por la palabra
-    public Optional<Word> getByWord(String word){
-        return wordRepository.findByEnglishWord(word);
+    public Word getByWord(String word){
+        return wordRepository.findByEnglishWord(word.toLowerCase())
+                .or(() -> wordRepository.findBySpanishWord(word.toLowerCase()))
+                .orElseThrow(() -> new WordNotFoundException("Word has not been encountered"));
     }
 
     //Función para actualizar la palabra
-    public Word updateEnglishWord(Long id, Word updatedWord){
+    public Word updateWord(Long id, Word updatedWord){
         return wordRepository.findById(id)
                 .map(existingWord -> {
                     existingWord.setEnglishWord(updatedWord.getEnglishWord());
+                    existingWord.setSpanishWord(updatedWord.getSpanishWord());
                     return wordRepository.save(existingWord);
-                }).orElseThrow(() -> new WordNotFoundException("La palabra no fue encontrada"));
+                }).orElseThrow(() -> new WordNotFoundException("Word has not been encountered"));
     }
 
     //Función para eliminar las palabras, validando si estas existen en la base de datos
     public void deleteWord(String word){
         Optional<Word> foundWord = wordRepository.findByEnglishWord(word.toLowerCase());
+        foundWord = foundWord.or(() -> wordRepository.findBySpanishWord(word.toLowerCase()));
+
          foundWord.ifPresentOrElse(
                  wordToDelete -> wordRepository.deleteById(wordToDelete.getIdWord()),
-                 () -> { throw new WordNotFoundException("La palabra " + foundWord + "no fue encontrada para eliminar");
+                 () -> { throw new WordNotFoundException("word " + word + " has not been encountered to delete");
                  }
          );
     }

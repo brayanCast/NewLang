@@ -22,6 +22,7 @@ public class WordManagementController {
     @Autowired
     private WordManagementService wordManagementService;
 
+    //Función para crear nuevas palabras en inglés y español
     @PostMapping("/create")
     public ResponseEntity<?> createWord(@RequestBody Word word){
         try {
@@ -34,10 +35,11 @@ public class WordManagementController {
 
     }
 
+    //Función para actualizar las palabras en inglés y español por el ID
     @PutMapping("/update-word/{id}")
     public ResponseEntity<?> updateEnglishWord(@PathVariable Long id, @RequestBody Word word){
         try {
-            return ResponseEntity.ok(wordManagementService.updateEnglishWord(id, word));
+            return ResponseEntity.ok(wordManagementService.updateWord(id, word));
         }catch (WordNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }catch (Exception e){
@@ -45,12 +47,14 @@ public class WordManagementController {
         }
     }
 
+    //Función para buscar todas las palabras
     @GetMapping("/get-all-words")
     public ResponseEntity<List<Word>> getAllWords(){
         List<Word> words = wordManagementService.getAllWords();
         return new ResponseEntity<>(words, HttpStatus.OK);
     }
 
+    //Función para buscar la palabra por el ID
     @GetMapping("/get-word/{id}")
     public ResponseEntity<Word> getWordById(@PathVariable Long id){
         Optional<Word> word = wordManagementService.getWordById(id);
@@ -58,15 +62,16 @@ public class WordManagementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    //Función para buscar por palabras
     @GetMapping("/get-word")
     public ResponseEntity<Word> getByWord(@RequestParam("word") String word){
-        Optional<Word> wordText = wordManagementService.getByWord(word);
-        return wordText.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Word foundWord = wordManagementService.getByWord(word);
+        return new ResponseEntity<>(foundWord, HttpStatus.OK);
     }
 
+
     @DeleteMapping("/delete-word")
-    public ResponseEntity<?> deleteByWord(@PathVariable String word){
+    public ResponseEntity<?> deleteByWord(@RequestParam("word") String word){
         try {
             wordManagementService.deleteWord(word);
             return new ResponseEntity<>(HttpStatus.OK);
