@@ -37,11 +37,11 @@ public class WordManagementController {
 
     //Función para actualizar las palabras en inglés y español por el ID
     @PutMapping("/update-word/{id}")
-    public ResponseEntity<?> updateEnglishWord(@PathVariable Long id, @RequestBody Word word){
+    public ResponseEntity<?> updateWord(@PathVariable Long id, @RequestBody Word word){
         try {
             return ResponseEntity.ok(wordManagementService.updateWord(id, word));
         }catch (WordNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -69,8 +69,8 @@ public class WordManagementController {
         return new ResponseEntity<>(foundWord, HttpStatus.OK);
     }
 
-
-    @DeleteMapping("/delete-word")
+    //Función para eliminar las palabras, buscando por palabras
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteByWord(@RequestParam("word") String word){
         try {
             wordManagementService.deleteWord(word);
