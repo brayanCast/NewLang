@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class WordManagementService {
@@ -64,5 +66,29 @@ public class WordManagementService {
                  () -> { throw new WordNotFoundException("word " + word + " has not been encountered to delete");
                  }
          );
+    }
+
+    public List<String> getSuggestions(String query) {
+        if(query == null || query.isEmpty()){
+            return List.of();
+        }
+        int maxSuggestions = 10;
+
+        List<Word> englishMatches = wordRepository.findByEnglishWordStartingWithIgnoreCase(query.toLowerCase());
+        List<Word> spanishMatches = wordRepository.findBySpanishWordStartingWithIgnoreCase(query.toLowerCase());
+
+        Set<String> uniqueSuggestion = new java.util.LinkedHashSet<>();
+
+        englishMatches.stream()
+                .map(Word::getEnglishWord)
+                .forEach(uniqueSuggestion::add);
+
+        spanishMatches.stream()
+                .map(Word::getSpanishWord)
+                .forEach(uniqueSuggestion::add);
+
+        return uniqueSuggestion.stream()
+                .limit(maxSuggestions)
+                .collect(Collectors.toList());
     }
 }

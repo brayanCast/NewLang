@@ -14,14 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
-@RequestMapping("/auth/expression")
 @RestController
 public class ExpressionManagementController {
 
     @Autowired
     private ExpressionManagementService expressionManagementService;
 
-    @PostMapping("/create")
+    @PostMapping("/admin/expression/create")
     public ResponseEntity<?> createExpression(@RequestBody Expression expression){
         try {
             return new ResponseEntity<>(expressionManagementService.saveExpression(expression), HttpStatus.CREATED);
@@ -32,7 +31,7 @@ public class ExpressionManagementController {
         }
     }
 
-    @PutMapping("/update-expression/{id}")
+    @PutMapping("/admin/expression/update-expression/{id}")
     public ResponseEntity<?> updateExpression(@PathVariable Long id, @RequestBody Expression expression) {
         try {
             return ResponseEntity.ok(expressionManagementService.updateExpression(id, expression));
@@ -43,26 +42,27 @@ public class ExpressionManagementController {
         }
     }
 
-    @GetMapping("/get-all-expressions")
+    @GetMapping("/auth/expression/get-all-expressions")
     public ResponseEntity<List<Expression>> getAllExpressions(){
         List<Expression> expressions = expressionManagementService.getAllExpression();
         return new ResponseEntity<>(expressions, HttpStatus.OK);
     }
 
-    @GetMapping("/get-expression-id/{id}")
+    @GetMapping("/auth/expression/get-expression/{id}")
     public ResponseEntity<Expression> getExpressionById(@PathVariable Long id){
         Optional<Expression> expression = expressionManagementService.getExpressionById(id);
         return expression.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/get-expression")
+    @GetMapping("/auth/expression/get-expression")
     public ResponseEntity<Expression> getByExpression(@RequestParam("expression") String expression) {
+
         Expression foundExpression = expressionManagementService.getByExpression(expression);
         return new ResponseEntity<>(foundExpression, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/admin/expression/delete")
     public ResponseEntity<?> deleteExpression(@RequestParam("expression") String expression){
         try {
             expressionManagementService.deleteExpression(expression);

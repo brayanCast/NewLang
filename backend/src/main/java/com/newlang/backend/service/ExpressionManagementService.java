@@ -38,8 +38,7 @@ public class ExpressionManagementService {
     public Expression getByExpression(String expression){
         return expressionRepository.findByEnglishExpression(expression.toLowerCase())
                 .or(() -> expressionRepository.findBySpanishExpression(expression.toLowerCase()))
-                .orElseThrow(() -> new ExpressionNotFoundException
-                        ("Expression has not been encountered"));
+                .orElseThrow(() -> new ExpressionNotFoundException("Expression has not been encountered"));
     }
 
     public Expression updateExpression(Long id, Expression updatedExpression){
