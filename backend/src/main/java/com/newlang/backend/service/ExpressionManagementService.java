@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpressionManagementService {
@@ -56,8 +58,27 @@ public class ExpressionManagementService {
 
         foundExpression.ifPresentOrElse(
                 expressionToDelete -> expressionRepository.deleteById(expressionToDelete.getIdExpression()),
-                () -> { throw new ExpressionNotFoundException("expression" + expression + "has not been encountered");
+                () -> { throw new ExpressionNotFoundException("expression " + expression + " has not been encountered");
                 }
         );
+    }
+
+    public List<Expression> getSuggestions(String query) {
+        if(query == null || query.isEmpty()){
+            return List.of();
+        }
+        int maxSuggestionsPerService = 5;
+
+        List<Expression> englishMatches = expressionRepository.findByEnglishExpressionStartingWithIgnoreCase(query.toLowerCase());
+        List<Expression> spanishMatches = expressionRepository.findBySpanishExpressionStartingWithIgnoreCase(query.toLowerCase());
+
+        Set<Expression> uniqueExpressions = new java.util.LinkedHashSet<>();
+
+        uniqueExpressions.addAll(englishMatches);
+        uniqueExpressions.addAll(spanishMatches);
+
+        return uniqueExpressions.stream()
+                .limit(maxSuggestionsPerService)
+                .collect(Collectors.toList());
     }
 }

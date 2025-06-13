@@ -80,10 +80,4 @@ public class WordManagementController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/auth/expression/suggestions")
-    public ResponseEntity<List<String>> getSuggestions(@RequestParam("query") String query) {
-        List<String> suggestions = wordManagementService.getSuggestions(query);
-        return ResponseEntity.ok(suggestions);
-    }
 }

@@ -23,7 +23,5 @@ class PageService {
         }
     }
 
-
-
 }
 export default PageService;

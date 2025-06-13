@@ -7,6 +7,7 @@ import com.newlang.backend.repository.WordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,27 +69,23 @@ public class WordManagementService {
          );
     }
 
-    public List<String> getSuggestions(String query) {
-        if(query == null || query.isEmpty()){
+    public List<Word> getSuggestions(String query) {
+        if(query == null || query.isEmpty()) {
             return List.of();
         }
-        int maxSuggestions = 10;
+
+        int maxSuggestionsPerService = 5;
 
         List<Word> englishMatches = wordRepository.findByEnglishWordStartingWithIgnoreCase(query.toLowerCase());
         List<Word> spanishMatches = wordRepository.findBySpanishWordStartingWithIgnoreCase(query.toLowerCase());
 
-        Set<String> uniqueSuggestion = new java.util.LinkedHashSet<>();
+        Set<Word> uniqueWords = new java.util.LinkedHashSet<>();
 
-        englishMatches.stream()
-                .map(Word::getEnglishWord)
-                .forEach(uniqueSuggestion::add);
+        uniqueWords.addAll(englishMatches);
+        uniqueWords.addAll(spanishMatches);
 
-        spanishMatches.stream()
-                .map(Word::getSpanishWord)
-                .forEach(uniqueSuggestion::add);
-
-        return uniqueSuggestion.stream()
-                .limit(maxSuggestions)
+        return uniqueWords.stream()
+                .limit(maxSuggestionsPerService)
                 .collect(Collectors.toList());
     }
 }
