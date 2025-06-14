@@ -1,50 +1,45 @@
-*{
-    margin: 0px;
-    padding: 0px;
-}
-
-/*Parte de la página que corresponde a la cabeza de la página o header*/
-
-/*Logo y menú de Navegación*/
-
-.menu-header{
-    margin: auto;
+nav{
     background-color: #000739;
+    position: fixed;
+    width: 100%;
+    padding: 10px;
+    top: 0;
+    left: 0;
     font-family: 'Jua';
     display: flex;
     align-items: center;
-    padding: 1% 5%;
+    z-index: 1000;
 }
 
-.menu-header img{
-    margin-right: 20px;
-    width: 120px;
-    height: 70px;
-}
-
-#img-logo{
-    width: 110px;
-    height: 80px;
+nav a img{
+    margin-left: 50px;
+    padding: 0;
+    width: 100px;
+    height: auto;
+    display: block;
 }
 
 ul, ol{
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
-.nav-bar{
+
+nav ul{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .nav-bar li a{
     color: #FFFFFF;
     text-decoration: none;
-    padding: 15px 20px;
+    padding: 15px 60px;
     display: block;
     font-size: 23px;
-
+    white-space: nowrap;
 }
 
 .nav-bar li a:hover {
@@ -61,31 +56,24 @@ ul, ol{
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 200px;
     background-color: #000739;
+    min-width: 180px;
+    z-index: 1001;
+}
+
+.nav-bar li ul :hover {
+    background-color: #495083;
+}
+
+.nav-bar li ul li a { /* Estilos específicos para los enlaces dentro del submenú */
+    padding: 12px 15px; /* Padding ajustado */
+    font-size: 20px; /* Fuente ligeramente más pequeña */
 }
 
 .nav-bar li:hover > ul {
     display: block;
 }
 
-.nav-bar li ul li {
-    width: 100%;
-    display: block;
-}
-
-
-.nav-bar li ul li a {
-    padding: 10px 15px;
-    font-size: 20px;
-    background-color: #000739;
-    text-align: left;
-}
-
-
-.nav-bar li ul li a:hover {
-    background-color: #495083;
-}
 
 /*Ícono del perfil*/
 
@@ -93,47 +81,32 @@ ul, ol{
     display: inline-block;
     position: relative;
     cursor: pointer;
+    padding: 5px 20px;
 }
 
 .profile-icon img {
     width: 40%;
     height:50%;
-    margin-top: 10%;
-    margin-left: 20%;
     display: block;
 }
 
 /*Menú bar para el tamaño movil, en tamaño tablet y computador se dejará invisible este menú y el checkbox*/
-.checkbtn{
-    display: none;
-    position: relative;
-    margin-left: 3%;
-    color: #FFFFFF;
-    right: 4%;
-    font-size: 30px;
-    cursor: pointer;
-}
-
-#check{
-    display: none;
-}
-
 
 .menu-options {
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
-    z-index: 1;
+    left: calc(100% - 250px); /* Ajuste para que el menú se alinee a la derecha */
+    z-index: 1000;
     background-color: #000739;
 }
 
 .menu-option {
     display: block;
-    padding: 10px;
+    padding: 12px 15px; /* Padding ajustado */
     text-decoration: none;
     color: #FFFFFF;
-    font-size: 23px;
+    font-size: 20px;
 }
 
 .menu-option:hover {

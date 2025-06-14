@@ -3,18 +3,21 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/auth/LoginPage';
 import RegistrationPageUser from './components/auth/RegistrationPageUser';
 import RegistrationPageAdmin from './components/auth/RegistrationPageAdmin';
-import UserService from './components/service/UserService';
 import UpdateUser from './components/userspage/UpdateUser';
 import UserManagementPage from './components/userspage/UserManagementPage';
 import ProfilePage from './components/userspage/ProfilePage';
 import VerifyOtp from './components/auth/VerifyOtp';
 import UpdatePassword from './components/auth/UpdatePassword';
+import HomePage from './components/pages/HomePage';
+import ProtectedRoute from './components/route/ProtectedRoute';
+import { LoadingProvider } from './components/context/LoadingContext';
 
 
 function App() {
 
   return (
     <BrowserRouter>
+    <LoadingProvider>
       <div className="App">
         <div className="content">
           <Routes>
@@ -25,29 +28,24 @@ function App() {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/update-password" element={<UpdatePassword />} />
 
-            {/* Check if user is authenticated and admin before rendering admin-only routes */}
-            {UserService.isAuthenticated() (
-              <>
-                <Route path='/homepage' element={<HomePage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-              </>
-            )}
-            
+            <Route element={<ProtectedRoute />}>
+              <Route path="/homepage" element={<HomePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute adminOnly={true} />}>
+              <Route path="/user-management" element={<UserManagementPage />} />
+              <Route path="/update-user/:id" element={<UpdateUser />} />
+            </Route>
+
+
             {/* Check if user is authenticated before rendering user-only routes */}
 
-
-            {UserService.adminOnly()(
-              <>
-                <Route path="/homepage" element={<HomePage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/admin/user-management" element={<UserManagementPage />} />
-                <Route path="/update-user/:userId" element={<UpdateUser />} />
-              </>
-            )}
             <Route path="*" element={<Navigate to="/login" />} />‰
           </Routes>
         </div>
       </div>
+      </LoadingProvider>
     </BrowserRouter>
   );
 }

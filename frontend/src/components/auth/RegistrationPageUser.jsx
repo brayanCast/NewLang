@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import UserService from "../service/UserService";
 import { useNavigate } from 'react-router-dom';
 import { HttpStatusCode } from 'axios';
+import iconoLang from '../../img/iconolang.png';
 
 function RegistrationPageUser() {
     const navigate = useNavigate();
@@ -61,7 +62,7 @@ function RegistrationPageUser() {
         <div className='auth-container'>
 
             <div id="left_page">
-                <img id="language_icon" src="img/iconolang.png" alt="idiomas" />
+                <img id="language_icon" src={iconoLang} alt="idiomas" />
                 <p id="phrase_app">...Open your mind to the new opportunities</p>
             </div>
 

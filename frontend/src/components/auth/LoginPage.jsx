@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
-import VerifyOtp from "./VerifyOtp";
+import VerifyOtp from "../auth/VerifyOtp";
+import { useLoading } from "../context/LoadingContext";
+import iconoLang from '../../img/iconolang.png';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -12,14 +14,18 @@ function LoginPage() {
 
     const navigate = useNavigate();
 
+    const { startLoading, stopLoading } = useLoading();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setError(''); // Limpiar errores previos
+
+        startLoading();
+
         try {
-            const userData = await UserService.login(email, password);
-            if (userData.token) {
-                localStorage.setItem('token', userData.token);
-                localStorage.setItem('role', userData.role);
+            const responseData = await UserService.login(email, password);
+            if (responseData && responseData.token) {
                 navigate('/homepage');
             } else{
                 alert("Usuario o contraseña incorrectos");
@@ -30,32 +36,40 @@ function LoginPage() {
             setTimeout(() => {
                 setError('');
             }, 5000);
+        } finally {
+            stopLoading();
         }
     };
 
+
+    //const que se usa para cambio de contraseña
     const handleChangePasswordSubmit = (e) => {
         e.preventDefault();
-        // Aquí puedes manejar el cambio de contraseña
-        // Por ejemplo, enviar los datos a tu servicio
         console.log("Cambio de contraseña solicitado");
         setIsModalOpen(false); // Cerrar el modal después de enviar
     };
 
     const handleSendOtp = async () => {
-        try {
-            if (!email) {
-                alert('Por favor, ingrese un correo electrónico');
-                return;
-            }
 
+        if (!email) {
+            alert('Por favor, ingrese un correo electrónico');
+            return;
+        }
+
+        startLoading();
+
+        try {
             await UserService.sendOtp(email);
             setOtpSent(true);
             alert('OTP enviado al correo electrónico');
-            navigate('/verify-otp', { state: {email}});
+            navigate('/verify-otp', { state: { email }});
+            setIsModalOpen(false);
 
         } catch (error) {
             const errorMessage = error.response.data.message || "Error al enviar el OTP";
-            alert(errorMessage)
+            alert(errorMessage);
+        } finally {
+            stopLoading();
         }
     };
 
@@ -63,12 +77,11 @@ function LoginPage() {
         navigate('/register');
     };
 
-
     return (
         <div className="auth-container">
             
             <div id="left_page">
-                <img id="language_icon" src="./img/iconolang.png" alt="idiomas" />
+                <img id="language_icon" src={iconoLang} alt="Palabra idiomas en inglés" />
                 <p id="phrase_app">...Open your mind to the new opportunities</p>
             </div>
 

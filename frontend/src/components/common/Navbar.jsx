@@ -1,17 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import profileIcon from './img/perfil.png';
-import imgLogo from './img/logo_newLang.png'; // Import the logo image
-import './Navbar.css'; // Import the CSS file for styling
+import profileIcon from '../../img/perfil.png';
+import imgLogo from '../../img/logo_newLang.png'; // Import the logo image
+import '../../styles/Navbar.css'; // Import the CSS file for styling
 import UserService from '../service/UserService';
 
-
 function Navbar() {
-
-    const isAuthenticated = UserService.isAuthenticated();
-    const isAdmin = UserService.isAdmin();
-
-
+    // Function to handle logout
+    // This function will be called when the user clicks on the "Cerrar Sesión" link
     const handleLogout = () => {
         const confirmLogout = window.confirm("¿Estás seguro de que deseas cerrar sesión?");
         if (confirmLogout) {
@@ -21,14 +16,11 @@ function Navbar() {
     }
 
     return (
-        <nav className="navbar">
-            <input type="checkbox" id="menu-toggle" className="menu-toggle" />
-            <label htmlFor="check" className='checkbtn'>
-                <i className="fa-solid fa-bars"></i>
-            </label>
-            <a href="/homepage.html"><img src={imgLogo} id="img-logo" alt="Logo NewLang" /></a>
-            <ul class="nav-bar">
-                <li><a href="./homepage.html">Inicio</a></li>
+        <nav>
+
+            <a href="http://localhost:3000/homepage" ><img src={imgLogo} id="img-logo" alt="Logo NewLang" /></a>
+            <ul className="nav-bar">
+                <li><a href="http://localhost:3000/homepage">Inicio</a></li>
                 <li><a href="#">Rutina</a>
                     <ul>
                         <li><a href="create-routine.html" rel="noopener noreferrer">Crear Rutina</a></li>
@@ -43,11 +35,11 @@ function Navbar() {
                 </li>
                 <li><a href="#">Acerca de</a></li>
             </ul>
-            <div class="profile-icon">
-                <img src={profileIcon} alt="icono de perfil" class="menu-profile" />
-                <div class="menu-options">
-                    <a href="modify-user.html" class="menu-option">Modificar Usuario</a>
-                    <a href="#" class="menu-option">Cerrar Sesión</a>
+            <div className="profile-icon">
+                <img src={profileIcon} alt="icono de perfil" className="menu-profile" />
+                <div className="menu-options">
+                    <a href="modify-user.html" className="menu-option">Modificar Usuario</a>
+                    <a href="#" className="menu-option" onClick={handleLogout}>Cerrar Sesión</a>
                 </div>
             </div>
 
