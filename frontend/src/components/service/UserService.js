@@ -51,7 +51,7 @@ class UserService {
 
     static async verifyOtp(email, otp){
         try{
-            const response = await axios.post(`${UserService.BASE_URL}/verify-otp`, { email, otp })
+            const response = await axios.post(`${UserService.BASE_URL}/auth/verify-otp`, { email, otp })
             return response.data;
         } 
         catch (err){

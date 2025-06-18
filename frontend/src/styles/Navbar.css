@@ -2,7 +2,8 @@ nav{
     background-color: #000739;
     position: fixed;
     width: 100%;
-    padding: 10px;
+    padding: 0px 10px;
+    min-height: 13dvh;
     top: 0;
     left: 0;
     font-family: 'Jua';

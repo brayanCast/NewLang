@@ -1,0 +1,104 @@
+.homepage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background-color:#D6D8E8;
+}
+
+.homepage-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar-container input {
+ padding: 5px 50px;
+ font-size: 16px;
+ text-align: left;
+ justify-content: left;
+ border: none;
+ border-bottom-left-radius: 10px;
+ border-top-left-radius: 10px;
+
+}
+
+.search-bar-container button{
+  padding: 0 5px;
+  cursor: pointer;
+  background-color: #000739;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 2px solid #000739;
+}
+
+.search-bar-container button:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+
+.search-bar-wrapper {
+    position: relative; /* Muy importante para posicionar la lista de sugerencias */
+    width: 100%; /* O el mismo ancho de tu .search-bar-container */
+    max-width: 600px; /* Asegura que el wrapper tenga el mismo ancho máximo que la barra */
+    margin-bottom: 30px; /* Espacio debajo de la barra de búsqueda y sugerencias */
+    /* background-color: lightblue; /* Para depuración */
+}
+
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Puede que no sea necesario si el wrapper tiene el ancho total */
+    width: 100%; /* Asegúrate de que la barra en sí ocupe todo el ancho del wrapper */
+    /* Elimina el margin-top y margin-bottom de aquí si los pusiste en .search-bar-wrapper */
+}
+
+/* Estilos para la lista de sugerencias */
+.suggestions-list {
+    position: absolute; /* Posicionamiento absoluto respecto a .search-bar-wrapper */
+    top: 100%; /* Justo debajo del input/button */
+    left: 0;
+    width: 100%; /* Ocupa el mismo ancho que el input/button */
+    max-height: 200px; /* Altura máxima con scroll si hay muchas sugerencias */
+    overflow-y: auto; /* Habilita scroll vertical si excede max-height */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none; /* Sin borde superior para fusionarse con la barra de búsqueda */
+    border-radius: 0 0 8px 8px; /* Solo las esquinas inferiores redondeadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    list-style: none; /* Eliminar viñetas de la lista */
+    padding: 0;
+    margin: 0; /* Eliminar margen predeterminado de ul */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee; /* Separador entre sugerencias */
+    font-size: 16px;
+    color: #333;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none; /* Eliminar el borde de la última sugerencia */
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0; /* Color al pasar el ratón */
+    color: #000739;
+}

@@ -4,6 +4,8 @@ import UserService from "../service/UserService";
 import VerifyOtp from "../auth/VerifyOtp";
 import { useLoading } from "../context/LoadingContext";
 import iconoLang from '../../img/iconolang.png';
+import iconoViewPasswordOn from '../../img/visibility_24dp_000739_FILL0_wght400_GRAD0_opsz24.png';
+import iconoViewPasswordOff from '../../img/visibility_off_24dp_000739_FILL0_wght400_GRAD0_opsz24 (1).png';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -11,7 +13,7 @@ function LoginPage() {
     const [error, setError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
     const [otpSent, setOtpSent] = useState(false);
-
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
     const navigate = useNavigate();
 
     const { startLoading, stopLoading } = useLoading();
@@ -27,7 +29,7 @@ function LoginPage() {
             const responseData = await UserService.login(email, password);
             if (responseData && responseData.token) {
                 navigate('/homepage');
-            } else{
+            } else {
                 alert("Usuario o contraseña incorrectos");
             }
 
@@ -62,7 +64,7 @@ function LoginPage() {
             await UserService.sendOtp(email);
             setOtpSent(true);
             alert('OTP enviado al correo electrónico');
-            navigate('/verify-otp', { state: { email }});
+            navigate('/verify-otp', { state: { email } });
             setIsModalOpen(false);
 
         } catch (error) {
@@ -79,7 +81,7 @@ function LoginPage() {
 
     return (
         <div className="auth-container">
-            
+
             <div id="left_page">
                 <img id="language_icon" src={iconoLang} alt="Palabra idiomas en inglés" />
                 <p id="phrase_app">...Open your mind to the new opportunities</p>
@@ -108,14 +110,20 @@ function LoginPage() {
                         </div>
 
                         <div className="input_container">
-                            <label htmlFor="password-login">Contraseña</label>
-                            <input
-                                id="password-login"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="***********************"
-                                required />
+                            <label htmlFor="password-login" className="password-input">Contraseña</label>
+                            <div className="password-input-container">
+                                <input
+                                    id="password-login"
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="***********************"
+                                    required />
+                                <div className="password-icon" onClick={() => setShowPassword(!showPassword)}>
+                                    {showPassword ? (<img src={iconoViewPasswordOn} alt="Mostrar contraseña" />) 
+                                        : (<img src={iconoViewPasswordOff} alt="Ocultar contraseña" />)}
+                                </div>
+                            </div>
                         </div>
 
                         <div className="forgot_password">

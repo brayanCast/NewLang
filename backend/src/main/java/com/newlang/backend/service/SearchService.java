@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @Service
 public class SearchService {
 
-    private WordManagementService wordManagementService;
-    private ExpressionManagementService expressionManagementService;
+    private final  WordManagementService wordManagementService;
+    private final ExpressionManagementService expressionManagementService;
 
     public SearchService(WordManagementService wordManagementService, ExpressionManagementService expressionManagementService) {
         this.wordManagementService = wordManagementService;
@@ -23,6 +23,8 @@ public class SearchService {
         if(query == null || query.trim().isEmpty()) {
             return List.of();
         }
+
+
 
         Set<String> uniqueSuggestion = new java.util.LinkedHashSet<>();
 

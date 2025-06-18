@@ -3,9 +3,14 @@ import UserService from "../service/UserService";
 import { useNavigate } from 'react-router-dom';
 import { HttpStatusCode } from 'axios';
 import iconoLang from '../../img/iconolang.png';
+import { useLoading } from '../context/LoadingContext';
+import iconoViewPasswordOn from '../../img/visibility_24dp_000739_FILL0_wght400_GRAD0_opsz24.png';
+import iconoViewPasswordOff from '../../img/visibility_off_24dp_000739_FILL0_wght400_GRAD0_opsz24 (1).png';
 
 function RegistrationPageUser() {
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+    const { startLoading, stopLoading } = useLoading();
 
     const [formData, setFormData] = useState({
         nameUser: '',
@@ -24,6 +29,8 @@ function RegistrationPageUser() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        startLoading();
 
         try {
             //Llama al servicio para registrar el usuario
@@ -48,12 +55,13 @@ function RegistrationPageUser() {
             if (HttpStatusCode.BadRequest) {
                 console.error('Email already exist', error);
                 alert('Ya existe un usuario con ese email');
-                
+
             } else {
                 console.error('Error registering user', error);
                 alert('An error occurred while registering user');
             }
-
+        } finally {
+            stopLoading();
         }
     }
 
@@ -83,9 +91,15 @@ function RegistrationPageUser() {
 
                     <div className="input_container">
                         <label htmlFor="password-user">Contraseña</label>
-                        <input id="password-user" type="password" placeholder="***********************"
-                            value={formData.password} name="password"
-                            onChange={handleInputChange} required />
+                        <div className="password-input-container">
+                            <input id="password-user" type={showPassword ? "text" : "password"} placeholder="***********************"
+                                value={formData.password} name="password"
+                                onChange={handleInputChange} required />
+                                <div className="password-icon" onClick={() => setShowPassword(!showPassword)}>
+                                    {showPassword ? (<img src={iconoViewPasswordOn} alt="Mostrar contraseña" />)
+                                        : (<img src={iconoViewPasswordOff} alt="Ocultar contraseña" />)}
+                                 </div>
+                        </div>
                     </div>
 
                     <button className="button" type="submit">Crear</button>

@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from "react"
 import LoadingSpinner from '../common/LoadingSpinner';
+import '../../styles/LoadingSpinner.css'; // Importa los estilos para el spinner de carga
 
 const LoadingContext = createContext();
-
 
 //Es un Hook (función que permite usar características de React) que permite manejar el estado de carga en la aplicación.
 export const useLoading = () => {
@@ -26,7 +26,7 @@ export const LoadingProvider = ({ children }) => {
             {/* Renderiza los componentes hijos dentro del contexto de carga*/}
             {children}
             {isLoading && (
-                <dialog className="loading-modal">
+                <dialog className="loading-modal" open={isLoading}>
                     <div className="loading-content">
                         <LoadingSpinner size="150px" color="#000739"/>
                     </div>
