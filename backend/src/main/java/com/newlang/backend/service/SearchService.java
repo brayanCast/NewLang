@@ -1,12 +1,12 @@
 package com.newlang.backend.service;
 
-import com.newlang.backend.entity.Expression;
-import com.newlang.backend.entity.Word;
+import com.newlang.backend.dto.SearchResultDto;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class SearchService {
@@ -19,51 +19,51 @@ public class SearchService {
         this.expressionManagementService = expressionManagementService;
     }
 
-    public List<String> searchAll(String query) {
+    public List<SearchResultDto> searchAll(String query) {
         if(query == null || query.trim().isEmpty()) {
             return List.of();
         }
 
-
-
-        Set<String> uniqueSuggestion = new java.util.LinkedHashSet<>();
-
         int maxTotalSuggestions = 10;
 
-        List<Word> wordMatches = wordManagementService.getSuggestions(query.toLowerCase());
-        for(Word word : wordMatches) {
-            boolean englishWordMatches = word.getEnglishWord() != null && word.getEnglishWord().toLowerCase()
-                    .startsWith(query.toLowerCase());
-            boolean spanishWordMatches = word.getSpanishWord() != null && word.getSpanishWord().toLowerCase()
-                    .startsWith(query.toLowerCase());
+        List<SearchResultDto> wordSuggestions = wordManagementService.getSuggestions(query.toLowerCase()).stream()
+                .flatMap(word -> {List<SearchResultDto> dtos = new ArrayList<>();
+                    //validation where english word is not null, get id word, type of word, english word and meaning in spanish
+                    if (word.getEnglishWord() != null && word.getEnglishWord().toLowerCase().startsWith(query.toLowerCase())) {
+                        dtos.add(new SearchResultDto(word.getIdWord(), "word", word.getEnglishWord()));
+                    }
 
-            if (englishWordMatches) {
-                uniqueSuggestion.add(word.getEnglishWord());
-            }
+                    if (word.getSpanishWord() != null && word.getSpanishWord().toLowerCase().startsWith(query.toLowerCase())) {
+                        dtos.add(new SearchResultDto(word.getIdWord(), "word", word.getSpanishWord()));
+                    }
 
-            if (spanishWordMatches) {
-                uniqueSuggestion.add(word.getSpanishWord());
-            }
-        }
 
-        List<Expression> expressionMatches = expressionManagementService.getSuggestions(query.toLowerCase());
-        for(Expression expression : expressionMatches) {
-             boolean englishExpressionMatches = expression.getEnglishExpression() != null && expression.getEnglishExpression()
-                     .toLowerCase().startsWith(query.toLowerCase());
+                    return dtos.stream();
+                })
+                .toList(); //Collect all word DTOs in a list
 
-             boolean spanishExpressionMatches = expression.getSpanishExpression() != null && expression.getSpanishExpression()
-                     .toLowerCase().startsWith(query.toLowerCase());
+        List<SearchResultDto> expressionSuggestions = expressionManagementService.getSuggestions(query.toLowerCase()).stream()
+                .flatMap(expression -> {List<SearchResultDto> dtos = new ArrayList<>();
 
-             if (englishExpressionMatches) {
-                 uniqueSuggestion.add(expression.getEnglishExpression());
-             }
+                    if (expression.getEnglishExpression() != null && expression.getSpanishExpression().
+                            toLowerCase().startsWith(query.toLowerCase())){
+                        dtos.add(new SearchResultDto(expression.getIdExpression(), "expression",
+                                expression.getEnglishExpression()));
+                    }
 
-             if (spanishExpressionMatches) {
-                 uniqueSuggestion.add(expression.getSpanishExpression());
-             }
-        }
+                    if (expression.getSpanishExpression() != null && expression.getSpanishExpression().
+                            toLowerCase().startsWith(query.toLowerCase())){
+                        dtos.add(new SearchResultDto(expression.getIdExpression(), "expression",
+                                expression.getSpanishExpression()));
+                    }
 
-        return uniqueSuggestion.stream()
+                    return dtos.stream();
+                })
+                .toList();
+
+        return Stream.concat(wordSuggestions.stream(), expressionSuggestions.stream())
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+                .stream()
                 .limit(maxTotalSuggestions)
                 .collect(Collectors.toList());
     }

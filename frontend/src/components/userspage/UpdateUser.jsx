@@ -70,10 +70,7 @@ function UpdateUser() {
                     <label>Role:</label>
                     <input type="text" name="role" value={userData.role} onChange={handleInputChange} />
                 </div>
-                <div className="form-group">
-                    <label>City:</label>
-                    <input type="text" name="city" value={userData.city} onChange={handleInputChange} />
-                </div>
+                
                 <button type="submit">Update</button>
             </form>
         </div>

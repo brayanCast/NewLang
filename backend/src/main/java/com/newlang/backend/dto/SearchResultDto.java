@@ -1,16 +1,19 @@
 package com.newlang.backend.dto;
 
+import java.util.Objects;
+
 public class SearchResultDto {
     private Long id;
     private String type;
     private String text;
-    private String meaning;
 
-    public SearchResultDto(Long id, String type, String text, String meaning) {
+    public SearchResultDto(Long id, String type, String text) {
         this.id = id;
         this.type = type;
         this.text = text;
-        this.meaning = meaning;
+    }
+
+    public SearchResultDto() {
     }
 
     public Long getId() {
@@ -37,18 +40,21 @@ public class SearchResultDto {
         this.text = text;
     }
 
-    public String getMeaning() {
-        return meaning;
+    //Allow to compare objects in HashSet in SearchService class
+    @Override
+    public boolean equals(Object object){
+        if(this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        SearchResultDto that = (SearchResultDto) object;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(text, that.text);
     }
 
-    public void setMeaning(String meaning) {
-        this.meaning = meaning;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, text);
     }
-
-
-
-
-
 }
 
 

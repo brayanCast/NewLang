@@ -1,7 +1,7 @@
 package com.newlang.backend.controller;
 
+import com.newlang.backend.dto.SearchResultDto;
 import com.newlang.backend.service.SearchService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 public class SearchController {
 
-    @Autowired
     private SearchService searchSevice;
 
     public SearchController(SearchService searchSevice){
@@ -20,8 +19,8 @@ public class SearchController {
     }
 
     @GetMapping("/suggestions")
-    public ResponseEntity<List<String>> getSuggestions(@RequestParam("query") String query) {
-        List<String> results = searchSevice.searchAll(query);
+    public ResponseEntity<List<SearchResultDto>> getSuggestions(@RequestParam("query") String query) {
+        List<SearchResultDto> results = searchSevice.searchAll(query);
         return ResponseEntity.ok(results);
     }
 }

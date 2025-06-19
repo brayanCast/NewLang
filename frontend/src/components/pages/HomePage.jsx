@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import Navbar from '../common/Navbar';
 import Footer from '../common/Footer';
 import PageService from '../service/PageService'; // Service for API calls
+import UserService from '../service/UserService'; // Service for user-related API calls
+import TypingEffect from '../effects/TypingEffect'; // Custom typing effect component
 import { useLoading } from '../context/LoadingContext'; // Custom hook for loading state management
 import '../../styles/HomePage.css'; // Import the CSS file for styling
 import searchIcon from '../../img/search_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png'; // Import the search icon
-
 
 
 function HomePage() {
@@ -14,6 +15,24 @@ function HomePage() {
     const [searchError, setSearchError] = useState(null);
     const [showSuggestions, setShowSuggestions] = useState(false); // State to control suggestions visibility
     const { startLoading, stopLoading } = useLoading();
+    const [userName, setUserName] = useState(''); // State to store the user's name
+
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+                const token = UserService.getToken();
+                if (!token) throw new Error("No se encontró token");
+                const data = await UserService.getYourProfile(token);
+                setUserName(data.users.nameUser);
+            } catch (error) {
+                console.error("Error al obtener el nombre de usuario:", error);
+            }
+        };
+
+        fetchUserName();
+    }, []);
+
+    const greetingMessage = `¡Hola, ${userName}!`;
 
     //useEffect to handle search functionality and call to the API
     useEffect(() => {
@@ -22,6 +41,7 @@ function HomePage() {
         if (searchQuery.trim() === '') {
             setSearchResults([]); //Clear previous results
             setSearchError(null); //p
+            setShowSuggestions(false); // Hide suggestions when query is empty
             return;
         }
 
@@ -33,6 +53,7 @@ function HomePage() {
                 // Call the searchBar method from PageService with the search query
                 const data = await PageService.searchBar(searchQuery);
                 setSearchResults(data); // Set search results
+                console.log('Datos recibidos', data); // Log the received data 
 
                 if (data.length > 0) {
                     setShowSuggestions(true); // Show suggestions if results are found
@@ -54,8 +75,7 @@ function HomePage() {
     }, [searchQuery]);
 
     const handleSuggestionClick = (suggestion) => {
-        setSearchQuery(suggestion.phraseOrWord); // Set the search query to the clicked suggestion
-        console.log('Datos recibidos', suggestion); 
+        setSearchQuery(suggestion.text); // Set the search query to the clicked suggestion
         setSearchResults([]); // Clear search results after selection
         setShowSuggestions(false); // Hide suggestions after selection
     };
@@ -76,8 +96,7 @@ function HomePage() {
         <div className="homepage">
             <Navbar />
             <div className="homepage-content">
-                <h1>Welcome to the Home Page</h1>
-                <p>This is the main content area of the home page.</p>
+                <h1><TypingEffect text={greetingMessage} /></h1>
 
                 <div className='search-bar-wrapper'>
                     <div className='search-bar-container'>
@@ -98,11 +117,10 @@ function HomePage() {
                         <ul className='suggestions-list'>
                             {searchResults.map((item) => (
                                 <li
-                                    key={item.id || item.phraseOrWord}
+                                    key={`${item.type}-${item.id}-${item.text}`} // Use a unique key for each suggestion item
                                     onClick={() => handleSuggestionClick(item)}
                                     className='suggestion-item'>
-                                    {item.phraseOrWord} {/* Display phrases or words related to the search*/}
-                                    {item.meaning && ` - ${item.meaning}`}
+                                    {item.text} {/* Display phrases or words related to the search*/}
                                 </li>
                             ))}
                         </ul>

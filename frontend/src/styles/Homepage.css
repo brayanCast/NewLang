@@ -7,7 +7,6 @@
 }
 
 .homepage-content {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,14 +15,22 @@
   padding: 20px;
 }
 
+.homepage-content h1 {
+  font-family: 'Jua', sans-serif; /* Fuente Jua */
+  color: #000739;
+  margin-top: -100px;
+  padding: 40px;
+}
+
 .search-bar-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .search-bar-container input {
- padding: 5px 50px;
+ padding: 5px 80px;
  font-size: 16px;
  text-align: left;
  justify-content: left;
@@ -54,25 +61,18 @@
 .search-bar-wrapper {
     position: relative; /* Muy importante para posicionar la lista de sugerencias */
     width: 100%; /* O el mismo ancho de tu .search-bar-container */
-    max-width: 600px; /* Asegura que el wrapper tenga el mismo ancho máximo que la barra */
+    max-width: 370px; /* Asegura que el wrapper tenga el mismo ancho máximo que la barra */
     margin-bottom: 30px; /* Espacio debajo de la barra de búsqueda y sugerencias */
+    margin: 0 auto; /* Centrar el wrapper en la página */
+    padding: 0 20px; /* Espacio lateral para que no toque los bordes */
     /* background-color: lightblue; /* Para depuración */
-}
-
-.search-bar-container {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Puede que no sea necesario si el wrapper tiene el ancho total */
-    width: 100%; /* Asegúrate de que la barra en sí ocupe todo el ancho del wrapper */
-    /* Elimina el margin-top y margin-bottom de aquí si los pusiste en .search-bar-wrapper */
 }
 
 /* Estilos para la lista de sugerencias */
 .suggestions-list {
     position: absolute; /* Posicionamiento absoluto respecto a .search-bar-wrapper */
     top: 100%; /* Justo debajo del input/button */
-    left: 0;
-    width: 100%; /* Ocupa el mismo ancho que el input/button */
+    width: 90%; /* Ocupa el mismo ancho que el input/button */
     max-height: 200px; /* Altura máxima con scroll si hay muchas sugerencias */
     overflow-y: auto; /* Habilita scroll vertical si excede max-height */
     background-color: white;
@@ -84,13 +84,14 @@
     padding: 0;
     margin: 0; /* Eliminar margen predeterminado de ul */
     z-index: 10; /* Asegura que esté por encima de otros elementos */
+    font-family: 'Inter', sans-serif; /* Fuente Inter */
 }
 
 .suggestion-item {
-    padding: 10px 15px;
+    padding: 7px 15px;
     cursor: pointer;
     border-bottom: 1px solid #eee; /* Separador entre sugerencias */
-    font-size: 16px;
+    font-size: 14px;
     color: #333;
 }
 

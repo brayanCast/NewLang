@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import { useLocation } from "react-router-dom";
+import '../../styles/VerifyOtp.css'; // Import the CSS file for styling
 
 function VerifyOtp() {
     const location = useLocation();
@@ -39,6 +40,8 @@ function VerifyOtp() {
     return (
         <div className="verify-otp-container">
             <form onSubmit={handleVerifyOtp}>
+                <h2>Verificar OTP</h2>
+                <p>Se ha enviado un OTP a tu correo electrónico. Por favor, ingrésalo a continuación para continuar.</p>
                 {error && <p className="error-message">{error}</p>}
                 <div className="input-container">
                     <label htmlFor="otp">Email: </label>
