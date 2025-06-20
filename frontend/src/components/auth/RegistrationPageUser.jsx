@@ -16,7 +16,7 @@ function RegistrationPageUser() {
         nameUser: '',
         email: '',
         password: '',
-        role: ['USER']
+        role: 'USER'
     });
 
     const handleInputChange = (e) => {
@@ -35,7 +35,6 @@ function RegistrationPageUser() {
         try {
             //Llama al servicio para registrar el usuario
             await UserService.registerUser(formData);
-            console.log("Datos a enviar: ", formData);
 
             //Limpia la información del formulario después del registro exitoso
 
@@ -49,8 +48,8 @@ function RegistrationPageUser() {
             alert('User registered successfully');
             navigate('/login');
 
-        }
-        catch (error) {
+        } catch (error) {
+            console.error('Error registering user', error);
 
             if (HttpStatusCode.BadRequest) {
                 console.error('Email already exist', error);

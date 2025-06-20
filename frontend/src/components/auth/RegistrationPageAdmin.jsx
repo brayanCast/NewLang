@@ -17,7 +17,7 @@ function RegistrationPageAdmin() {
         email: '',
         password: '',
         idNumber: '',
-        role: ['ADMIN']
+        role: 'ADMIN'
     });
 
     const handleInputChange = (e) => {

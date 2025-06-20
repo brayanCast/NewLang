@@ -18,7 +18,7 @@ class UserService {
 
     static async registerAdmin(userData){
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,)
+            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData)
             return response.data;
 
         } catch (err) {
@@ -29,7 +29,7 @@ class UserService {
     static async registerUser(userData){
         try {
 
-            const response = await axios.post(`${UserService.BASE_URL}/register`, userData,);
+            const response = await axios.post(`${UserService.BASE_URL}/register`, userData)
             return response.data;
 
         } catch (err) {
