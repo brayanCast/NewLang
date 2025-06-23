@@ -181,6 +181,10 @@ public class UsersManagementService {
                 existingUser.setEmail(updateUser.getEmail());
                 existingUser.setNameUser(updateUser.getNameUser());
 
+                if (updateUser.getIdNumber().equals("ADMIN")) {
+                    existingUser.setIdNumber(updateUser.getIdNumber());
+                }
+
                 //revisa si la contraseña está presente en la solicitud
                 if (updateUser.getPassword() != null && !updateUser.getPassword().isEmpty()) {
                     //Decodifica la contraseña y la actualiza

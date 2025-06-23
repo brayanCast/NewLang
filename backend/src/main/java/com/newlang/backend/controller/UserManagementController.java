@@ -138,7 +138,7 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.getUserById(userId));
     }
 
-    @PutMapping("/admin/update/{userId}")
+    @PutMapping("/auth/update/{userId}")
     public ResponseEntity<RequestResp> updateUserById(@PathVariable Long userId, @RequestBody User requestResp) {
         return ResponseEntity.ok(usersManagementService.updateUser(userId, requestResp));
     }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import UserService from '../service/UserService';
+import '../../styles/UpdateUser.css'; //Asegúrate de que la ruta sea correcta
 
 function UpdateUser() {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ function UpdateUser() {
     const [userData, setUserData] = useState({
         name: '',
         email: '',
+        idNumber: '',
         role: ''
     });
 
@@ -20,8 +22,8 @@ function UpdateUser() {
         try {
             const token = localStorage.getItem('token'); //Obtiene el token del localStorage
             const response = await UserService.getUserById(userId, token); //Obtiene el usuario por ID
-            const { email, name, role } = response.users;
-            setUserData({ email, name, role });//Extrae los datos del usuario
+            const { email, name, idNumber, role } = response.users;
+            setUserData({ email, name, idNumber, role });//Extrae los datos del usuario
 
         } catch (error) {
             console.log('Error fetching user data', error);
@@ -55,21 +57,25 @@ function UpdateUser() {
     };
 
     return (
-        <div className="auth-container">
+        <div className="update-profile-container">
             <h2>Update User</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Name:</label>
+                    <label>Nombre del Usuario:</label>
                     <input type="text" name="name" value={userData.name} onChange={handleInputChange} />
                 </div>
+
                 <div className="form-group">
                     <label>Email:</label>
                     <input type="email" name="email" value={userData.email} onChange={handleInputChange} />
                 </div>
-                <div className="form-group">
-                    <label>Role:</label>
-                    <input type="text" name="role" value={userData.role} onChange={handleInputChange} />
-                </div>
+
+                {userData.role === 'ADMIN' && (
+                    <div className="form-group">
+                        <label>Número de Identificación:</label>
+                        <input type="text" name="idNumber" value={userData.idNumber} onChange={handleInputChange} />
+                    </div>
+                )}
                 
                 <button type="submit">Update</button>
             </form>
