@@ -133,7 +133,7 @@ class UserService {
         try {
             const token = UserService.getToken();
             if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.put(`${UserService.BASE_URL}/admin/update/${userId}`, userData,
+            const response = await axios.put(`${UserService.BASE_URL}/auth/update/${userId}`, userData,
                 {
                     headers: {Authorization: `Bearer ${token}`}
         });

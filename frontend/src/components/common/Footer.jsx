@@ -9,7 +9,7 @@ const Footer = () => {
 
     return (
         <footer className="footer">
-            <div class="contact-us">
+            <div className="contact-us">
                 <h3>Contact us</h3>
                 <a href="#">
                     <p><u>+57 321 765 8957</u></p>

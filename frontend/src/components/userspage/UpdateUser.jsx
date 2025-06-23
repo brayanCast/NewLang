@@ -15,15 +15,24 @@ function UpdateUser() {
     });
 
     useEffect(() => {
-        fetchUserDataById(userId); //Pasa el userId a fetchUserDataById
-    }, [userId]); //Siempre que hay una cadena de UserId, lo corre
+        fetchUserDataById(userId); //Pasa el id a fetchUserDataById
+        console.log('User ID:', userId); //Verifica que el ID se esté obteniendo correctamente
+    }, [userId]); //Siempre que hay una cadena de id, lo corre
+
+
 
     const fetchUserDataById = async (userId) => {
         try {
             const token = localStorage.getItem('token'); //Obtiene el token del localStorage
+            console.log("Token sent:", token);
+            if (!token) {
+                console.error('No token found in localStorage');
+            }
+
             const response = await UserService.getUserById(userId, token); //Obtiene el usuario por ID
             const { email, name, idNumber, role } = response.users;
             setUserData({ email, name, idNumber, role });//Extrae los datos del usuario
+            console.log(response.users);
 
         } catch (error) {
             console.log('Error fetching user data', error);

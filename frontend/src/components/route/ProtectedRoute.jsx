@@ -11,6 +11,7 @@ const ProtectedRoute = ({ children, adminOnly }) => {
         return <Navigate to="/login" />;
     }
 
+
     if (adminOnly && !isAdmin) {
         // If the route is admin-only and the user is not an admin, redirect to the home page
         return <Navigate to="/homepage" />;

@@ -35,7 +35,7 @@ function App() {
 
             <Route element={<ProtectedRoute adminOnly={true} />}>
               <Route path="/user-management" element={<UserManagementPage />} />
-              <Route path="/update-user/:id" element={<UpdateUser />} />
+              <Route path="/update-user/:userId" element={<UpdateUser />} />
             </Route>
 
             {/* Check if user is authenticated before rendering user-only routes */}
