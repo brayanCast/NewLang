@@ -37,9 +37,9 @@ nav ul{
 .nav-bar li a{
     color: #FFFFFF;
     text-decoration: none;
-    padding: 15px 60px;
+    padding: 15px 45px;
     display: block;
-    font-size: 23px;
+    font-size: 21px;
     white-space: nowrap;
 }
 
@@ -51,14 +51,13 @@ nav ul{
     position: relative;
 }
 
-
 .nav-bar li ul{
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
     background-color: #000739;
-    min-width: 180px;
+    min-width: 195px;
     z-index: 1001;
 }
 
@@ -68,13 +67,12 @@ nav ul{
 
 .nav-bar li ul li a { /* Estilos específicos para los enlaces dentro del submenú */
     padding: 12px 15px; /* Padding ajustado */
-    font-size: 20px; /* Fuente ligeramente más pequeña */
+    font-size: 17px; /* Fuente ligeramente más pequeña */
 }
 
 .nav-bar li:hover > ul {
     display: block;
 }
-
 
 /*Ícono del perfil*/
 
@@ -83,11 +81,12 @@ nav ul{
     position: relative;
     cursor: pointer;
     padding: 5px 20px;
+    padding-right: 80px; /* Espacio para el icono */
 }
 
 .profile-icon img {
-    width: 40%;
-    height:50%;
+    width: 60px;
+    height: 50%;
     display: block;
 }
 
@@ -97,7 +96,7 @@ nav ul{
     display: none;
     position: absolute;
     top: 100%;
-    left: calc(100% - 250px); /* Ajuste para que el menú se alinee a la derecha */
+    left: calc(100% - 190px); /* Ajuste para que el menú se alinee a la derecha */
     z-index: 1000;
     background-color: #000739;
 }
@@ -107,7 +106,7 @@ nav ul{
     padding: 12px 15px; /* Padding ajustado */
     text-decoration: none;
     color: #FFFFFF;
-    font-size: 20px;
+    font-size: 17px;
 }
 
 .menu-option:hover {

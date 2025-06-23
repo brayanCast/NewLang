@@ -84,11 +84,11 @@ class UserService {
         }
     }
 
-    static async getYourProfile(token){
+    static async getMyProfile(token){
         try {
             const token = UserService.getToken();
             if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.get(`${UserService.BASE_URL}/adminuser/get-profile`,
+            const response = await axios.get(`${UserService.BASE_URL}/auth/get-profile`,
                 {
                     headers: {Authorization: `Bearer ${token}`}
         });

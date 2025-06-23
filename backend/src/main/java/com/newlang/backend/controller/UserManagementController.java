@@ -120,6 +120,14 @@ public class UserManagementController {
         }
     }
 
+    @GetMapping("/auth/get-profile")
+    public ResponseEntity<RequestResp> getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        RequestResp response = usersManagementService.getMyInfo(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
     @GetMapping("/admin/get-all-users")
     public ResponseEntity<RequestResp> getAllUsers() {
         return ResponseEntity.ok(usersManagementService.getAllUsers());
@@ -135,13 +143,7 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.updateUser(userId, requestResp));
     }
 
-    @GetMapping("/adminuser/get-profile")
-    public ResponseEntity<RequestResp> getMyProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        RequestResp response = usersManagementService.getMyInfo(email);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
+
 
     @DeleteMapping("/admin/delete/{userId}")
     public ResponseEntity<RequestResp> deleteUserById(@PathVariable Long userId) {

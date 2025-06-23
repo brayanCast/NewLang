@@ -38,7 +38,6 @@ function App() {
               <Route path="/update-user/:id" element={<UpdateUser />} />
             </Route>
 
-
             {/* Check if user is authenticated before rendering user-only routes */}
 
             <Route path="*" element={<Navigate to="/login" />} />‰

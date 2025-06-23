@@ -8,7 +8,6 @@ import com.newlang.backend.exceptions.EmailAlreadyExistException;
 import com.newlang.backend.exceptions.IDNumberCannotBeVoidException;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

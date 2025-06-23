@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../common/Navbar';
 import Footer from '../common/Footer';
 import PageService from '../service/PageService'; // Service for API calls
@@ -22,7 +22,7 @@ function HomePage() {
             try {
                 const token = UserService.getToken();
                 if (!token) throw new Error("No se encontró token");
-                const data = await UserService.getYourProfile(token);
+                const data = await UserService.getMyProfile(token);
                 setUserName(data.users.nameUser);
             } catch (error) {
                 console.error("Error al obtener el nombre de usuario:", error);
@@ -32,7 +32,7 @@ function HomePage() {
         fetchUserName();
     }, []);
 
-    const greetingMessage = `¡Hola, ${userName}!`;
+    const greetingMessage = `¡Hello, ${userName}!`;
 
     //useEffect to handle search functionality and call to the API
     useEffect(() => {
