@@ -6,7 +6,7 @@ class UserService {
 
     static async login(email, password){
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/auth/login`, { email, password })
+            const response = await axios.post(`${UserService.BASE_URL}/login`, { email, password })
             const {token, role} = response.data;
             UserService.saveData(token, role);  
             return response.data;
@@ -118,7 +118,7 @@ class UserService {
         try {
             const token = UserService.getToken();
             if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.delete(`${UserService.BASE_URL}/admin/delete/${userId}`,
+            const response = await axios.delete(`${UserService.BASE_URL}/auth/delete/${userId}`,
                 {
                     headers: {Authorization: `Bearer ${token}`}
         });
@@ -133,7 +133,7 @@ class UserService {
         try {
             const token = UserService.getToken();
             if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.put(`${UserService.BASE_URL}/auth/update/${userId}`, userData,
+            const response = await axios.put(`${UserService.BASE_URL}/admin/update/${userId}`, userData,
                 {
                     headers: {Authorization: `Bearer ${token}`}
         });
@@ -143,6 +143,39 @@ class UserService {
             throw err;
         }
     }
+
+    static async updateMyProfile(userData){
+        try { 
+            const token = UserService.getToken();
+            if (!token) {
+                throw new Error("No se encontró token");
+            }
+            const response = await axios.put(`${UserService.BASE_URL}/auth/update-profile`, userData, {
+                    headers: {Authorization: `Bearer ${token}`}
+                });
+                    return response.data;
+
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async deleteMyProfile(){
+        try {
+            const token = UserService.getToken();
+            if (!token) {throw new Error("No se encontró token")}
+            const response = await axios.delete(`${UserService.BASE_URL}/auth/delete-profile`,
+                {
+                    headers: {Authorization: `Bearer ${token}`}
+        });
+            return response.data;
+        } catch (err) {
+            console.error("Error eliminando el perfil:", err);
+            throw err;
+        }
+    }
+
+
 
     //** AUTHENTICATION CHECKER */
 

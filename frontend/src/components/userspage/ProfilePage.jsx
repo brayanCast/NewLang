@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
@@ -13,6 +13,8 @@ function ProfilePage() {
     idNumber: "",
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchProfileInfo();
   }, []);
@@ -20,7 +22,13 @@ function ProfilePage() {
   const fetchProfileInfo = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await UserService.getMyProfile(token);
+      if (!token) {
+        throw new Error("No se encontró token, debes iniciar sesión nuevamente");
+        navigate("/login"); // Redirect to login if token is not found
+        return;
+      }
+
+      const response = await UserService.getMyProfile();
       const userProfileData = response.users;
       setProfileInfo({
         name: userProfileData.nameUser,

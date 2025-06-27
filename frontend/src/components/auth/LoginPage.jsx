@@ -33,8 +33,11 @@ function LoginPage() {
                 alert("Usuario o contraseña incorrectos");
             }
 
+
+
         } catch (error) {
             setError(error.message);
+            alert(error.message || "Error al iniciar sesión");
             setTimeout(() => {
                 setError('');
             }, 5000);

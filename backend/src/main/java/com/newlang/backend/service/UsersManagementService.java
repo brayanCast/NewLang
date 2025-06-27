@@ -5,6 +5,7 @@ import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
 
 import com.newlang.backend.exceptions.EmailAlreadyExistException;
+import com.newlang.backend.exceptions.EmailNotFoundException;
 import com.newlang.backend.exceptions.IDNumberCannotBeVoidException;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,6 @@ public class UsersManagementService {
 
     public RequestResp login(RequestResp loginRequest) {
         RequestResp response = new RequestResp();
-        try {
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                             loginRequest.getPassword()));
@@ -81,10 +81,6 @@ public class UsersManagementService {
             response.setExpirationTime("24 Hrs");
             response.setMessage("Successful Logged In");
 
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage(e.getMessage());
-        }
         return  response;
     }
 
@@ -181,10 +177,6 @@ public class UsersManagementService {
                 existingUser.setEmail(updateUser.getEmail());
                 existingUser.setNameUser(updateUser.getNameUser());
 
-                if (updateUser.getIdNumber().equals("ADMIN")) {
-                    existingUser.setIdNumber(updateUser.getIdNumber());
-                }
-
                 //revisa si la contraseña está presente en la solicitud
                 if (updateUser.getPassword() != null && !updateUser.getPassword().isEmpty()) {
                     //Decodifica la contraseña y la actualiza
@@ -225,5 +217,64 @@ public class UsersManagementService {
             requestResp.setMessage("Error occurred while getting user info: " + e.getMessage());
         }
         return requestResp;
+    }
+
+    public RequestResp updateMyProfile(String email, RequestResp updateProfile ) {
+        RequestResp resp = new RequestResp();
+
+        try {
+            Optional<User> updateUserOptional = userRepository.findByEmail(email);
+
+            if (updateUserOptional.isPresent()) {
+                User userToUpdate = updateUserOptional.get();
+
+                if (updateProfile.getEmail() != null && !updateProfile.getEmail().isEmpty()) {
+                    userToUpdate.setEmail(updateProfile.getEmail());
+                }
+
+                if (updateProfile.getNameUser() != null && !updateProfile.getNameUser().isEmpty()) {
+                    userToUpdate.setNameUser(updateProfile.getNameUser());
+                }
+
+                if (updateProfile.getIdNumber() != null && !updateProfile.getIdNumber().isEmpty()) {
+                    userToUpdate.setIdNumber(updateProfile.getIdNumber());
+                }
+
+                User savedUser = userRepository.save(userToUpdate);
+                resp.setStatusCode(200);
+                resp.setMessage("User updated successfully");
+            }
+
+        } catch (EmailNotFoundException e){
+            resp.setStatusCode(403);
+            resp.setMessage(e.getMessage());
+        } catch (Exception e) {
+            resp.setStatusCode(500);
+            resp.setMessage(e.getMessage());
+        }
+
+        return resp;
+    }
+
+    public RequestResp deleteMyProfile(String email) {
+        RequestResp resp = new RequestResp();
+
+        try {
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isPresent()) {
+                userRepository.delete(userOptional.get());
+                resp.setStatusCode(200);
+                resp.setMessage("Perfil eliminado exitosamente");
+            } else {
+                resp.setStatusCode(404);
+                resp.setMessage("No se encontró el perfil para eliminar");
+            }
+
+        } catch (Exception e){
+            resp.setStatusCode(500);
+            resp.setMessage("Error al eliminar el perfil " + e.getMessage());
+        }
+
+        return resp;
     }
 }

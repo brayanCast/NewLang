@@ -3,6 +3,7 @@ package com.newlang.backend.controller;
 import com.newlang.backend.dto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.exceptions.EmailAlreadyExistException;
+import com.newlang.backend.exceptions.EmailNotFoundException;
 import com.newlang.backend.service.OtpService;
 import com.newlang.backend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class UserManagementController {
     @Autowired
     private OtpService otpService;
 
-    @PostMapping ("/auth/register")
+    @PostMapping ("/admin/register")
     public ResponseEntity<RequestResp> registerAdmin(@RequestBody RequestResp registerUser) {
         RequestResp errorResponse = new RequestResp();
         try{
@@ -63,9 +64,22 @@ public class UserManagementController {
         }
     }
 
-    @PostMapping ("/auth/login")
+    @PostMapping ("/login")
     public ResponseEntity<RequestResp> login(@RequestBody RequestResp request) throws Exception{
-        return ResponseEntity.ok(usersManagementService.login(request));
+        RequestResp errorResponse = new RequestResp();
+        try {
+            RequestResp response = usersManagementService.login(request);
+            return ResponseEntity.ok(response);
+        } catch (EmailNotFoundException e) {
+            errorResponse.setStatusCode(404);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
+        } catch (Exception e) {
+            errorResponse.setStatusCode(500);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
     }
 
     @PostMapping ("/auth/refresh")
@@ -138,13 +152,31 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.getUserById(userId));
     }
 
-    @PutMapping("/auth/update/{userId}")
+    @PutMapping("/admin/update/{userId}")
     public ResponseEntity<RequestResp> updateUserById(@PathVariable Long userId, @RequestBody User requestResp) {
         return ResponseEntity.ok(usersManagementService.updateUser(userId, requestResp));
+    }
+
+    @PutMapping("/auth/update-profile")
+    public ResponseEntity<RequestResp> updateMyProfile(@RequestBody RequestResp requestResp) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        RequestResp resp = usersManagementService.updateMyProfile(email, requestResp);
+        return ResponseEntity.status(resp.getStatusCode()).body(resp);
     }
 
     @DeleteMapping("/admin/delete/{userId}")
     public ResponseEntity<RequestResp> deleteUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(usersManagementService.deleteUser(userId));
+    }
+
+    @DeleteMapping("/auth/delete-profile")
+    public ResponseEntity<RequestResp> deleteMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        RequestResp resp = usersManagementService.deleteMyProfile(email);
+        return ResponseEntity.status(resp.getStatusCode()).body(resp);
     }
 }
