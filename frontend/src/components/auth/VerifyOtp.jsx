@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import { useLocation } from "react-router-dom";
+import { useLoading } from "../context/LoadingContext";
 import '../../styles/VerifyOtp.css'; // Import the CSS file for styling
 
 function VerifyOtp() {
@@ -12,18 +13,22 @@ function VerifyOtp() {
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { startLoading, stopLoading } = useLoading();
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
+
+        setError('');
+        startLoading();
         
         if (!email) {
             setError('No se ha proporcionado un correo electrónico válido');
+            alert('No se ha proporcionado un correo electrónico válido');
             return;
         }
 
         try {
             const userData = await UserService.verifyOtp(email, otp);
-            console.log();
 
             if (userData && userData.includes('OTP verificado con exito')) {
                 localStorage.setItem('email', email);
@@ -34,7 +39,14 @@ function VerifyOtp() {
             console.log(error);
             const errorMessage = error.response?.data?.message || 'Error en la verificación del OTP';
             alert(errorMessage);
-        }
+
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+
+        } finally {
+            stopLoading();
+        }        
     };
 
     return (

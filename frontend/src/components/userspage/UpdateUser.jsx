@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
+import ChangePasswordModal from "../auth/ChangePasswordModal";
+import { useLoading } from "../context/LoadingContext";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
 import "../../styles/UpdateUser.css"; //Asegúrate de que la ruta sea correcta
 
 function UpdateUser() {
   const navigate = useNavigate();
+  const { startLoading, stopLoading } = useLoading();
 
   const [userData, setUserData] = useState({
     name: "",
@@ -15,20 +18,25 @@ function UpdateUser() {
     role: "",
   });
 
+  const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+
   useEffect(() => {
     fetchUserData(); //Pasa el id a fetchUserDataById
   }, []); //Siempre que hay una cadena de id, lo corre
 
   const fetchUserData = async () => {
+
+    startLoading();
+
     try {
       const token = localStorage.getItem("token"); //Obtiene el token del localStorage
-        if (!token) {
-          throw new Error(
-            "No se encontró token, debes iniciar sesión nuevamente"
-          );
-          navigate("/login"); //Redirige al usuario a la página de inicio de sesión
-          return;
-        }
+      if (!token) {
+        throw new Error(
+          "No se encontró token, debes iniciar sesión nuevamente"
+        );
+        navigate("/login"); //Redirige al usuario a la página de inicio de sesión
+        return;
+      }
 
       const response = await UserService.getMyProfile(); //Llama al servicio para obtener los datos del usuario
       if (response.users) {
@@ -40,14 +48,13 @@ function UpdateUser() {
           role,
         });
       } else {
-        console.error(
-          "La respuesta no contiene datos del usuario",
-          response.users
-        );
+        console.error("La respuesta no contiene datos del usuario", response.users);
         alert("Error al cargar los datos del perfil del usuario");
       }
     } catch (error) {
       console.log("Error al actualizar la información del usuario", error);
+    } finally {
+      stopLoading();
     }
   };
 
@@ -67,6 +74,9 @@ function UpdateUser() {
         "Estás seguro de que quieres actualizar tu perfil"
       );
       if (confirmUpdate) {
+
+        startLoading();
+
         const token = localStorage.getItem("token");
         if (!token) {
           console.error(
@@ -90,6 +100,8 @@ function UpdateUser() {
     } catch (error) {
       console.error("Error actualizando el perfil", error);
       alert(error);
+    } finally {
+      stopLoading();
     }
   };
 
@@ -99,6 +111,8 @@ function UpdateUser() {
     );
 
     if (confirmDelete) {
+      startLoading();
+
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -110,73 +124,95 @@ function UpdateUser() {
         }
         const response = await UserService.deleteMyProfile();
 
-        if (response.success) {
+        if (response.statusCode === 200) {
           alert("Perfil eliminado correctamente");
           UserService.logout(); //Llama al método logout para limpiar el localStorage
           navigate("/login");
-        } else {
-          alert("Error al eliminar el perfil");
         }
+
       } catch (error) {
         console.error("Error al eliminar el perfil:", error);
         alert(`Error al eliminar el perfil: ${error.message}`);
+      } finally {
+        stopLoading();
       }
     }
   };
 
   return (
     <div className="update-profile">
+      <Navbar />
+
+      <div className="update-profile-header">
+        <h2>Actualizar Usuario</h2>
+      </div>
+
       <div className="update-profile-container">
-        <Navbar />
-        <h2>Update User</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Nombre del Usuario:</label>
-            <input
-              type="text"
-              name="name"
-              value={userData.name}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={userData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {userData.role === "ADMIN" && (
+        <div className="update-profile-left">
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Número de Identificación:</label>
+              <label>Nombre del Usuario:</label>
               <input
                 type="text"
-                name="idNumber"
-                value={userData.idNumber}
+                name="name"
+                value={userData.name}
                 onChange={handleInputChange}
               />
             </div>
-          )}
 
-          <div className="form-group">
-            <label>Rol:</label>
-            <input type="text" name="role" value={userData.role} readOnly />
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={userData.email}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {userData.role === "ADMIN" && (
+              <div className="form-group">
+                <label>Número de Identificación:</label>
+                <input
+                  type="text"
+                  name="idNumber"
+                  value={userData.idNumber}
+                  onChange={handleInputChange}
+                />
+              </div>
+            )}
+
+            <div className="form-group">
+              <label>Rol:</label>
+              <input type="text" name="role" value={userData.role} readOnly />
+            </div>
+
+            <div className="update-profile-button">
+              <button type="submit">Actualizar</button>
+            </div>
+          </form>
+        </div>
+
+        <div className="update-profile-right">
+
+          <div className="change-password">
+            <button type="button" onClick={() => setChangePasswordModalOpen(true)}>Cambiar Contraseña</button>
           </div>
 
-          <div className="update-profile-button">
-            <button type="submit">Actualizar</button>
-          </div>
           <div className="delete-profile-button">
             <button type="button" onClick={handleDeleteProfile}>Eliminar</button>
           </div>
-        </form>
-        <Footer />
+        </div>
+
+        <ChangePasswordModal
+          isOpen={isChangePasswordModalOpen}
+          onClose={() => setChangePasswordModalOpen(false)}
+          initialEmail={userData.email} //Pasa el email del perfil actual al modal
+        />
+
       </div>
-    </div>
+      <Footer />
+    </div >
   );
 }
 

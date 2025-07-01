@@ -9,6 +9,7 @@ import com.newlang.backend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security .core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,10 @@ public class UserManagementController {
     @Autowired
     private OtpService otpService;
 
-    @PostMapping ("/admin/register")
+    @PostMapping ("/register-admin")
     public ResponseEntity<RequestResp> registerAdmin(@RequestBody RequestResp registerUser) {
         RequestResp errorResponse = new RequestResp();
-        try{
+        try {
             RequestResp response = usersManagementService.register(registerUser);
             return ResponseEntity.ok(response);
 
@@ -75,6 +76,11 @@ public class UserManagementController {
             errorResponse.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
+        } catch (BadCredentialsException e) {
+            errorResponse.setStatusCode(401);
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
         } catch (Exception e) {
             errorResponse.setStatusCode(500);
             errorResponse.setMessage(e.getMessage());
@@ -87,7 +93,7 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.refreshToken(request));
     }
 
-    @PostMapping("/auth/send-otp")
+    @PostMapping("/send-otp")
     public ResponseEntity<String> sendOtp(@RequestBody Map<String, String> request)  {
         String email = request.get("email");
 
@@ -102,7 +108,7 @@ public class UserManagementController {
         }
     }
 
-    @PostMapping("/auth/verify-otp")
+    @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = request.get("otp");
@@ -115,7 +121,7 @@ public class UserManagementController {
     }
 
     //Metodo para la actualización de la contraseña siempre que el email esté verificado
-    @PutMapping("/auth/update-password")
+    @PutMapping("/update-password")
     public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> request) {
         String password = request.get("password");
         String verifiedEmail = otpService.getVerifiedEmail();

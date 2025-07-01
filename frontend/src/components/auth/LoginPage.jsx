@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import VerifyOtp from "../auth/VerifyOtp";
+import ChangePasswordModal from "../auth/ChangePasswordModal";
 import { useLoading } from "../context/LoadingContext";
 import iconoLang from '../../img/iconolang.png';
 import iconoViewPasswordOn from '../../img/visibility_24dp_000739_FILL0_wght400_GRAD0_opsz24.png';
@@ -12,7 +13,7 @@ function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
-    const [otpSent, setOtpSent] = useState(false);
+    const [otpSent, setOtpSent] = useState(false); //Estado para controlar si el otp es enviado
     const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
     const navigate = useNavigate();
 
@@ -30,57 +31,52 @@ function LoginPage() {
             if (responseData && responseData.token) {
                 navigate('/homepage');
             } else {
-                alert("Usuario o contraseña incorrectos");
+                setError("Respuesta inesperada del servidor. Intente de nuevo");
+                alert("Respuesta inesperada del servidor. Intente de nuevo");
             }
 
-
-
         } catch (error) {
-            setError(error.message);
-            alert(error.message || "Error al iniciar sesión");
+            console.error("Error en login: ", error);
+            alert(error.status);
+
+            if (error && error.status) {
+                switch(error.status) {
+                    case 404:
+                        setError("Usuario no encontrado, verifique que no haya sido eliminado");
+                        alert("Usuario no encontrado, verifique que no haya sido eliminado");
+                        break;
+                    case 401:
+                        setError("Email o contraseña incorrector por favor verifique credenciales");
+                        alert("Email o contraseña incorrector por favor verifique credenciales");
+                        break;
+                    case 500:
+                        setError("Error en el servidor. Por favor intente más tarde");
+                        alert("Error en el servidor. Por favor intente más tarde");
+                        break;
+                    default:
+                        setError(error.message);
+                        alert(error.message);
+                        break;
+                }   
+            } else {
+                setError(error.message);
+                alert(error.message);
+            }
+
             setTimeout(() => {
                 setError('');
-            }, 5000);
+            }, 5000); //Limpia los mensaje de error después de 5 segundos
         } finally {
             stopLoading();
         }
     };
-
-
-    //const que se usa para cambio de contraseña
-    const handleChangePasswordSubmit = (e) => {
-        e.preventDefault();
-        console.log("Cambio de contraseña solicitado");
-        setIsModalOpen(false); // Cerrar el modal después de enviar
-    };
-
-    const handleSendOtp = async () => {
-
-        if (!email) {
-            alert('Por favor, ingrese un correo electrónico');
-            return;
-        }
-
-        startLoading();
-
-        try {
-            await UserService.sendOtp(email);
-            setOtpSent(true);
-            alert('OTP enviado al correo electrónico');
-            navigate('/verify-otp', { state: { email } });
-            setIsModalOpen(false);
-
-        } catch (error) {
-            const errorMessage = error.response.data.message || "Error al enviar el OTP";
-            alert(errorMessage);
-        } finally {
-            stopLoading();
-        }
-    };
-
+    
     const handleRegisterRedirect = () => {
         navigate('/register');
     };
+
+    //Funciones para manejar el modal de Olvidó la contraseña
+    const closeChangePasswordModal = () => setIsModalOpen(false);
 
     return (
         <div className="auth-container">
@@ -143,21 +139,11 @@ function LoginPage() {
                     <VerifyOtp email={email} setOtpSent={setOtpSent} />
                 )}
 
-                <dialog id="modal-window" open={isModalOpen}>
-                    <button id="btn-close-modal" className="btn-cancel-change" onClick={() => setIsModalOpen(false)}>X</button>
-                    <div className="title-change-password">
-                        <h2>Cambiar la contraseña</h2>
-                    </div>
-                    <form className="change-password-form form-content" id="password-form" onSubmit={handleChangePasswordSubmit}>
-                        <div className="input_container">
-                            <label htmlFor="email-change">Email</label>
-                            <input id="email-change" type="email" value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="newexample@newmail.com" />
-                        </div>
-                        <button id="change-pass-submit" type="button" onClick={handleSendOtp}>Confirmar</button>
-                    </form>
-                </dialog>
+                <ChangePasswordModal
+                    isOpen={isModalOpen}
+                    onClose={closeChangePasswordModal}
+                    initialEmail={email} //pasa el email actual del formato del login al modal
+                ></ChangePasswordModal>
 
             </div>
         </div>

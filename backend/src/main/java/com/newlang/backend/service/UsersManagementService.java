@@ -11,6 +11,8 @@ import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +39,6 @@ public class UsersManagementService {
         RequestResp resp = new RequestResp();
         Role role = registrationRequest.getRole();
         String email = registrationRequest.getEmail();
-        System.out.println("Valor email" + email);
-
 
         Optional<User> existEmail = userRepository.findByEmail(email);
         if (existEmail.isPresent()) {
@@ -49,8 +49,8 @@ public class UsersManagementService {
         user.setEmail(registrationRequest.getEmail());
         user.setNameUser(registrationRequest.getNameUser());
         if (registrationRequest.getRole() == Role.ADMIN) {
-            if(registrationRequest.getIdNumber() == null || registrationRequest.getIdNumber() == "") {
-                throw new IDNumberCannotBeVoidException("El núnero de identificación del usuario no puede esta vacío");
+            if(registrationRequest.getIdNumber() == null || registrationRequest.getIdNumber().equals(" ")) {
+                throw new IDNumberCannotBeVoidException("El número de identificación del usuario no puede esta vacío");
             }
             user.setIdNumber(registrationRequest.getIdNumber());
         }
@@ -68,6 +68,9 @@ public class UsersManagementService {
 
     public RequestResp login(RequestResp loginRequest) {
         RequestResp response = new RequestResp();
+
+        try {
+
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                             loginRequest.getPassword()));
@@ -81,6 +84,13 @@ public class UsersManagementService {
             response.setExpirationTime("24 Hrs");
             response.setMessage("Successful Logged In");
 
+        } catch (UsernameNotFoundException e) {
+            throw new EmailNotFoundException("El usuario no fue encontrado");
+        } catch (AuthenticationException e) {
+            throw new EmailNotFoundException("Error de autentocación: " + e.getMessage());
+        } catch (EmailNotFoundException e) {
+            throw e;
+        }
         return  response;
     }
 

@@ -18,7 +18,7 @@ class UserService {
 
     static async registerAdmin(userData){
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData)
+            const response = await axios.post(`${UserService.BASE_URL}/register-admin`, userData)
             return response.data;
 
         } catch (err) {
@@ -40,7 +40,7 @@ class UserService {
 
     static async sendOtp(email){
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/auth/send-otp`, { email })
+            const response = await axios.post(`${UserService.BASE_URL}/send-otp`, { email })
             return response.data;
             
         } catch (err) {
@@ -51,7 +51,7 @@ class UserService {
 
     static async verifyOtp(email, otp){
         try{
-            const response = await axios.post(`${UserService.BASE_URL}/auth/verify-otp`, { email, otp })
+            const response = await axios.post(`${UserService.BASE_URL}/verify-otp`, { email, otp })
             return response.data;
         } 
         catch (err){
@@ -61,7 +61,7 @@ class UserService {
 
     static async updatePassword(email, password){
         try{
-            const response = await axios.put(`${UserService.BASE_URL}/auth/update-password`, { email, password })
+            const response = await axios.put(`${UserService.BASE_URL}/update-password`, { email, password })
             return response.data;
         } 
         catch (err){

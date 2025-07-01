@@ -40,6 +40,7 @@ function UpdatePassword() {
 
         } catch (error) {
             setError(error.message || 'Error al actualizar la contraseña');
+            alert(error.message || 'Error al actualizar la contraseña');
         } finally {
             stopLoading();
         }
