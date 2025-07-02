@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 60px 90px;
+    padding: 40px 60px;
     background-color: #D6D8E8;
     border-radius: 10px;
 }
@@ -12,8 +12,8 @@
     position: fixed; /* Esto es CRÍTICO para que el modal flote sobre todo */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
     background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
     display: flex; /* Para centrar el contenido */
     justify-content: center; /* Centrar horizontalmente */

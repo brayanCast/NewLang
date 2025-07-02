@@ -10,9 +10,9 @@ import com.newlang.backend.exceptions.IDNumberCannotBeVoidException;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +34,10 @@ public class UsersManagementService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UsersDetailsService usersDetailsService;
+
 
     public RequestResp register(RequestResp registrationRequest) {
         RequestResp resp = new RequestResp();
@@ -68,13 +72,15 @@ public class UsersManagementService {
 
     public RequestResp login(RequestResp loginRequest) {
         RequestResp response = new RequestResp();
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException("El email " + email + " no fue encontrado"));
 
         try {
-
             authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-                            loginRequest.getPassword()));
-            var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
+                    .authenticate(new UsernamePasswordAuthenticationToken(email, password));
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             response.setStatusCode(200);
@@ -84,12 +90,8 @@ public class UsersManagementService {
             response.setExpirationTime("24 Hrs");
             response.setMessage("Successful Logged In");
 
-        } catch (UsernameNotFoundException e) {
-            throw new EmailNotFoundException("El usuario no fue encontrado");
         } catch (AuthenticationException e) {
-            throw new EmailNotFoundException("Error de autentocación: " + e.getMessage());
-        } catch (EmailNotFoundException e) {
-            throw e;
+            throw new BadCredentialsException("Error de autenticación. Verifique su usuario y contraseña. " + e.getMessage());
         }
         return  response;
     }

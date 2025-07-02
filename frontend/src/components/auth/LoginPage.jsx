@@ -37,7 +37,6 @@ function LoginPage() {
 
         } catch (error) {
             console.error("Error en login: ", error);
-            alert(error.status);
 
             if (error && error.status) {
                 switch(error.status) {
@@ -46,8 +45,8 @@ function LoginPage() {
                         alert("Usuario no encontrado, verifique que no haya sido eliminado");
                         break;
                     case 401:
-                        setError("Email o contraseña incorrector por favor verifique credenciales");
-                        alert("Email o contraseña incorrector por favor verifique credenciales");
+                        setError("Email o contraseña incorrectos por favor verifique las credenciales");
+                        alert("Email o contraseña incorrectos por favor verifique lascredenciales");
                         break;
                     case 500:
                         setError("Error en el servidor. Por favor intente más tarde");

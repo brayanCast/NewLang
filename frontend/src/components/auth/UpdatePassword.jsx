@@ -33,7 +33,7 @@ function UpdatePassword() {
 
         try {
             await UserService.updatePassword(email, password);
-            alert('Contraseña actualizadacon éxito');
+            alert('Contraseña actualizada con éxito');
             setTimeout(() => {
                 navigate('/login');
             }, 2000);

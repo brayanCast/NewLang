@@ -38,7 +38,7 @@
 .update-profile-left form {
     width: 100%;
     margin-top: 160px;
-    margin-left: 80px;
+    margin-left: 100px;
 }
 
 .form-group {
@@ -81,19 +81,24 @@
     cursor: pointer;
 }
 
+.update-profile-button button:hover {
+    transform: scale(1.1);
+}
+
 .update-profile-right {
     width: 50%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     flex-direction: column;
-    background-color: green;
 }
 
 .change-password {
+    position: fixed;
     text-align: right;
     margin-top: 5%;
     margin-bottom: 10%;
+    margin-right: 100px;
 }
 
 .change-password button {
@@ -105,4 +110,26 @@
     border: none;
     cursor: pointer;
     border-bottom: #000739 3px solid;
+}
+
+.delete-profile-button {
+    display: flex;
+    margin-right: 100px;
+}
+
+.delete-profile-button button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 70dvh;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: red;
+    color: #fff;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+.delete-profile-button button:hover {
+    transform: scale(1.1);
 }

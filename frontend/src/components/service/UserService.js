@@ -1,173 +1,128 @@
-import axios from "axios";
+import axios from "axios"; // Mantén axios para las llamadas sin token si lo deseas
+import axiosInstance from "../../utils/AxiosInstances"; // Importa la instancia con interceptores
 
 class UserService {
-    static BASE_URL = "http://localhost:8080";
+    static BASE_URL = "http://localhost:8080"; // Esto ya no es tan necesario si usas axiosInstance.baseURL
 
-
-    static async login(email, password){
+    // Métodos sin token (login, register, OTP, updatePassword)
+    // Usan 'axios' directamente o una instancia de axios sin interceptor de token
+    static async login(email, password) {
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/login`, { email, password })
-            const {token, role} = response.data;
-            UserService.saveData(token, role);  
+            const response = await axios.post(`${UserService.BASE_URL}/login`, { email, password });
+            const { token, role } = response.data;
+            UserService.saveData(token, role);
             return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-    static async registerAdmin(userData){
+    static async registerAdmin(userData) {
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/register-admin`, userData)
+            const response = await axios.post(`${UserService.BASE_URL}/register-admin`, userData);
             return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-    static async registerUser(userData){
+    static async registerUser(userData) {
         try {
-
-            const response = await axios.post(`${UserService.BASE_URL}/register`, userData)
+            const response = await axios.post(`${UserService.BASE_URL}/register`, userData);
             return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-
-    static async sendOtp(email){
+    static async sendOtp(email) {
         try {
-            const response = await axios.post(`${UserService.BASE_URL}/send-otp`, { email })
+            const response = await axios.post(`${UserService.BASE_URL}/send-otp`, { email });
             return response.data;
-            
-        } catch (err) {
-            throw err;
-            
-        }
-    }
-
-    static async verifyOtp(email, otp){
-        try{
-            const response = await axios.post(`${UserService.BASE_URL}/verify-otp`, { email, otp })
-            return response.data;
-        } 
-        catch (err){
-            throw err;
-        }
-    }
-
-    static async updatePassword(email, password){
-        try{
-            const response = await axios.put(`${UserService.BASE_URL}/update-password`, { email, password })
-            return response.data;
-        } 
-        catch (err){
-            throw err;
-        }
-    }
-
-    static async getAllUsers(token){
-        try {
-            const token = UserService.getToken();
-            if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.get(`${UserService.BASE_URL}/admin/get-all-users`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        });
-            return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-    static async getMyProfile(token){
+    static async verifyOtp(email, otp) {
         try {
-            const token = UserService.getToken();
-            if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.get(`${UserService.BASE_URL}/auth/get-profile`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        });
+            const response = await axios.post(`${UserService.BASE_URL}/verify-otp`, { email, otp });
             return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-    static async getUserById(userId, token){
+    static async updatePassword(email, password) {
         try {
-            const token = UserService.getToken();
-            if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.get(`${UserService.BASE_URL}/admin/get-user/${userId}`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        });
+            const response = await axios.put(`${UserService.BASE_URL}/update-password`, { email, password });
             return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-    static async deleteUser(userId, token){
+    // Métodos que requieren token (usan axiosInstance)
+    // Ya no necesitas pasar 'token' como argumento ni obtenerlo aquí,
+    // el interceptor de 'axiosInstance' lo añade automáticamente.
+    static async getAllUsers() { // Removido 'token' del argumento
         try {
-            const token = UserService.getToken();
-            if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.delete(`${UserService.BASE_URL}/auth/delete/${userId}`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        });
+            // El token ya se añade automáticamente por el interceptor
+            const response = await axiosInstance.get(`/admin/get-all-users`);
             return response.data;
-
         } catch (err) {
-            throw err;
+            throw err; // El interceptor ya maneja 401/403
         }
     }
 
-    static async updateUser(userId, userData, token){
+    static async getMyProfile() { // Removido 'token' del argumento
         try {
-            const token = UserService.getToken();
-            if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.put(`${UserService.BASE_URL}/admin/update/${userId}`, userData,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        });
+            const response = await axiosInstance.get(`/auth/get-profile`);
             return response.data;
-
         } catch (err) {
             throw err;
         }
     }
 
-    static async updateMyProfile(userData){
-        try { 
-            const token = UserService.getToken();
-            if (!token) {
-                throw new Error("No se encontró token");
-            }
-            const response = await axios.put(`${UserService.BASE_URL}/auth/update-profile`, userData, {
-                    headers: {Authorization: `Bearer ${token}`}
-                });
-                    return response.data;
-
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    static async deleteMyProfile(){
+    static async getUserById(userId) { // Removido 'token' del argumento
         try {
-            const token = UserService.getToken();
-            if (!token) {throw new Error("No se encontró token")}
-            const response = await axios.delete(`${UserService.BASE_URL}/auth/delete-profile`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-        });
+            const response = await axiosInstance.get(`/admin/get-user/${userId}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async deleteUser(userId) { // Removido 'token' del argumento
+        try {
+            const response = await axiosInstance.delete(`/auth/delete/${userId}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateUser(userId, userData) { // Removido 'token' del argumento
+        try {
+            const response = await axiosInstance.put(`/admin/update/${userId}`, userData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateMyProfile(userData) { // Removido 'token' del argumento
+        try {
+            const response = await axiosInstance.put(`/auth/update-profile`, userData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async deleteMyProfile() { // Removido 'token' del argumento
+        try {
+            const response = await axiosInstance.delete(`/auth/delete-profile`);
             return response.data;
         } catch (err) {
             console.error("Error eliminando el perfil:", err);
@@ -175,38 +130,38 @@ class UserService {
         }
     }
 
-
-
-    //** AUTHENTICATION CHECKER */
-
+    // AUTHENTICATION CHECKER & Storage
     static async saveData(token, role) {
         localStorage.setItem('token', token);
         localStorage.setItem('role', role);
     }
 
-    static logout(){
-        localStorage.removeItem('token')
-        localStorage.removeItem('role')
+    static logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken'); // Si usas refresh token
+        localStorage.removeItem('role');
+        // Importante: No redirijas aquí directamente, el interceptor lo hará o tus componentes
+        // que llaman a logout (como en Navbar o UpdateUser si el email cambia).
     }
 
-    static getToken(){
+    static getToken() {
         return localStorage.getItem('token');
     }
 
-    static getRole(){
+    static getRole() {
         return localStorage.getItem('role');
     }
 
-    static isAuthenticated(){
+    static isAuthenticated() {
         return !!UserService.getToken();
     }
 
-    static isAdmin(){
-        return UserService.isAuthenticated && UserService.getRole() === 'ADMIN';   
+    static isAdmin() {
+        return UserService.isAuthenticated() && UserService.getRole() === 'ADMIN';
     }
 
-    static isUser(){
-        return UserService.isAuthenticated && UserService.getRole() === 'USER';
+    static isUser() {
+        return UserService.isAuthenticated() && UserService.getRole() === 'USER';
     }
 }
 

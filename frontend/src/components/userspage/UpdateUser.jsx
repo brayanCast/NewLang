@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import ChangePasswordModal from "../auth/ChangePasswordModal";
 import { useLoading } from "../context/LoadingContext";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
-import "../../styles/UpdateUser.css"; //Asegúrate de que la ruta sea correcta
+import "../../styles/UpdateUser.css";
 
 function UpdateUser() {
   const navigate = useNavigate();
@@ -18,27 +18,17 @@ function UpdateUser() {
     role: "",
   });
 
+  const originalEmailRef = useRef('');
   const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchUserData(); //Pasa el id a fetchUserDataById
-  }, []); //Siempre que hay una cadena de id, lo corre
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
 
     startLoading();
 
     try {
-      const token = localStorage.getItem("token"); //Obtiene el token del localStorage
-      if (!token) {
-        throw new Error(
-          "No se encontró token, debes iniciar sesión nuevamente"
-        );
-        navigate("/login"); //Redirige al usuario a la página de inicio de sesión
-        return;
-      }
 
       const response = await UserService.getMyProfile(); //Llama al servicio para obtener los datos del usuario
+
       if (response.users) {
         const { email, nameUser, idNumber, role } = response.users;
         setUserData({
@@ -47,16 +37,27 @@ function UpdateUser() {
           idNumber,
           role,
         });
+
+        originalEmailRef.current = email;
+
       } else {
         console.error("La respuesta no contiene datos del usuario", response.users);
         alert("Error al cargar los datos del perfil del usuario");
       }
+
     } catch (error) {
-      console.log("Error al actualizar la información del usuario", error);
+        console.error("Error al obtener la información del usuario:", error);
+        alert(`Error al cargar los datos: ${error.message || "Error desconocido"}`);
+
     } finally {
       stopLoading();
     }
-  };
+  }, [startLoading, stopLoading]);
+
+
+  useEffect(() => {
+    fetchUserData(); //Pasa el id a fetchUserDataById
+  }, [fetchUserData]); //Siempre que hay una cadena de id, lo corre
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,37 +70,43 @@ function UpdateUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const confirmUpdate = window.confirm("Estás seguro de que quieres actualizar tu perfil");
+    if (!confirmUpdate) {
+      return; //no hace nada en caso del que el usuario cancele
+    }
+
+    startLoading();
+
     try {
-      const confirmUpdate = window.confirm(
-        "Estás seguro de que quieres actualizar tu perfil"
-      );
-      if (confirmUpdate) {
 
-        startLoading();
+      const dataToSend = {
+        nameUser: userData.name,
+        email: userData.email,
+        idNumber: userData.idNumber,
+      };
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error(
-            "No se encontró token, debes iniciar sesión nuevamente"
-          );
-          navigate("/login");
-          return;
-        }
+      const response = await UserService.updateMyProfile(dataToSend);
+      const emailChanged = userData.email !== originalEmailRef.current;
 
-        const dataToSend = {
-          nameUser: userData.name,
-          email: userData.email,
-          idNumber: userData.idNumber,
-        };
+      alert("Perfil actualizado correctamente");
+      console.log(response);
 
-        const response = await UserService.updateMyProfile(dataToSend);
-        alert("Perfil actualizado correctamente");
-        console.log(response);
-        navigate("/profile"); //Redirige al perfil de la página o muestra un mensaje de éxito
+      //Condicional para redirigir al login en caso de que el email haya sido actualizado también
+      if (emailChanged) {
+        alert("Tu email ha sido cambiado, por lo que debes iniciar sesión nuevamente");
+        UserService.logout();
+        window.location.href = '/login'; //redirección al la página del login para un nuevo ingreso
+        return;
+
+      } else {
+        navigate('/profile')
+        return;
       }
+
     } catch (error) {
-      console.error("Error actualizando el perfil", error);
-      alert(error);
+      console.error("Error actualizando el perfil", error.message);
+      alert(`Error al actualizar el perfil: ${error.message || "Error desconocido"}`);
+
     } finally {
       stopLoading();
     }
@@ -110,32 +117,28 @@ function UpdateUser() {
       "ADVERTENCIA: ¿Estás seguro de que quieres eliminar tu perfil? Esta acción no se puede deshacer."
     );
 
-    if (confirmDelete) {
-      startLoading();
+    if (!confirmDelete) {
+      return; //si el usuario cancela la eliminación no hace nada
+    }
+    startLoading();
 
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error(
-            "No se encontró token, debes iniciar sesión nuevamente para eliminar el perfil"
-          );
-          navigate("/login");
-          return;
-        }
-        const response = await UserService.deleteMyProfile();
+    try {
 
-        if (response.statusCode === 200) {
-          alert("Perfil eliminado correctamente");
-          UserService.logout(); //Llama al método logout para limpiar el localStorage
-          navigate("/login");
-        }
+      const response = await UserService.deleteMyProfile();
 
-      } catch (error) {
-        console.error("Error al eliminar el perfil:", error);
-        alert(`Error al eliminar el perfil: ${error.message}`);
-      } finally {
-        stopLoading();
+      if (response.statusCode === 200) {
+        alert("Perfil eliminado correctamente");
+        UserService.logout(); //Llama al método logout para limpiar el localStorage
+        window.location.href = '/login';
+        return;
       }
+
+    } catch (error) {
+      console.error("Error al eliminar el perfil:", error);
+      alert(`Error al eliminar el perfil: ${error.message || "Error desconocido"}`);
+
+    } finally {
+      stopLoading();
     }
   };
 
@@ -188,7 +191,7 @@ function UpdateUser() {
             </div>
 
             <div className="update-profile-button">
-              <button type="submit">Actualizar</button>
+              <button type="submit">Actualizar Perfil</button>
             </div>
           </form>
         </div>
@@ -200,7 +203,7 @@ function UpdateUser() {
           </div>
 
           <div className="delete-profile-button">
-            <button type="button" onClick={handleDeleteProfile}>Eliminar</button>
+            <button type="button" onClick={handleDeleteProfile}>Eliminar Perfil</button>
           </div>
         </div>
 

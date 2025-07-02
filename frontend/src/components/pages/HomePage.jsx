@@ -4,7 +4,7 @@ import Footer from '../common/Footer';
 import PageService from '../service/PageService'; // Service for API calls
 import UserService from '../service/UserService'; // Service for user-related API calls
 import TypingEffect from '../effects/TypingEffect'; // Custom typing effect component
-import { useLoading } from '../context/LoadingContext'; // Custom hook for loading state management
+//import { useLoading } from '../context/LoadingContext'; // Custom hook for loading state management
 import '../../styles/HomePage.css'; // Import the CSS file for styling
 import searchIcon from '../../img/search_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png'; // Import the search icon
 
@@ -14,7 +14,7 @@ function HomePage() {
     const [searchResults, setSearchResults] = useState([]);
     const [searchError, setSearchError] = useState(null);
     const [showSuggestions, setShowSuggestions] = useState(false); // State to control suggestions visibility
-    const { startLoading, stopLoading } = useLoading();
+   // const { startLoading, stopLoading } = useLoading();
     const [userName, setUserName] = useState(''); // State to store the user's name
 
     useEffect(() => {
