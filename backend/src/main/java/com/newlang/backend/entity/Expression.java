@@ -26,6 +26,10 @@ public class Expression {
     @JoinColumn(name = "id_category")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "id_level")
+    private Level level;
+
     public Long getIdExpression() {
         return idExpression;
     }
@@ -56,5 +60,13 @@ public class Expression {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }

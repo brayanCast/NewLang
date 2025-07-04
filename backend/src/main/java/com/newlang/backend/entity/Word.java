@@ -27,6 +27,10 @@ public class Word {
     @JoinColumn(name = "id_category")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "id_level")
+    private Level level;
+
     public Long getIdWord() {return idWord;}
 
     public void setIdWord(Long idWord) {this.idWord = idWord;}
@@ -50,4 +54,8 @@ public class Word {
     public Category getCategory() {return category;}
 
     public void setCategory(Category category) {this.category = category;}
+
+    public Level getLevel() {return level;}
+
+    public void setLevel(Level level) {this.level = level;}
 }
