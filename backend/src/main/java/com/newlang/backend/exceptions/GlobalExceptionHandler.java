@@ -13,7 +13,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(WordAlreadyExistException.class)
-    public ResponseEntity<Map<String, Object>> handleWordAlreadyExistException(
+    public ResponseEntity<Map<String, Object>> handleWordAlreadyExistException (
             WordAlreadyExistException ex, WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(WordNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handlerWordNotFoundException(WordNotFoundException ex,
+    public ResponseEntity<Map<String, Object>> handlerWordNotFoundException (WordNotFoundException ex,
                                                                             WebRequest request){
         Map<String, Object> body = new HashMap<>();
         body.put("status", HttpStatus.NOT_FOUND);
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ExpressionAlreadyExistException.class)
-    public ResponseEntity<Map<String, Object>> handlerExpressionAlreadyExistException(ExpressionAlreadyExistException ex,
+    public ResponseEntity<Map<String, Object>> handlerExpressionAlreadyExistException (ExpressionAlreadyExistException ex,
                                                                                       WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("status", HttpStatus.CONFLICT);
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ExpressionNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handlerExpressionNotFoundException(ExpressionNotFoundException ex,
+    public ResponseEntity<Map<String, Object>> handlerExpressionNotFoundException (ExpressionNotFoundException ex,
                                                                                   WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("status", HttpStatus.NOT_FOUND);
@@ -56,5 +56,27 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(CategoryAlreadyExistException.class)
+    public ResponseEntity<Map<String, Object>> handlerCategoryAlreadyExistException(CategoryNotFoundException ex,
+                                                                                    WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpStatus.CONFLICT);
+        body.put("error", "Not Found");
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlerCategoryNotFoundException (CategoryNotFoundException ex,
+                                                                                 WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpStatus.NOT_FOUND);
+        body.put("error", "Not Found");
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+
 
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UserService from "../service/UserService";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
@@ -13,8 +13,6 @@ function ProfilePage() {
     role: "",
     idNumber: "",
   });
-
-  const navigate = useNavigate();
 
   const fetchProfileInfo = useCallback(async () => {
     try {

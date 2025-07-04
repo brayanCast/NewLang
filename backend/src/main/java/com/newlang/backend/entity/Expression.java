@@ -22,6 +22,10 @@ public class Expression {
     @Column(nullable = false)
     private String spanishExpression;
 
+    @ManyToOne
+    @JoinColumn(name = "id_category")
+    private Category category;
+
     public Long getIdExpression() {
         return idExpression;
     }
@@ -44,5 +48,13 @@ public class Expression {
 
     public void setSpanishExpression(String spanishExpression) {
         this.spanishExpression = spanishExpression;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

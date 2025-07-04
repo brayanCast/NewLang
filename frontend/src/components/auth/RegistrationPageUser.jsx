@@ -45,19 +45,19 @@ function RegistrationPageUser() {
                 role: ''
             });
 
-            alert('User registered successfully');
+            alert('Usuario registrado exitosamente');
             navigate('/login');
 
         } catch (error) {
-            console.error('Error registering user', error);
-
+            console.error('Error al registrar el usuario', error);
+            
             if (HttpStatusCode.BadRequest) {
-                console.error('Email already exist', error);
+                console.error('El email ya existe', error);
                 alert('Ya existe un usuario con ese email');
 
             } else {
-                console.error('Error registering user', error);
-                alert('An error occurred while registering user');
+                console.error('Error al registrar el usuario', error);
+                alert('Un error ha ocurrido mientras se registra al usuario');
             }
         } finally {
             stopLoading();

@@ -46,7 +46,7 @@ function LoginPage() {
                         break;
                     case 401:
                         setError("Email o contraseña incorrectos por favor verifique las credenciales");
-                        alert("Email o contraseña incorrectos por favor verifique lascredenciales");
+                        alert("Email o contraseña incorrectos por favor verifique las credenciales");
                         break;
                     case 500:
                         setError("Error en el servidor. Por favor intente más tarde");

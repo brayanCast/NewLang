@@ -20,10 +20,11 @@ public class ExpressionManagementService {
 
     // Función para guardar la información de la expresión, validando que esta no exista
     public Expression saveExpression(Expression expression){
-        Optional<Expression> existingExpressionByText = expressionRepository.findByEnglishExpression(expression.getEnglishExpression());
+        Optional<Expression> existingExpressionByText = expressionRepository.findByEnglishExpression(expression.getEnglishExpression().toLowerCase())
+                .or(() -> expressionRepository.findBySpanishExpression(expression.getSpanishExpression().toLowerCase()));
 
         if(existingExpressionByText.isPresent()){
-            throw new ExpressionAlreadyExistException("Expression already exist");
+            throw new ExpressionAlreadyExistException("La expresión ya  existe");
         } else {
             return expressionRepository.save(expression);
         }

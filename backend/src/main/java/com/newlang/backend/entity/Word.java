@@ -23,13 +23,13 @@ public class Word {
     @Column(nullable = false)
     private String spanishWord;
 
-    public Long getIdWord() {
-        return idWord;
-    }
+    @ManyToOne
+    @JoinColumn(name = "id_category")
+    private Category category;
 
-    public void setIdWord(Long idWord) {
-        this.idWord = idWord;
-    }
+    public Long getIdWord() {return idWord;}
+
+    public void setIdWord(Long idWord) {this.idWord = idWord;}
 
     public String getEnglishWord() {
         return englishWord;
@@ -46,4 +46,8 @@ public class Word {
     public void setSpanishWord(String spanishWord) {
         this.spanishWord = spanishWord;
     }
+
+    public Category getCategory() {return category;}
+
+    public void setCategory(Category category) {this.category = category;}
 }

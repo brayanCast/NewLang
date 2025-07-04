@@ -88,25 +88,21 @@ function UpdateUser() {
       const response = await UserService.updateMyProfile(dataToSend);
       const emailChanged = userData.email !== originalEmailRef.current;
 
-      alert("Perfil actualizado correctamente");
-      console.log(response);
+      alert(response.message || "Perfil actualizado correctamente");
 
       //Condicional para redirigir al login en caso de que el email haya sido actualizado también
       if (emailChanged) {
         alert("Tu email ha sido cambiado, por lo que debes iniciar sesión nuevamente");
         UserService.logout();
         window.location.href = '/login'; //redirección al la página del login para un nuevo ingreso
-        return;
 
       } else {
         navigate('/profile')
-        return;
       }
 
     } catch (error) {
       console.error("Error actualizando el perfil", error.message);
-      alert(`Error al actualizar el perfil: ${error.message || "Error desconocido"}`);
-
+      alert(`Error al actualizar el perfil: ${error.response?.data?.message || error.message || "Error desconocido"}`);
     } finally {
       stopLoading();
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import UserService from "../service/UserService";
 import { useNavigate } from 'react-router-dom';
+import { HttpStatusCode } from 'axios';
 import iconoLang from '../../img/iconolang.png';
 import { useLoading } from '../context/LoadingContext';
 import iconoViewPasswordOn from '../../img/visibility_24dp_000739_FILL0_wght400_GRAD0_opsz24.png';
@@ -49,12 +50,19 @@ function RegistrationPageAdmin() {
                 role: ''
             });
 
-            alert('User registered successfully');
+            alert('Usuario registrado exitosamente');
             navigate('/login');
 
         } catch (error) {
-            console.error('Error registering user', error);
-            alert('An error occurred while registering user');
+            console.error('Error al registrar el usuario', error);
+            if (HttpStatusCode.BadRequest) {
+                console.error('El email ya existe', error);
+                alert('Ya existe un usuario con ese email');
+
+            } else {
+                console.error('Error al registrar el usuario', error);
+                alert('Un error ha ocurrido mientras se registra al usuario');
+            }
 
         } finally {
             stopLoading();
@@ -93,16 +101,16 @@ function RegistrationPageAdmin() {
 
                     <div className="input_container">
                         <label htmlFor="password-user-admin" className="password-input">Contraseña</label>
-                        <div className="password-input-container">                        
-                            <input 
-                            id="password-user-admin" 
-                            type={showPassword ? "text" : "password"} placeholder="***********************"
-                            value={formData.password} name="password"
-                            onChange={handleInputChange} required />
-                                <div className="password-icon" onClick={() => setShowPassword(!showPassword)}>
-                                    {showPassword ? (<img src={iconoViewPasswordOn} alt="Mostrar contraseña" />) 
-                                        : (<img src={iconoViewPasswordOff} alt="Ocultar contraseña" />)}
-                                </div>
+                        <div className="password-input-container">
+                            <input
+                                id="password-user-admin"
+                                type={showPassword ? "text" : "password"} placeholder="***********************"
+                                value={formData.password} name="password"
+                                onChange={handleInputChange} required />
+                            <div className="password-icon" onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? (<img src={iconoViewPasswordOn} alt="Mostrar contraseña" />)
+                                    : (<img src={iconoViewPasswordOff} alt="Ocultar contraseña" />)}
+                            </div>
                         </div>
 
                     </div>
