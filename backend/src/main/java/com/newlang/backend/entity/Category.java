@@ -2,13 +2,11 @@ package com.newlang.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "category")
@@ -18,7 +16,7 @@ public class Category {
     @Column(name = "id_category")
     private Long idCategory;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nameCategory;
 
     @OneToMany(mappedBy = "category")

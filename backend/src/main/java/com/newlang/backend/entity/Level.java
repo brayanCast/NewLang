@@ -2,13 +2,11 @@ package com.newlang.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "level")
@@ -19,7 +17,7 @@ public class Level {
     @Column(name = "id_level")
     private Long idLevel;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nameLevel;
 
     @OneToMany(mappedBy = "level")

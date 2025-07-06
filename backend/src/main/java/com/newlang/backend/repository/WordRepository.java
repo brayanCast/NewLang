@@ -1,5 +1,7 @@
 package com.newlang.backend.repository;
 
+import com.newlang.backend.entity.Category;
+import com.newlang.backend.entity.Level;
 import com.newlang.backend.entity.Word;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +17,11 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     List<Word> findByEnglishWordStartingWithIgnoreCase(String englishWord);
     List<Word> findBySpanishWordStartingWithIgnoreCase(String spanishWord);
 
+    Optional<Word> findByEnglishWordAndSpanishWord(String englishWord, String spanishWord);
+    Optional<Word> findByEnglishWordAndCategoryAndLevel(String englishWord, Category category, Level level);
+    Optional<Word> findBySpanishWordAndCategoryAndLevel(String spanishWord, Category category, Level level);
+
+    List<Word> findByCategory(Category category);
+    List<Word> findByLevel(Level level);
+    List<Word> findByCategoryAndLevel(Category category, Level level);
 }
