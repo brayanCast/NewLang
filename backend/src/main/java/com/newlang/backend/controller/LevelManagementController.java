@@ -1,6 +1,6 @@
 package com.newlang.backend.controller;
 
-import com.newlang.backend.dto.LevelResponseDTO;
+import com.newlang.backend.dto.responseDto.LevelResponseDTO;
 import com.newlang.backend.entity.Level;
 import com.newlang.backend.exceptions.LevelAlreadyExistException;
 import com.newlang.backend.exceptions.LevelNotFoundException;

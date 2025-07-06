@@ -1,6 +1,6 @@
 package com.newlang.backend.controller;
 
-import com.newlang.backend.dto.CategoryResponseDTO;
+import com.newlang.backend.dto.responseDto.CategoryResponseDTO;
 import com.newlang.backend.entity.Category;
 import com.newlang.backend.exceptions.CategoryAlreadyExistException;
 import com.newlang.backend.exceptions.CategoryNotFoundException;

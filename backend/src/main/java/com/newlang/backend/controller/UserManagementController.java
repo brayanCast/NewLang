@@ -1,6 +1,6 @@
 package com.newlang.backend.controller;
 
-import com.newlang.backend.dto.RequestResp;
+import com.newlang.backend.dto.requestDto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.exceptions.EmailAlreadyExistException;
 import com.newlang.backend.exceptions.EmailNotFoundException;

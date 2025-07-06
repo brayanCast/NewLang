@@ -1,7 +1,5 @@
-package com.newlang.backend.controller;
+package com.newlang.backend.dto.responseDto;
 
-import com.newlang.backend.dto.CategoryResponseDTO;
-import com.newlang.backend.dto.LevelResponseDTO;
 
 
 public class WordResponseDTO {

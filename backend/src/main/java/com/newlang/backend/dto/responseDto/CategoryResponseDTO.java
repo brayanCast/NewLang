@@ -1,4 +1,4 @@
-package com.newlang.backend.dto;
+package com.newlang.backend.dto.responseDto;
 
 public class CategoryResponseDTO {
 

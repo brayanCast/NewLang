@@ -1,4 +1,4 @@
-package com.newlang.backend.dto;
+package com.newlang.backend.dto.requestDto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

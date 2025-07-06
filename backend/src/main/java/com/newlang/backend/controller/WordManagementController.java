@@ -1,9 +1,9 @@
 package com.newlang.backend.controller;
 
-
-import com.newlang.backend.dto.CategoryResponseDTO;
-import com.newlang.backend.dto.LevelResponseDTO;
-import com.newlang.backend.dto.WordRequestDTO;
+import com.newlang.backend.dto.requestDto.WordRequestDTO;
+import com.newlang.backend.dto.responseDto.CategoryResponseDTO;
+import com.newlang.backend.dto.responseDto.LevelResponseDTO;
+import com.newlang.backend.dto.responseDto.WordResponseDTO;
 import com.newlang.backend.entity.Word;
 import com.newlang.backend.exceptions.CategoryNotFoundException;
 import com.newlang.backend.exceptions.LevelNotFoundException;

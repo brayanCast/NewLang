@@ -1,6 +1,6 @@
 package com.newlang.backend.service;
 
-import com.newlang.backend.dto.RequestResp;
+import com.newlang.backend.dto.requestDto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
 

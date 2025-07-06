@@ -1,6 +1,6 @@
 package com.newlang.backend.service;
 
-import com.newlang.backend.dto.WordRequestDTO;
+import com.newlang.backend.dto.requestDto.WordRequestDTO;
 import com.newlang.backend.entity.Category;
 import com.newlang.backend.entity.Level;
 import com.newlang.backend.entity.Word;
