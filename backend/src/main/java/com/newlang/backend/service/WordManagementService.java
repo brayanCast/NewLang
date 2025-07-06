@@ -98,7 +98,7 @@ public class WordManagementService {
         return wordRepository.save(existingWord);
     }
 
-    //Función para eliminar las palabras, validando si estas existen en la base de datos
+    // ----Función para eliminar las palabras, validando si estas existen en la base de datos ----
     public void deleteWord(String word){
         Optional<Word> foundWord = wordRepository.findByEnglishWord(word.toLowerCase());
         foundWord = foundWord.or(() -> wordRepository.findBySpanishWord(word.toLowerCase()));
@@ -110,26 +110,34 @@ public class WordManagementService {
          );
     }
 
+    // ---- Función para traer la lista de palabras asociadas a las letras que se vayan digitando ----
     public List<Word> getSuggestions(String query) {
+
+        //Valida que la consulta sea vacía, tariga una lista
         if(query == null || query.isEmpty()) {
             return List.of();
         }
 
-        int maxSuggestionsPerService = 5;
+        int maxSuggestionsPerService = 5; //Definición de la cantidad de sugrenecias máximas por la palabra
 
         List<Word> englishMatches = wordRepository.findByEnglishWordStartingWithIgnoreCase(query.toLowerCase());
         List<Word> spanishMatches = wordRepository.findBySpanishWordStartingWithIgnoreCase(query.toLowerCase());
 
         Set<Word> uniqueWords = new java.util.LinkedHashSet<>();
 
+        //Añade la lista de palabras en inglés y español que coinciden
         uniqueWords.addAll(englishMatches);
         uniqueWords.addAll(spanishMatches);
 
+        /*Retorna la lista de palabras teniendo en cuenta el límite de palabras
+        definido en la variable "maxSuggestionsPerService"
+        */
         return uniqueWords.stream()
                 .limit(maxSuggestionsPerService)
                 .collect(Collectors.toList());
     }
 
+    // ---- Función para buscar la lista de palabras por la categoría ----
     public List<Word> getWordsByCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("La categoría no fue encontrada con el ID" + categoryId));
@@ -137,6 +145,7 @@ public class WordManagementService {
         return wordRepository.findByCategory(category);
     }
 
+    // ---- Función para buscar la lista de palabras por el nivel ----
     public List<Word> getWordsByLevel(Long levelId) {
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new LevelNotFoundException("El nivel no fue encontrado con el ID " + levelId));

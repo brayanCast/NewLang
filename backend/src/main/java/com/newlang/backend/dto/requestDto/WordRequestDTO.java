@@ -23,6 +23,13 @@ public class WordRequestDTO {
     public WordRequestDTO() {
     }
 
+    public WordRequestDTO(String englishWord, String spanishWord, Long categoryId, Long levelId) {
+        this.englishWord = englishWord;
+        this.spanishWord = spanishWord;
+        this.categoryId = categoryId;
+        this.levelId = levelId;
+    }
+
     public @NotBlank(message = "la palabra en inglés no puede estar vacía")
     @Size(max = 255, message = "la palabra en inglés no puede exceder los 255 caracteres") String getEnglishWord() {
         return englishWord;
