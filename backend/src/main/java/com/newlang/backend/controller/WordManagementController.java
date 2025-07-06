@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
@@ -87,7 +86,7 @@ public class WordManagementController {
     public ResponseEntity<?> getWordById(@PathVariable Long id){
         try {
             Word word = wordManagementService.getWordById(id)
-                    .orElseThrow(() -> new WordNotFoundException("La palabra no fue encontrada con el ID" + id));
+                    .orElseThrow(() -> new WordNotFoundException("La palabra no fue encontrada con el ID: " + id));
             return new ResponseEntity<>(mapToResponseDTO(word), HttpStatus.OK);
 
         } catch (WordNotFoundException e) {

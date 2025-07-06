@@ -86,7 +86,7 @@ public class WordManagementService {
                 .orElseThrow(() -> new CategoryNotFoundException("La categoría no fue encontrada con el ID " + wordRequestDTO.getCategoryId()));
 
         //Valida por el Id que el nivel exista
-        Level newLevel = levelRepository.findById(wordRequestDTO.getCategoryId())
+        Level newLevel = levelRepository.findById(wordRequestDTO.getLevelId())
                 .orElseThrow(() -> new LevelNotFoundException("El nivel no fue encontrado con el ID " + wordRequestDTO.getLevelId()));
 
         //Actualiza y guarda los nuevos datos de la entidad Word
