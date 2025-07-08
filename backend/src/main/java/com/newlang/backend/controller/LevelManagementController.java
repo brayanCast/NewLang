@@ -60,4 +60,16 @@ public class LevelManagementController {
                 .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @DeleteMapping("/delete-level/{id}")
+    public ResponseEntity<?> deleteLevelById(@PathVariable Long id) {
+        try {
+            levelManagementService.deleteLevelById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (LevelNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -43,4 +43,12 @@ public class LevelManagementService {
     public Optional<Level> getLevelById(Long id) {
         return levelRepository.findById(id);
     }
+
+    public void deleteLevelById(Long id) {
+        if (levelRepository.findById(id).isPresent()) {
+            levelRepository.deleteById(id);
+        } else {
+            throw new LevelNotFoundException("No se encontró el nivel con el ID" + id);
+        }
+    }
 }

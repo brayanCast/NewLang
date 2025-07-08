@@ -7,6 +7,7 @@ import com.newlang.backend.enums.Role;
 import com.newlang.backend.exceptions.EmailAlreadyExistException;
 import com.newlang.backend.exceptions.EmailNotFoundException;
 import com.newlang.backend.exceptions.IDNumberCannotBeVoidException;
+import com.newlang.backend.exceptions.UserNotFoundByIdException;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -147,15 +148,11 @@ public class UsersManagementService {
     public RequestResp getUserById(Long id) {
         RequestResp requestResp = new RequestResp();
 
-        try {
-            User userById = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not Found"));
-            requestResp.setUsers(userById);
-            requestResp.setStatusCode(200);
-            requestResp.setMessage("User with id: " + id + " found successfully");
-        } catch (Exception e) {
-            requestResp.setStatusCode(500);
-            requestResp.setMessage("Error occurred: " + e.getMessage());
-        }
+        User userById = userRepository.findById(id).orElseThrow(()
+                -> new UserNotFoundByIdException("Usuario no encontrado con el ID: " + id));
+        requestResp.setUsers(userById);
+        requestResp.setStatusCode(200);
+        requestResp.setMessage("User with id: " + id + " found successfully");
         return requestResp;
     }
 

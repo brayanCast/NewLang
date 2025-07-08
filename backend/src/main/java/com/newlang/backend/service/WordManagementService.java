@@ -152,4 +152,5 @@ public class WordManagementService {
 
         return wordRepository.findByLevel(level);
     }
+
 }

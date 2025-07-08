@@ -37,4 +37,12 @@ public class CategoryManagementService {
                     return categoryRepository.save(existingCategory);
                 }).orElseThrow(() -> new CategoryNotFoundException("La categoría no fue encontrada"));
     }
+
+    public void deleteCategoryById(Long id) {
+        if (categoryRepository.findById(id).isPresent()) {
+            categoryRepository.deleteById(id);
+        } else {
+            throw new CategoryNotFoundException("No se encontró el nivel con el ID" + id);
+        }
+    }
 }

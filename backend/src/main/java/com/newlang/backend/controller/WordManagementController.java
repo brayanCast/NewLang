@@ -26,7 +26,7 @@ public class WordManagementController {
     @Autowired
     private WordManagementService wordManagementService;
 
-    // --Método Auxiliar para mapear Word entity y WordResponseDTO--
+    // ---- Método Auxiliar para mapear Word entity y WordResponseDTO ----
     private WordResponseDTO mapToResponseDTO(Word word) {
         CategoryResponseDTO categoryResponseDTO = null;
         if(word.getCategory() != null) {
@@ -122,8 +122,8 @@ public class WordManagementController {
         }
     }
 
-    @GetMapping("/auth/by-category/{id}")
-    public ResponseEntity<List<WordResponseDTO>> getWordsByCategoryId(@PathVariable Long categoryId) {
+    @GetMapping("/auth/word-by-category/{id}")
+    public ResponseEntity<List<WordResponseDTO>> getWordsByCategoryId(@PathVariable("id") Long categoryId) {
         List<Word> words = wordManagementService.getWordsByCategory(categoryId);
         List<WordResponseDTO> wordDtos = words.stream()
                 .map(this::mapToResponseDTO)
@@ -131,12 +131,12 @@ public class WordManagementController {
         return new ResponseEntity<>(wordDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/auth/by-level/{id}")
-    public ResponseEntity<List<WordResponseDTO>> getWordsByLevelId(@PathVariable Long levelId) {
-        List<Word> words = wordManagementService.getWordsByLevel(levelId);
-        List<WordResponseDTO> wordDtos = words.stream()
-                .map(this::mapToResponseDTO)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(wordDtos, HttpStatus.OK);
-    }
+        @GetMapping("/auth/word-by-level/{id}")
+        public ResponseEntity<List<WordResponseDTO>> getWordsByLevelId(@PathVariable("id") Long levelId) {
+            List<Word> words = wordManagementService.getWordsByLevel(levelId);
+            List<WordResponseDTO> wordDtos = words.stream()
+                    .map(this::mapToResponseDTO)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(wordDtos, HttpStatus.OK);
+        }
 }

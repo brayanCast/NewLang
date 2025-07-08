@@ -4,6 +4,7 @@ import com.newlang.backend.dto.requestDto.RequestResp;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.exceptions.EmailAlreadyExistException;
 import com.newlang.backend.exceptions.EmailNotFoundException;
+import com.newlang.backend.exceptions.UserNotFoundByIdException;
 import com.newlang.backend.service.OtpService;
 import com.newlang.backend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,9 +154,16 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.getAllUsers());
     }
 
-    @GetMapping("/admin/get-user/{userId}")
-    public ResponseEntity<RequestResp> getUserById(@PathVariable Long userId) {
-        return ResponseEntity.ok(usersManagementService.getUserById(userId));
+    @GetMapping("/admin/get-user/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable("id") Long id) {
+        try {
+            RequestResp user = usersManagementService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundByIdException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/admin/update/{userId}")
