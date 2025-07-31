@@ -12,6 +12,7 @@ public class Expression {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_expression")
     private Long idExpression;
 
     @Column(nullable = false)
@@ -19,6 +20,9 @@ public class Expression {
 
     @Column(nullable = false)
     private String spanishExpression;
+
+    @Column(nullable = false)
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "id_category")
@@ -51,6 +55,10 @@ public class Expression {
     public void setSpanishExpression(String spanishExpression) {
         this.spanishExpression = spanishExpression;
     }
+
+    public String getImageUrl() {return imageUrl;}
+
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
     public Category getCategory() {
         return category;

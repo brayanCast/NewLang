@@ -2,10 +2,10 @@ package com.newlang.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -19,7 +19,77 @@ public class LearningRoutine {
     @Column(nullable = false)
     private String nameRoutine;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user", referencedColumnName = "id_user")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", nullable = false)
     private User idUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_category", nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_level", nullable = false)
+    private Level level;
+
+    @OneToMany(mappedBy = "learningRoutine", cascade = CascadeType.ALL)
+    private List<LearningRoutineWord> learningRoutineWords;
+
+    @OneToMany(mappedBy = "learningRoutine", cascade = CascadeType.ALL)
+    private List<LearningRoutineExpression> learningRoutineExpressions;
+
+    public Long getIdRoutine() {
+        return idRoutine;
+    }
+
+    public void setIdRoutine(Long idRoutine) {
+        this.idRoutine = idRoutine;
+    }
+
+    public String getNameRoutine() {
+        return nameRoutine;
+    }
+
+    public void setNameRoutine(String nameRoutine) {
+        this.nameRoutine = nameRoutine;
+    }
+
+    public User getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(User idUser) {
+        this.idUser = idUser;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public List<LearningRoutineWord> getLearningRoutineWords() {
+        return learningRoutineWords;
+    }
+
+    public void setLearningRoutineWords(List<LearningRoutineWord> learningRoutineWords) {
+        this.learningRoutineWords = learningRoutineWords;
+    }
+
+    public List<LearningRoutineExpression> getLearningRoutineExpressions() {
+        return learningRoutineExpressions;
+    }
+
+    public void setLearningRoutineExpressions(List<LearningRoutineExpression> learningRoutineExpressions) {
+        this.learningRoutineExpressions = learningRoutineExpressions;
+    }
 }

@@ -7,18 +7,19 @@ public class WordResponseDTO {
     private Long id;
     private String englishWord;
     private String spanishWord;
-
+    private String imageUrl;
     private CategoryResponseDTO categoryResponseDTO;
     private LevelResponseDTO levelResponseDTO;
 
     public WordResponseDTO() {
     }
 
-    public WordResponseDTO(Long id, String englishWord, String spanishWord, CategoryResponseDTO categoryResponseDTO,
-                           LevelResponseDTO levelResponseDTO) {
+    public WordResponseDTO(Long id, String englishWord, String spanishWord, String imageUrl,
+                           CategoryResponseDTO categoryResponseDTO, LevelResponseDTO levelResponseDTO) {
         this.id = id;
         this.englishWord = englishWord;
         this.spanishWord = spanishWord;
+        this.imageUrl = imageUrl;
         this.categoryResponseDTO = categoryResponseDTO;
         this.levelResponseDTO = levelResponseDTO;
     }
@@ -46,6 +47,10 @@ public class WordResponseDTO {
     public void setSpanishWord(String spanishWord) {
         this.spanishWord = spanishWord;
     }
+
+    public String getImageUrl() {return imageUrl;}
+
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
     public LevelResponseDTO getLevelResponseDTO() {
         return levelResponseDTO;

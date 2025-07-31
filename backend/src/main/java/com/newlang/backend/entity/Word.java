@@ -13,6 +13,7 @@ public class Word {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_word")
     private Long idWord;
 
     @Column(nullable = false)
@@ -21,6 +22,9 @@ public class Word {
     @Column(nullable = false)
     private String spanishWord;
 
+    @Column(nullable = false)
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "id_category")
     private Category category;
@@ -28,6 +32,8 @@ public class Word {
     @ManyToOne
     @JoinColumn(name = "id_level")
     private Level level;
+
+
 
     public Long getIdWord() {return idWord;}
 
@@ -48,6 +54,10 @@ public class Word {
     public void setSpanishWord(String spanishWord) {
         this.spanishWord = spanishWord;
     }
+
+    public String getImageUrl() {return imageUrl;}
+
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
     public Category getCategory() {return category;}
 

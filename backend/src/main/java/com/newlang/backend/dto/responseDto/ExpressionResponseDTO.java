@@ -5,17 +5,19 @@ public class ExpressionResponseDTO {
     private Long id;
     private String englishExpression;
     private String spanishExpression;
-
+    private String imageUrl;
     private CategoryResponseDTO categoryResponseDTO;
     private LevelResponseDTO levelResponseDTO;
 
     public ExpressionResponseDTO() {
     }
 
-    public ExpressionResponseDTO(Long id, String englishExpression, String spanishExpression, CategoryResponseDTO categoryResponseDTO, LevelResponseDTO levelResponseDTO) {
+    public ExpressionResponseDTO(Long id, String englishExpression, String spanishExpression, String imageUrl,
+                                 CategoryResponseDTO categoryResponseDTO, LevelResponseDTO levelResponseDTO) {
         this.id = id;
         this.englishExpression = englishExpression;
         this.spanishExpression = spanishExpression;
+        this.imageUrl = imageUrl;
         this.categoryResponseDTO = categoryResponseDTO;
         this.levelResponseDTO = levelResponseDTO;
     }
@@ -31,6 +33,10 @@ public class ExpressionResponseDTO {
     public String getEnglishExpression() {return englishExpression;}
 
     public void setEnglishExpression(String englishExpression) {this.englishExpression = englishExpression;}
+
+    public String getImageUrl() {return imageUrl;}
+
+    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
     public CategoryResponseDTO getCategoryResponseDTO() {return categoryResponseDTO;}
 

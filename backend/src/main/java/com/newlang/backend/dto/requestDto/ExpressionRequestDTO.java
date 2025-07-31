@@ -14,6 +14,9 @@ public class ExpressionRequestDTO {
     @Size(max = 255, message = "la expresión en español no puede exceder los 255 caracteres")
     private String spanishExpression;
 
+    @Size(max = 500, message = "la url de la imagen no puede exceder los 500 caracteres")
+    private String imageUrl;
+
     @NotNull(message = "El ID de la categoría es obligatorio")
     private Long categoryId;
 
@@ -23,9 +26,10 @@ public class ExpressionRequestDTO {
     public ExpressionRequestDTO() {
     }
 
-    public ExpressionRequestDTO(String englishExpression, String spanishExpression, Long categoryId, Long levelId) {
+    public ExpressionRequestDTO(String englishExpression, String spanishExpression, String imageUrl, Long categoryId, Long levelId) {
         this.englishExpression = englishExpression;
         this.spanishExpression = spanishExpression;
+        this.imageUrl = imageUrl;
         this.categoryId = categoryId;
         this.levelId = levelId;
     }
@@ -44,6 +48,14 @@ public class ExpressionRequestDTO {
 
     public void setSpanishExpression(@NotBlank(message = "la expresión en español no puede estar vacía") @Size(max = 255, message = "la expresión en español no puede exceder los 255 caracteres") String spanishExpression) {
         this.spanishExpression = spanishExpression;
+    }
+
+    public @Size(max = 500, message = "la url de la imagen no puede exceder los 500 caracteres") String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(@Size(max = 500, message = "la url de la imagen no puede exceder los 500 caracteres") String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public @NotNull(message = "El ID de la categoría es obligatorio") Long getCategoryId() {

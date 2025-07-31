@@ -14,6 +14,9 @@ public class WordRequestDTO {
     @Size(max = 255, message = "la palabra en español no puede exceder los 255 caracteres")
     private String spanishWord;
 
+    @Size(max = 500, message = "la url de la imagen no puede exceder los 500 caracteres")
+    private String imageUrl;
+
     @NotNull(message = "El ID de la categoría es obligatorio")
     private Long categoryId;
 
@@ -23,9 +26,10 @@ public class WordRequestDTO {
     public WordRequestDTO() {
     }
 
-    public WordRequestDTO(String englishWord, String spanishWord, Long categoryId, Long levelId) {
+    public WordRequestDTO(String englishWord, String spanishWord, String imageUrl, Long categoryId, Long levelId) {
         this.englishWord = englishWord;
         this.spanishWord = spanishWord;
+        this.imageUrl = imageUrl;
         this.categoryId = categoryId;
         this.levelId = levelId;
     }
@@ -48,6 +52,14 @@ public class WordRequestDTO {
     public void setSpanishWord(@NotBlank(message = "la palabra en español no puede estar vacía")
                                @Size(max = 255, message = "la palabra en español no puede exceder los 255 caracteres") String spanishWord) {
         this.spanishWord = spanishWord;
+    }
+
+    public @Size(max = 500, message = "la url de laa imagen no puede exceder los 500 caracteres") String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(@Size(max = 500, message = "la url de laa imagen no puede exceder los 500 caracteres") String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public @NotNull(message = "El ID de la categoría es obligatorio") Long getCategoryId() {

@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
-@RequestMapping("/admin/category")
+@RequestMapping("/category")
 public class CategoryManagementController {
 
     @Autowired
     private CategoryManagementService categoryManagementService;
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
         try {
             Category newCategory = categoryManagementService.saveCategory(category.getNameCategory());
@@ -33,7 +33,7 @@ public class CategoryManagementController {
         }
     }
 
-    @PutMapping("/update-category/{id}")
+    @PutMapping("/admin/update-category/{id}")
     public ResponseEntity<?> updateCategory(@PathVariable("id") Long id, @RequestBody Category category) {
         try {
             return ResponseEntity.ok(categoryManagementService.updateCategory(id, category));
@@ -44,7 +44,7 @@ public class CategoryManagementController {
         }
     }
 
-    @GetMapping("/get-all-categories")
+    @GetMapping("/auth/get-all-categories")
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
         List<Category> categories = categoryManagementService.getAllCategories();
         List<CategoryResponseDTO> categoryDtos = categories.stream()
@@ -53,7 +53,7 @@ public class CategoryManagementController {
         return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/get-category/{id}")
+    @GetMapping("/auth/get-category/{id}")
     public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable("id") Long id) {
         return categoryManagementService.getCategoryById(id)
                 .map(category -> new CategoryResponseDTO(category.getIdCategory(), category.getNameCategory()))
@@ -61,7 +61,7 @@ public class CategoryManagementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/delete-category/{id}")
+    @DeleteMapping("/admin/delete-category/{id}")
     public ResponseEntity<?> deleteCategoryById(@PathVariable Long id) {
         try {
             categoryManagementService.deleteCategoryById(id);
