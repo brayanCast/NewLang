@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +23,7 @@ public class LearningRoutineExpression {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_expression", nullable = false)
-    private Word word;
+    private Expression expression;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -39,27 +38,51 @@ public class LearningRoutineExpression {
     @Column(name = "mastery_level", columnDefinition = "TINYINT")
     private short masteryLevel;
 
-    public LearningRoutine getLearningRoutine() {return learningRoutine;}
+    public LearningRoutine getLearningRoutine() {
+        return learningRoutine;
+    }
 
-    public void setLearningRoutine(LearningRoutine learningRoutine) {this.learningRoutine = learningRoutine;}
+    public void setLearningRoutine(LearningRoutine learningRoutine) {
+        this.learningRoutine = learningRoutine;
+    }
 
-    public Word getWord() {return word;}
+    public Expression getExpression() {
+        return expression;
+    }
 
-    public void setWord(Word word) {this.word = word;}
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
 
-    public Status getStatus() {return status;}
+    public Status getStatus() {
+        return status;
+    }
 
-    public void setStatus(Status status) {this.status = status;}
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-    public LocalDateTime getLastReviewedUpdate() {return lastReviewedUpdate;}
+    public LocalDateTime getLastReviewedUpdate() {
+        return lastReviewedUpdate;
+    }
 
-    public void setLastReviewedUpdate(LocalDateTime lastReviewedUpdate) {this.lastReviewedUpdate = lastReviewedUpdate;}
+    public void setLastReviewedUpdate(LocalDateTime lastReviewedUpdate) {
+        this.lastReviewedUpdate = lastReviewedUpdate;
+    }
 
-    public LocalDateTime getNextReviewedUpdate() {return nextReviewedUpdate;}
+    public LocalDateTime getNextReviewedUpdate() {
+        return nextReviewedUpdate;
+    }
 
-    public void setNextReviewedUpdate(LocalDateTime nextReviewedUpdate) {this.nextReviewedUpdate = nextReviewedUpdate;}
+    public void setNextReviewedUpdate(LocalDateTime nextReviewedUpdate) {
+        this.nextReviewedUpdate = nextReviewedUpdate;
+    }
 
-    public short getMasteryLevel() {return masteryLevel;}
+    public short getMasteryLevel() {
+        return masteryLevel;
+    }
 
-    public void setMasteryLevel(short masteryLevel) {this.masteryLevel = masteryLevel;}
+    public void setMasteryLevel(short masteryLevel) {
+        this.masteryLevel = masteryLevel;
+    }
 }
