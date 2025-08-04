@@ -7,6 +7,14 @@ public class LearningRoutineWordId implements Serializable {
     private Long learningRoutine;
     private Long word;
 
+    public LearningRoutineWordId() {
+    }
+
+    public LearningRoutineWordId(Long learningRoutine, Long word) {
+        this.learningRoutine = learningRoutine;
+        this.word = word;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

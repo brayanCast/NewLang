@@ -7,6 +7,14 @@ public class LearningRoutineExpressionId implements Serializable {
     private Long learningRoutine;
     private Long expression;
 
+    public LearningRoutineExpressionId() {
+    }
+
+    public LearningRoutineExpressionId(Long learningRoutine, Long expression) {
+        this.learningRoutine = learningRoutine;
+        this.expression = expression;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface LearningRoutineExpressionRepository extends JpaRepository<LearningRoutineExpression, LearningRoutineExpressionId> {
-    Optional<LearningRoutineExpression> findByLearningRoutineAndExpression(LearningRoutine learningRoutine);
+    Optional<LearningRoutineExpression> findByLearningRoutineAndExpression(LearningRoutine learningRoutine, Expression expression);
     List<LearningRoutineExpression> findByLearningRoutine(LearningRoutine learningRoutine);
     List<LearningRoutineExpression> findByExpression(Expression expression);
 }

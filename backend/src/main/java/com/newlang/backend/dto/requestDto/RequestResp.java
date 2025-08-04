@@ -4,29 +4,45 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude (JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestResp {
 
+    private Long idUser;
+    private String nameUser;
+    private String idNumber;
+    private String email;
+    private Role role;
+    private User users;
+    private List<User> userList;
+    private String password;
     private int statusCode;
     private String error;
     private String message;
     private String token;
     private String refreshToken;
     private String expirationTime;
-    private String nameUser;
-    private Role role;
-    private String email;
-    private String password;
-    private String idNumber;
-    private User users;
-    private List<User> userList;
+
+    public RequestResp(Long idUser, String nameUser, String idNumber, String email, Role role) {
+        this.idUser = idUser;
+        this.nameUser = nameUser;
+        this.idNumber = idNumber;
+        this.email = email;
+        this.role = role;
+    }
+
+    public Long getIdUser() {return idUser;}
+
+    public void setIdUser(Long idUser) {this.idUser = idUser;}
 
     public int getStatusCode() {
         return statusCode;
