@@ -38,7 +38,7 @@ public class WordManagementController {
             levelResponseDTO = new LevelResponseDTO(word.getLevel().getIdLevel(), word.getLevel().getNameLevel());
         }
 
-        return new WordResponseDTO(word.getIdWord(), word.getEnglishWord(), word.getSpanishWord(), categoryResponseDTO, levelResponseDTO);
+        return new WordResponseDTO(word.getIdWord(), word.getEnglishWord(), word.getSpanishWord(), word.getImageUrl(), categoryResponseDTO, levelResponseDTO);
     }
 
     //Función para crear nuevas palabras en inglés y español

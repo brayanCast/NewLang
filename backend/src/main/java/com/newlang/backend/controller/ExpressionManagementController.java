@@ -37,7 +37,7 @@ public class ExpressionManagementController {
             levelResponseDTO = new LevelResponseDTO(expression.getLevel().getIdLevel(), expression.getLevel().getNameLevel());
         }
 
-        return new ExpressionResponseDTO(expression.getIdExpression(), expression.getEnglishExpression(), expression.getSpanishExpression(), categoryResponseDTO, levelResponseDTO);
+        return new ExpressionResponseDTO(expression.getIdExpression(), expression.getEnglishExpression(), expression.getSpanishExpression(), expression.getImageUrl(), categoryResponseDTO, levelResponseDTO);
     }
 
     @PostMapping("/admin/expression/create")

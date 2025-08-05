@@ -12,8 +12,7 @@ public class ExpressionResponseDTO {
     public ExpressionResponseDTO() {
     }
 
-    public ExpressionResponseDTO(Long id, String englishExpression, String spanishExpression, String imageUrl,
-                                 CategoryResponseDTO categoryResponseDTO, LevelResponseDTO levelResponseDTO) {
+    public ExpressionResponseDTO(Long id, String englishExpression, String spanishExpression, String imageUrl, CategoryResponseDTO categoryResponseDTO, LevelResponseDTO levelResponseDTO) {
         this.id = id;
         this.englishExpression = englishExpression;
         this.spanishExpression = spanishExpression;

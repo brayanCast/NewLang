@@ -4,15 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.*;
 
-
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonInclude (JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestResp {
@@ -31,6 +25,26 @@ public class RequestResp {
     private String token;
     private String refreshToken;
     private String expirationTime;
+
+    public RequestResp() {
+    }
+
+    public RequestResp(Long idUser, String nameUser, String idNumber, String email, Role role, User users, List<User> userList, String password, int statusCode, String error, String message, String token, String expirationTime, String refreshToken) {
+        this.idUser = idUser;
+        this.nameUser = nameUser;
+        this.idNumber = idNumber;
+        this.email = email;
+        this.role = role;
+        this.users = users;
+        this.userList = userList;
+        this.password = password;
+        this.statusCode = statusCode;
+        this.error = error;
+        this.message = message;
+        this.token = token;
+        this.expirationTime = expirationTime;
+        this.refreshToken = refreshToken;
+    }
 
     public RequestResp(Long idUser, String nameUser, String idNumber, String email, Role role) {
         this.idUser = idUser;
