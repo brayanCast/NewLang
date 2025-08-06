@@ -8,6 +8,7 @@ import com.newlang.backend.dto.responseDto.*;
 import com.newlang.backend.entity.*;
 import com.newlang.backend.exceptions.*;
 import com.newlang.backend.repository.*;
+import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class LearningRoutineManagementService {
@@ -44,9 +47,10 @@ public class LearningRoutineManagementService {
     private LearningRoutineExpressionRepository learningRoutineExpressionRepository;
 
     @Transactional
-    public LearningRoutineResponseDTO createLearningRoutine(LearningRoutineRequestDTO learningRoutineRequestDTO) {
-        User user = userRepository.findById(learningRoutineRequestDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundByIdException("Usuario no encontrado con el ID:" + learningRoutineRequestDTO.getUserId()));
+    public LearningRoutineResponseDTO createLearningRoutine(LearningRoutineRequestDTO learningRoutineRequestDTO, String userEmail) {
+        //Busca al usuario logueado con el email
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundByIdException("Usuario logueado no encontrado en la base de datos con el email:" + userEmail));
 
         Category category = categoryRepository.findById(learningRoutineRequestDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Categoría no encontrada con el ID" + learningRoutineRequestDTO.getCategoryId()));
@@ -55,7 +59,7 @@ public class LearningRoutineManagementService {
                 .orElseThrow(() -> new LevelNotFoundException("Nivel no encontrado con el ID " + learningRoutineRequestDTO.getLevelId()));
 
         if (learningRoutineRepository.findByNameRoutineAndUser(learningRoutineRequestDTO.getNameRoutine(), user).isPresent()) {
-            throw new LearningRoutineAlreadyExistException("La Rutina ya está creada con ese nombre para el usuario}");
+            throw new LearningRoutineAlreadyExistException("La Rutina ya está creada con ese nombre para el usuario");
         }
 
         LearningRoutine routine = new LearningRoutine();
@@ -71,29 +75,55 @@ public class LearningRoutineManagementService {
     @Transactional(readOnly = true)
     public LearningRoutineResponseDTO getLearningRoutineById(Long id) {
         LearningRoutine routine = learningRoutineRepository.findById(id)
-                .orElseThrow(() -> new LearningRoutineNotFoundException("La rutina no fue encontrada con el Id:" + id));
+                .orElseThrow(() -> new LearningRoutineNotFoundException("La rutina no fue encontrada con el Id :" + id));
         return mapRoutineToResponseDTO(routine);
     }
 
     @Transactional(readOnly = true)
     public List<LearningRoutineResponseDTO> getAllLearningRoutinesByUserId(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundByIdException("Usuario encontrado con el Id: " + id));
+                .orElseThrow(() -> new UserNotFoundByIdException("Usuario no encontrado con el Id: " + id));
         List<LearningRoutine> routines = learningRoutineRepository.findByUser(user);
         return routines.stream()
                 .map(this::mapRoutineToResponseDTO)
-                .collect(Collectors.toList());
+                .collect(toList());
+    }
+
+    @Transactional(readOnly = true)
+    public RequestResp getAllMyLearningRoutines(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundByIdException("Usuario no encontrado con el email" + userEmail));
+
+        List<LearningRoutine> routines = learningRoutineRepository.findByUser(user);
+
+        List<LearningRoutineResponseDTO> routineDtos = routines.stream()
+                .map(this::mapRoutineToResponseDTOWithoutUser)
+                .collect(toList());
+
+        RequestResp userDto = new RequestResp(
+                user.getIdUser(),
+                user.getNameUser(),
+                user.getIdNumber(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        return new RequestResp(userDto, routineDtos);
     }
 
     @Transactional
-    public LearningRoutineResponseDTO updateLearningRoutine(Long id, LearningRoutineRequestDTO requestDTO) {
+    public LearningRoutineResponseDTO updateLearningRoutine(Long id, LearningRoutineRequestDTO requestDTO, String userEmail) {
         LearningRoutine routine = learningRoutineRepository.findById(id)
-                .orElseThrow(() -> new LearningRoutineNotFoundException("Rutina de Aprendizaje no encontrada con ID: "+id));
+                .orElseThrow(() -> new LearningRoutineNotFoundException("Rutina de Aprendizaje no encontrada con ID: "+ id));
 
-        User user = userRepository.findById(requestDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundByIdException("Usuario no encontrado con ID:" + requestDTO.getUserId()));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundByIdException("Usuario no encontrado con ID:" + userEmail));
 
-        Category category = categoryRepository.findById(requestDTO.getUserId())
+        if (!routine.getUser().getIdUser().equals(user.getIdUser())) {
+            throw new UnauthorizedActionException("No tiene permiso para actualizar esta rutina");
+        }
+
+        Category category = categoryRepository.findById(requestDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Categoría no encontrada con Id: " + requestDTO.getCategoryId()));
 
         Level level = levelRepository.findById(requestDTO.getLevelId())
@@ -114,10 +144,15 @@ public class LearningRoutineManagementService {
     }
 
     @Transactional
-    public void deleteLearningRoutine(Long id) {
-        if(!learningRoutineRepository.existsById(id)) {
-            throw new LearningRoutineNotFoundException("Rutina de aprendizaje no encontrada con el Id " + id);
+    public void deleteLearningRoutine(Long id, String userEmail) {
+
+        LearningRoutine routine = learningRoutineRepository.findById(id)
+                        .orElseThrow(() -> new LearningRoutineNotFoundException("Rutina de aprendizaje no encontrada con el id: " + id));
+
+        if (!routine.getUser().getEmail().equals(userEmail)) {
+            throw new UnauthorizedActionException("No tiene permiso para eliminar esta rutina");
         }
+
         learningRoutineRepository.deleteById(id);
     }
 
@@ -245,9 +280,6 @@ public class LearningRoutineManagementService {
     //***********************************************************************************************
 
 
-
-
-
     private LearningRoutineResponseDTO mapRoutineToResponseDTO(LearningRoutine routine) {
         if (routine == null) return null;
         RequestResp requestResp = new RequestResp(routine.getUser().getIdUser(), routine.getUser().getNameUser(),
@@ -260,11 +292,11 @@ public class LearningRoutineManagementService {
         List<LearningRoutineWordResponseDTO> wordDtos = routine.getLearningRoutineWords() != null ?
                 routine.getLearningRoutineWords().stream()
                 .map(this::mapRoutineWordToResponseDTO)
-                .collect(Collectors.toList()) : null;
+                .collect(toList()) : null;
         List<LearningRoutineExpressionResponseDTO> expressionDtos = routine.getLearningRoutineExpressions() != null ?
         routine.getLearningRoutineExpressions().stream()
                 .map(this::mapRoutineExpressionToResponseDTO)
-                .collect(Collectors.toList()) : null;
+                .collect(toList()) : null;
 
         return new LearningRoutineResponseDTO(
                 routine.getIdRoutine(),
@@ -312,6 +344,33 @@ public class LearningRoutineManagementService {
         );
     }
 
+    private LearningRoutineResponseDTO mapRoutineToResponseDTOWithoutUser(LearningRoutine routine) {
+        if (routine == null) return null;
+
+        CategoryResponseDTO categoryDto = new CategoryResponseDTO(routine.getCategory().getIdCategory(), routine.getCategory().getNameCategory());
+        LevelResponseDTO levelDto = new LevelResponseDTO(routine.getLevel().getIdLevel(), routine.getLevel().getNameLevel());
+
+        List<LearningRoutineWordResponseDTO> wordDtos = routine.getLearningRoutineWords() != null ?
+                routine.getLearningRoutineWords().stream()
+                        .map(this::mapRoutineWordToResponseDTO)
+                        .toList() : null;
+
+        List<LearningRoutineExpressionResponseDTO> expressionDtos = routine.getLearningRoutineExpressions() != null ?
+                routine.getLearningRoutineExpressions().stream()
+                        .map(this::mapRoutineExpressionToResponseDTO)
+                        .toList() : null;
+
+        return new LearningRoutineResponseDTO(
+                routine.getIdRoutine(),
+                routine.getNameRoutine(),
+                null,
+                categoryDto,
+                levelDto,
+                wordDtos,
+                expressionDtos
+        );
+    }
+
     private LearningRoutineExpressionResponseDTO mapRoutineExpressionToResponseDTO(LearningRoutineExpression routineExpression) {
         if (routineExpression == null) return null;
 
@@ -344,5 +403,4 @@ public class LearningRoutineManagementService {
                 routineExpression.getMasteryLevel()
         );
     }
-
 }

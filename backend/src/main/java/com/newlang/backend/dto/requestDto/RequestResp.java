@@ -2,9 +2,9 @@ package com.newlang.backend.dto.requestDto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.newlang.backend.dto.responseDto.LearningRoutineResponseDTO;
 import com.newlang.backend.entity.User;
 import com.newlang.backend.enums.Role;
-
 import java.util.*;
 
 @JsonInclude (JsonInclude.Include.NON_NULL)
@@ -17,6 +17,8 @@ public class RequestResp {
     private String email;
     private Role role;
     private User users;
+    private RequestResp user;
+    private List<LearningRoutineResponseDTO> routines;
     private List<User> userList;
     private String password;
     private int statusCode;
@@ -53,6 +55,13 @@ public class RequestResp {
         this.email = email;
         this.role = role;
     }
+
+    public RequestResp(RequestResp user, List<LearningRoutineResponseDTO> routines) {
+        this.user = user;
+        this.routines = routines;
+    }
+
+
 
     public Long getIdUser() {return idUser;}
 
@@ -153,6 +162,14 @@ public class RequestResp {
     public void setUsers(User users) {
         this.users = users;
     }
+
+    public RequestResp getUser() {return user;}
+
+    public void setUser(RequestResp user) {this.user = user;}
+
+    public List<LearningRoutineResponseDTO> getRoutines() {return routines;}
+
+    public void setRoutines(List<LearningRoutineResponseDTO> routines) {this.routines = routines;}
 
     public List<User> getUserList() {
         return userList;

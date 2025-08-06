@@ -1,7 +1,6 @@
 package com.newlang.backend.dto.responseDto;
 
 import com.newlang.backend.dto.requestDto.RequestResp;
-import com.newlang.backend.entity.LearningRoutineWord;
 
 import java.util.List;
 

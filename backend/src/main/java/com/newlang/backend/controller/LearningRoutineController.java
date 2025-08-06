@@ -9,10 +9,11 @@ import com.newlang.backend.dto.responseDto.LearningRoutineWordResponseDTO;
 import com.newlang.backend.exceptions.*;
 import com.newlang.backend.service.LearningRoutineManagementService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +29,9 @@ public class LearningRoutineController {
     @PostMapping("/create")
     public ResponseEntity<?> createLearningRoutine(@Valid @RequestBody LearningRoutineRequestDTO requestDTO) {
         try{
-            LearningRoutineResponseDTO responseDTO = learningRoutineManagementService.createLearningRoutine(requestDTO);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); //Obtiene el objeto de autenticación del objeto de seguridad
+            String userEmail = authentication.getName(); //El email es el nombre de usuario único asociado a la configuración de seguridad
+            LearningRoutineResponseDTO responseDTO = learningRoutineManagementService.createLearningRoutine(requestDTO, userEmail);
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         } catch (UserNotFoundByIdException | CategoryNotFoundException | LevelNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -64,9 +67,9 @@ public class LearningRoutineController {
     }
 
     @PutMapping("/update-routine/{id}")
-    public ResponseEntity<?> updateLearningRoutine(@PathVariable Long id, @Valid @RequestBody LearningRoutineRequestDTO requestDTO) {
+    public ResponseEntity<?> updateLearningRoutine(@PathVariable Long id, @Valid @RequestBody LearningRoutineRequestDTO requestDTO, String userEmail) {
         try {
-            LearningRoutineResponseDTO responseDTO = learningRoutineManagementService.updateLearningRoutine(id, requestDTO);
+            LearningRoutineResponseDTO responseDTO = learningRoutineManagementService.updateLearningRoutine(id, requestDTO, userEmail);
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch (LearningRoutineNotFoundException | UserNotFoundByIdException | CategoryNotFoundException | LevelNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -78,9 +81,9 @@ public class LearningRoutineController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteLearningRoutine(@PathVariable Long id) {
+    public ResponseEntity<?> deleteLearningRoutine(@PathVariable Long id, String userEmail) {
         try {
-            learningRoutineManagementService.deleteLearningRoutine(id);
+            learningRoutineManagementService.deleteLearningRoutine(id, userEmail);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (LearningRoutineNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
