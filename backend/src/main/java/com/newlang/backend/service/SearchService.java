@@ -1,6 +1,11 @@
 package com.newlang.backend.service;
 
 import com.newlang.backend.dto.SearchResultDto;
+import com.newlang.backend.dto.requestDto.GlobalSearchResponseDTO;
+import com.newlang.backend.entity.Expression;
+import com.newlang.backend.entity.Word;
+import com.newlang.backend.exceptions.ExpressionNotFoundException;
+import com.newlang.backend.exceptions.WordNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -37,7 +42,6 @@ public class SearchService {
                         dtos.add(new SearchResultDto(word.getIdWord(), "word", word.getSpanishWord()));
                     }
 
-
                     return dtos.stream();
                 })
                 .toList(); //Collect all word DTOs in a list
@@ -66,5 +70,17 @@ public class SearchService {
                 .stream()
                 .limit(maxTotalSuggestions)
                 .collect(Collectors.toList());
+    }
+
+    public Object globalSearchOne(String query) throws Exception {
+        try {
+            Word foundWord = wordManagementService.getByWord(query);
+            return new GlobalSearchResponseDTO("word", foundWord);
+        } catch (WordNotFoundException e) {
+            Expression foundExpression = expressionManagementService.getByExpression(query);
+            return new GlobalSearchResponseDTO("expression", foundExpression);
+        } catch (ExpressionNotFoundException ex) {
+            throw new Exception("No se encuentran resultados para la búsqueda" + query);
+        }
     }
 }

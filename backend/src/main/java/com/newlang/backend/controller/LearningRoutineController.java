@@ -3,6 +3,7 @@ package com.newlang.backend.controller;
 import com.newlang.backend.dto.requestDto.LearningRoutineExpressionRequestDTO;
 import com.newlang.backend.dto.requestDto.LearningRoutineRequestDTO;
 import com.newlang.backend.dto.requestDto.LearningRoutineWordRequestDTO;
+import com.newlang.backend.dto.requestDto.RequestResp;
 import com.newlang.backend.dto.responseDto.LearningRoutineExpressionResponseDTO;
 import com.newlang.backend.dto.responseDto.LearningRoutineResponseDTO;
 import com.newlang.backend.dto.responseDto.LearningRoutineWordResponseDTO;
@@ -54,6 +55,7 @@ public class LearningRoutineController {
         }
     }
 
+    // get routine list by id user (for admin users only)
     @GetMapping("/get-routine-by-user/{id}")
     public ResponseEntity<List<LearningRoutineResponseDTO>> getLearningRoutineByUserId(@PathVariable Long id) {
         try {
@@ -66,13 +68,35 @@ public class LearningRoutineController {
         }
     }
 
-    @PutMapping("/update-routine/{id}")
-    public ResponseEntity<?> updateLearningRoutine(@PathVariable Long id, @Valid @RequestBody LearningRoutineRequestDTO requestDTO, String userEmail) {
+
+    //Get learning routines cheking user are authenticated using JWT
+    @GetMapping("/get-my-routines")
+    public ResponseEntity<?> getAllMyLearningRoutines() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
         try {
+            RequestResp userRoutines = learningRoutineManagementService.getAllMyLearningRoutines(userEmail);
+            return new ResponseEntity<>(userRoutines, HttpStatus.OK);
+        } catch (UserNotFoundByIdException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PutMapping("/update-routine/{id}")
+    public ResponseEntity<?> updateLearningRoutine(@PathVariable Long id, @Valid @RequestBody LearningRoutineRequestDTO requestDTO) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userEmail = authentication.getName();
             LearningRoutineResponseDTO responseDTO = learningRoutineManagementService.updateLearningRoutine(id, requestDTO, userEmail);
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch (LearningRoutineNotFoundException | UserNotFoundByIdException | CategoryNotFoundException | LevelNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnauthorizedActionException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (LearningRoutineAlreadyExistException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
@@ -87,6 +111,8 @@ public class LearningRoutineController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (LearningRoutineNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (UnauthorizedActionException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -168,5 +194,4 @@ public class LearningRoutineController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

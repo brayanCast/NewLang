@@ -92,6 +92,12 @@ function HomePage() {
         }, 100);
     };
 
+    const handleSearchButtonClick = () => {
+        if(searchQuery.trim() !== '') {
+            navigate(`/search-results/${encodeURIComponent(searchQuery)}`);
+        }
+    }
+
     return (
         <div className="homepage">
             <Navbar />
@@ -109,7 +115,7 @@ function HomePage() {
                             onBlur={handleBlur}
                             className='search-bar-input'
                         />
-                        <button className='search-bar-button'>
+                        <button className='search-bar-button' onClick={handleSearchButtonClick}>
                             <img src={searchIcon} alt="Buscar" />
                         </button>
                     </div>

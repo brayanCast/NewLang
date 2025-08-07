@@ -1,6 +1,5 @@
 package com.newlang.backend.controller;
 
-
 import com.newlang.backend.dto.requestDto.ExpressionRequestDTO;
 import com.newlang.backend.dto.responseDto.CategoryResponseDTO;
 import com.newlang.backend.dto.responseDto.ExpressionResponseDTO;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
@@ -133,6 +131,4 @@ public class ExpressionManagementController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(expressionDtos, HttpStatus.OK);
     }
-
-
 }
