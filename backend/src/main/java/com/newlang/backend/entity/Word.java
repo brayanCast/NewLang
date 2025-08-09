@@ -1,6 +1,7 @@
 package com.newlang.backend.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -27,10 +28,12 @@ public class Word {
 
     @ManyToOne
     @JoinColumn(name = "id_category")
+    @JsonIgnoreProperties({"words", "expressions"})
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "id_level")
+    @JsonIgnoreProperties({"words", "expressions"})
     private Level level;
 
 

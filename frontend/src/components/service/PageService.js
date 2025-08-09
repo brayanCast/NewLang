@@ -1,12 +1,12 @@
 import axiosInstance from "../../utils/AxiosInstances";
 
 class PageService {
-    static BASE_URL = "http://localhost:8080";
+    static BASE_URL = "http://localhost:8080/auth/search";
 
 
     static async searchBar(query) {
         try {
-            const response = await axiosInstance.get(`/auth/search/suggestions?query=${query}`);
+            const response = await axiosInstance.get(`/suggestions?query=${query}`);
             return response.data;
         } catch (err) {
             console.error("Error buscando las palabras o frases: ", err);
@@ -14,14 +14,20 @@ class PageService {
         }
     }
 
-    static async getPhraseOrWord(content) {
+    
+
+    static async getPhraseOrWord(query) {
         try {
-            const response = await axiosInstance.get(`?phraseword=${content}`);
+            const response = await axiosInstance.get(`${this.BASE_URL}/global`, {
+                params: {query: query}
+            });
             return response.data;
         } catch (err) {
             console.error("Error buscando la frase o palabra: ", err);
             throw err;
         }
     }
+
+    
 }
 export default PageService;

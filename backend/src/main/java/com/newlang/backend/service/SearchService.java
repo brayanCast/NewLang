@@ -1,7 +1,8 @@
 package com.newlang.backend.service;
 
 import com.newlang.backend.dto.SearchResultDto;
-import com.newlang.backend.dto.requestDto.GlobalSearchResponseDTO;
+import com.newlang.backend.dto.responseDto.GlobalSearchResponseDTO;
+
 import com.newlang.backend.entity.Expression;
 import com.newlang.backend.entity.Word;
 import com.newlang.backend.exceptions.ExpressionNotFoundException;
@@ -73,14 +74,21 @@ public class SearchService {
     }
 
     public Object globalSearchOne(String query) throws Exception {
+        Word foundWord = null;
         try {
-            Word foundWord = wordManagementService.getByWord(query);
+            foundWord = wordManagementService.getByWord(query);
             return new GlobalSearchResponseDTO("word", foundWord);
         } catch (WordNotFoundException e) {
-            Expression foundExpression = expressionManagementService.getByExpression(query);
+            // No se encontró una palabra, ahora busca una expresión
+        }
+
+        Expression foundExpression = null;
+        try {
+            foundExpression = expressionManagementService.getByExpression(query);
             return new GlobalSearchResponseDTO("expression", foundExpression);
-        } catch (ExpressionNotFoundException ex) {
-            throw new Exception("No se encuentran resultados para la búsqueda" + query);
+        } catch (ExpressionNotFoundException e) {
+            // Si la búsqueda de la expresión también falla, lanza la excepción
+            throw new Exception("No se encuentran resultados para la búsqueda: " + query);
         }
     }
 }

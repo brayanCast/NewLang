@@ -34,6 +34,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 {/* Si UpdateUser siempre carga el perfil del usuario logueado,
                     mantén la ruta sin ':userId' aquí y en ProfilePage el Link. */}
+                <Route path='/search-results-word'/>
                 <Route path="/update-user" element={<UpdateUser />} />
               </Route>
 

@@ -1,4 +1,4 @@
-package com.newlang.backend.dto.requestDto;
+package com.newlang.backend.dto.responseDto;
 
 public class GlobalSearchResponseDTO {
 
