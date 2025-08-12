@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  # Servicio de la aplicación web
+  web:
+    build: . # O si tienes una imagen ya construida, usa 'image: nombre_de_tu_imagen'
+    ports:
+      - "8080:8080" # Mapea el puerto de tu aplicación al puerto del host
+    depends_on:
+      - db # Asegura que el servicio 'db' se inicie antes que 'web'
+    environment:
+      # Variables de entorno para la configuración de la base de datos
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/newlang
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  # Servicio de la base de datos MySQL
+  db:
+    image: mysql:8.0 # Utiliza una versión específica de MySQL
+    container_name: mysql-db
+    ports:
+      - "3307:3306" # Mapea el puerto de MySQL al puerto del host (ej. 3307)
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=newlang
+    volumes:
+      - mysql-data:/var/lib/mysql # Persiste los datos de la base de datos
+
+volumes:
+  mysql-data: # Define un volumen para los datos de MySQL
