@@ -6,7 +6,9 @@ class PageService {
 
     static async searchBar(query) {
         try {
-            const response = await axiosInstance.get(`/suggestions?query=${query}`);
+            const response = await axiosInstance.get(`${this.BASE_URL}/suggestions`, {
+                params: { query: query }
+            });
             return response.data;
         } catch (err) {
             console.error("Error buscando las palabras o frases: ", err);

@@ -1,0 +1,16 @@
+.result-card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 75dvh;
+    background-color: #D6D8E8;
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+}
+
+.result-image {
+    max-width: 160px;
+    height: 160px;
+}

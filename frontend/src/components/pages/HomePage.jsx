@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../common/Navbar';
 import Footer from '../common/Footer';
 import PageService from '../service/PageService'; // Service for API calls
@@ -11,6 +12,7 @@ import searchIcon from '../../img/search_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.
 
 function HomePage() {
     const [searchQuery, setSearchQuery] = useState('');
+    const navigate = useNavigate();
     const [searchResults, setSearchResults] = useState([]);
     const [searchError, setSearchError] = useState(null);
     const [showSuggestions, setShowSuggestions] = useState(false); // State to control suggestions visibility
@@ -94,7 +96,7 @@ function HomePage() {
 
     const handleSearchButtonClick = () => {
         if(searchQuery.trim() !== '') {
-            navigate(`/search-results/${encodeURIComponent(searchQuery)}`);
+            navigate(`/search-sugestions/${encodeURIComponent(searchQuery)}`);
         }
     }
 

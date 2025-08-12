@@ -51,6 +51,7 @@ public class WordManagementService {
         Word newWord = new Word();
         newWord.setEnglishWord(wordRequestDTO.getEnglishWord());
         newWord.setSpanishWord(wordRequestDTO.getSpanishWord());
+        newWord.setImageUrl(wordRequestDTO.getImageUrl());
         newWord.setCategory(category);
         newWord.setLevel(level);
 
@@ -92,6 +93,7 @@ public class WordManagementService {
         //Actualiza y guarda los nuevos datos de la entidad Word
         existingWord.setEnglishWord(wordRequestDTO.getEnglishWord());
         existingWord.setSpanishWord(wordRequestDTO.getSpanishWord());
+        existingWord.setImageUrl(wordRequestDTO.getImageUrl());
         existingWord.setCategory(newCategory);
         existingWord.setLevel(newLevel);
 

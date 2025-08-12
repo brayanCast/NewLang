@@ -24,7 +24,7 @@ function UserManagementPage() {
 
     const deleteUser = async (userId) => {
         try {
-            const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+            const confirmDelete = window.confirm('¿Está seguro que desea eliminar este usuario?');
             const token = localStorage.getItem('token');
             if (confirmDelete) {
                 await UserService.deleteUser(userId, token);

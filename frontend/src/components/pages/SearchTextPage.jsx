@@ -38,27 +38,29 @@ function SearchTextPage() {
         // Renderizado condicional basado en el tipo de resultado
         if (result.type === 'word') {
             const word = result.data;
+            console.log(word);
             return (
                 <div className="result-card word-card">
                     <img src={word.imageUrl} alt={word.englishWord} className="result-image" />
                     <div className="result-info">
                         <h3>{word.englishWord}</h3>
                         <p><strong>Traducción:</strong> {word.spanishWord}</p>
-                        <p><strong>Categoría:</strong> {word.categoryResponseDTO?.nameCategory}</p>
-                        <p><strong>Nivel:</strong> {word.levelResponseDTO?.nameLevel}</p>
+                        <p><strong>Categoría:</strong> {word.category.nameCategory}</p>
+                        <p><strong>Nivel:</strong> {word.level.nameLevel}</p>
                     </div>
                 </div>
             );
         } else if (result.type === 'expression') {
             const expression = result.data;
+            console.log(expression);
             return (
                 <div className="result-card expression-card">
                     <img src={expression.imageUrl} alt={expression.englishExpression} className="result-image" />
                     <div className="result-info">
                         <h3>{expression.englishExpression}</h3>
                         <p><strong>Traducción:</strong> {expression.spanishExpression}</p>
-                        <p><strong>Categoría:</strong> {expression.categoryResponseDTO?.nameCategory}</p>
-                        <p><strong>Nivel:</strong> {expression.levelResponseDTO?.nameLevel}</p>
+                        <p><strong>Categoría:</strong> {expression.category.nameCategory}</p>
+                        <p><strong>Nivel:</strong> {expression.level.nameLevel}</p>
                     </div>
                 </div>
             );

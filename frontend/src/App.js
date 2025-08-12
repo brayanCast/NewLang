@@ -10,6 +10,7 @@ import VerifyOtp from './components/auth/VerifyOtp';
 import UpdatePassword from './components/auth/UpdatePassword';
 import HomePage from './components/pages/HomePage';
 import ProtectedRoute from './components/route/ProtectedRoute';
+import SearchTextPage from './components/pages/SearchTextPage';
 import { LoadingProvider } from './components/context/LoadingContext';
 
 
@@ -34,7 +35,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 {/* Si UpdateUser siempre carga el perfil del usuario logueado,
                     mantén la ruta sin ':userId' aquí y en ProfilePage el Link. */}
-                <Route path='/search-results-word'/>
+                <Route path="/search-sugestions/:query" element={<SearchTextPage/>} />
                 <Route path="/update-user" element={<UpdateUser />} />
               </Route>
 
