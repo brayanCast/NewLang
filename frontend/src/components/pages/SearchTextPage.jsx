@@ -38,7 +38,6 @@ function SearchTextPage() {
         // Renderizado condicional basado en el tipo de resultado
         if (result.type === 'word') {
             const word = result.data;
-            console.log(word);
             return (
                 <div className="result-card word-card">
                     <img src={word.imageUrl} alt={word.englishWord} className="result-image" />
@@ -52,7 +51,6 @@ function SearchTextPage() {
             );
         } else if (result.type === 'expression') {
             const expression = result.data;
-            console.log(expression);
             return (
                 <div className="result-card expression-card">
                     <img src={expression.imageUrl} alt={expression.englishExpression} className="result-image" />

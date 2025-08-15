@@ -1,0 +1,35 @@
+services:
+  # Servicio del Frontend (React)
+  frontend:
+    build: ./frontend # Ruta a la carpeta de tu frontend
+    ports:
+      - "3000:80" # Mapea el puerto del frontend a un puerto local (ej. 3000)
+    depends_on:
+      - web # Asegura que el backend esté listo antes de que el frontend se inicie
+
+  # Servicio del Backend (Spring Boot)
+  web:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/newlang
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  # Servicio de la base de datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=newlang
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

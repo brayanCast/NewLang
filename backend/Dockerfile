@@ -1,17 +1,24 @@
-# Stage 1: Build the application
+# Stage 1: Build the application with Maven
 FROM eclipse-temurin:21-jdk AS builder
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the application code
-COPY . .
+# Copy the Maven project file first
+COPY pom.xml .
 
-# Build the application (requires Maven or Gradle)
-RUN ./mvnw clean package -DskipTests
+# Download dependencies without building the app to cache them
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application code
+COPY src ./src
+
+# Build the application
+RUN mvn package -DskipTests
 
 # Stage 2: Run the application
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-slim
+# Using the -slim version keeps the image smaller.
 
 # Set the working directory
 WORKDIR /app
@@ -22,5 +29,5 @@ COPY --from=builder /app/target/*.jar app.jar
 # Expose the port the app will run on
 EXPOSE 8080
 
-# Comand to run the application
+# Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
