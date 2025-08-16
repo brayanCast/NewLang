@@ -18,6 +18,9 @@ RUN npm run build
 # This stage uses a lightweight Nginx image to serve the compiled files.
 FROM nginx:alpine
 
+# Copia el archivo de configuración de Nginx
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy the static build files from the builder stage to Nginx's public directory
 COPY --from=builder /app/build /usr/share/nginx/html
 
