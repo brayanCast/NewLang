@@ -1,5 +1,5 @@
 # Stage 1: Build the application with Maven
-FROM eclipse-temurin:21-jdk AS builder
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Stage 2: Run the application
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-slim
 # Using the -slim version keeps the image smaller.
 
 # Set the working directory
