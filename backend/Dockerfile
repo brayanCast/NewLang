@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Stage 2: Run the application
-FROM eclipse-temurin:21-jre-slim
+FROM eclipse-temurin:21-jre
 # Using the -slim version keeps the image smaller.
 
 # Set the working directory
