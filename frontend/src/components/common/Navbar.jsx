@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import UserService from "../service/UserService";
-import profilePage from "../userspage/ProfilePage";
-import { useNavigate } from "react-router-dom";
-import { useLoading } from "../context/LoadingContext";
-import profileIcon from "../../img/perfil.png";
-import imgLogo from "../../img/logo_newLang.png"; // Import the logo image
-import "../../styles/Navbar.css"; // Import the CSS file for styling
+import UserService from '../service/UserService';
+import profilePage from '../userspage/ProfilePage';
+import createWordExpression from '../pages/CreateWordExpression'
+import { useNavigate } from 'react-router-dom';
+import { useLoading } from '../context/LoadingContext';
+import profileIcon from '../../img/perfil.png';
+import imgLogo from '../../img/logo_newLang.png'; // Import the logo image
+import '../../styles/Navbar.css'; // Import the CSS file for styling
 
 function Navbar() {
   const navigate = useNavigate();
@@ -13,15 +14,15 @@ function Navbar() {
   const { startLoading, stopLoading } = useLoading();
 
   const handleModifyUser = async () => {
-      startLoading();
-      navigate("/profile");
-      stopLoading();
+    startLoading();
+    navigate("/profile");
+    stopLoading();
   };
 
   // Function to handle logout
   // This function will be called when the user clicks on the "Cerrar Sesión" link
   const handleLogout = () => {
-    const confirmLogout = window.confirm( "¿Estás seguro de que deseas cerrar sesión?" );
+    const confirmLogout = window.confirm("¿Estás seguro de que deseas cerrar sesión?");
     if (confirmLogout) {
       startLoading();
 
@@ -35,6 +36,12 @@ function Navbar() {
         stopLoading();
       }
     }
+  };
+
+  const handleCreateWordExpression = () => {
+    startLoading();
+    navigate("/create-word-expression");
+    stopLoading();
   };
 
   const checkUserRole = useCallback(async () => {
@@ -77,6 +84,16 @@ function Navbar() {
                 <a href="modify-routine.html" rel="noopener noreferrer">
                   Palabras o Expresiones
                 </a>
+                <ul className="manage-text">
+
+                  <li><a href={createWordExpression}
+                   rel="noopener noreferrer"
+                   onClick={handleCreateWordExpression}
+                   >Crear Palabras/Expresiones</a>
+                   </li>
+
+                  <li><a href="" rel="noopener noreferrer">Modificar Palabras/Expresiones</a></li>
+                </ul>
               </li>
             </ul>
           </li>

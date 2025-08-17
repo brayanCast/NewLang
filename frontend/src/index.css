@@ -91,6 +91,7 @@ body {
 }
 
 .input_container label {
+  color: #000739;
   margin-bottom: 5px;
   font-size: 20px;
   font-weight: bold;

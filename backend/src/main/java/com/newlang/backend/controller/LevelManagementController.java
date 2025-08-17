@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
-@RequestMapping("/admin/level")
+@RequestMapping("/level")
 public class LevelManagementController {
 
     @Autowired
     private LevelManagementService levelManagementService;
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<?> createLevel(@RequestBody Level level) {
         try {
             Level newLevel = levelManagementService.saveLevel(level.getNameLevel());
@@ -33,7 +33,7 @@ public class LevelManagementController {
         }
     }
 
-    @PutMapping("/update-level/{id}")
+    @PutMapping("/admin/update-level/{id}")
     public ResponseEntity<?> updateLevel(@PathVariable("id") Long id, @RequestBody Level level) {
         try {
             return ResponseEntity.ok(levelManagementService.updateLevel(id, level));
@@ -44,7 +44,7 @@ public class LevelManagementController {
         }
     }
 
-    @GetMapping("get-all-levels")
+    @GetMapping("/auth/get-all-levels")
     public ResponseEntity<List<LevelResponseDTO>> getAllLevels(){
         List<Level> levels = levelManagementService.getAllLevels();
         List<LevelResponseDTO> levelDtos = levels.stream()
@@ -53,7 +53,7 @@ public class LevelManagementController {
         return new ResponseEntity<>(levelDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/get-level/{id}")
+    @GetMapping("/auth/get-level/{id}")
     public ResponseEntity<LevelResponseDTO> getLevelById(@PathVariable("id") Long id) {
         return levelManagementService.getLevelById(id)
                 .map(level -> new LevelResponseDTO(level.getIdLevel(), level.getNameLevel()))
@@ -61,7 +61,7 @@ public class LevelManagementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/delete-level/{id}")
+    @DeleteMapping("/admin/delete-level/{id}")
     public ResponseEntity<?> deleteLevelById(@PathVariable Long id) {
         try {
             levelManagementService.deleteLevelById(id);

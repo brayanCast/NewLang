@@ -11,6 +11,7 @@ import UpdatePassword from './components/auth/UpdatePassword';
 import HomePage from './components/pages/HomePage';
 import ProtectedRoute from './components/route/ProtectedRoute';
 import SearchTextPage from './components/pages/SearchTextPage';
+import CreateWordExpression from './components/pages/CreateWordExpression';
 import { LoadingProvider } from './components/context/LoadingContext';
 
 
@@ -42,6 +43,7 @@ function App() {
               {/* Rutas Protegidas para Administradores */}
               <Route element={<ProtectedRoute adminOnly={true} />}>
                 <Route path="/user-management" element={<UserManagementPage />} />
+                <Route path="/create-word-expression" element={<CreateWordExpression />} />
               </Route>
 
               {/* Ruta Catch-all */}

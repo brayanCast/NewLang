@@ -61,7 +61,7 @@ nav ul{
     z-index: 1001;
 }
 
-.nav-bar li ul :hover {
+.nav-bar li a:hover {
     background-color: #495083;
 }
 
@@ -70,9 +70,31 @@ nav ul{
     font-size: 17px; /* Fuente ligeramente más pequeña */
 }
 
+.nav-bar li ul li ul {
+    display: none; /* Initially hide the sub-submenu */
+    position: absolute; /* Position it relative to the parent li */
+    top: 50%;           /* Align to the top of the parent li */
+    left: 100%;       /* Position it to the right of the parent li */
+    background-color: #000739;
+    min-width: 260px; 
+    z-index: 1002;
+}
+
+
+.nav-bar li ul li ul li a {
+    padding: 12px 15px;
+    font-size: 17px;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.nav-bar li ul li a:hover {
+    background-color: #495083;
+}
+
 .nav-bar li:hover > ul {
     display: block;
 }
+
 
 /*Ícono del perfil*/
 
