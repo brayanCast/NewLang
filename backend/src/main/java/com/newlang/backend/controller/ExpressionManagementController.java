@@ -114,6 +114,18 @@ public class ExpressionManagementController {
         }
     }
 
+    @DeleteMapping("/admin/expression/delete-by-id/{id}")
+    public ResponseEntity<?> deleteExpressionById(@PathVariable("id") Long id) {
+        try {
+            expressionManagementService.deleteExpressionById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ExpressionNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/auth/expression-by-category/{id}")
     public ResponseEntity<List<ExpressionResponseDTO>> getExpressionsByCategoryId(@PathVariable Long categoryId) {
         List<Expression> expressions = expressionManagementService.getExpressionByCategory(categoryId);

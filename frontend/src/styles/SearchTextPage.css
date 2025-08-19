@@ -4,13 +4,14 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    min-height: 75dvh;
+    min-height: 82.5dvh;
     background-color: #D6D8E8;
     font-family: 'Jua', sans-serif;
     font-size: 15px;
 }
 
 .result-image {
+    margin-top: 6rem;
     max-width: 160px;
     height: 160px;
 }

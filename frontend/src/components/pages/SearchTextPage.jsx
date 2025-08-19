@@ -82,7 +82,6 @@ function SearchTextPage() {
         <div className="search-detail-page">
             <Navbar />
             <div className="search-detail-content">
-                <h2>Resultados de búsqueda para: "{query}"</h2>
                 {renderResultCard()}
             </div>
             <Footer />

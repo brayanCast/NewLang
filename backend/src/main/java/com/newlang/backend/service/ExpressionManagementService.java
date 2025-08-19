@@ -51,6 +51,7 @@ public class ExpressionManagementService {
         Expression newExpression = new Expression();
         newExpression.setEnglishExpression(expressionRequestDTO.getEnglishExpression());
         newExpression.setSpanishExpression(expressionRequestDTO.getSpanishExpression());
+        newExpression.setImageUrl(expressionRequestDTO.getImageUrl());
         newExpression.setCategory(category);
         newExpression.setLevel(level);
 
@@ -83,6 +84,7 @@ public class ExpressionManagementService {
 
         existingExpression.setEnglishExpression(expressionRequestDTO.getEnglishExpression());
         existingExpression.setSpanishExpression(expressionRequestDTO.getSpanishExpression());
+        existingExpression.setSpanishExpression(expressionRequestDTO.getImageUrl());
         existingExpression.setCategory(newCategory);
         existingExpression.setLevel(newLevel);
 
@@ -98,6 +100,14 @@ public class ExpressionManagementService {
                 () -> { throw new ExpressionNotFoundException("La expresión " + expression + " no fue encontrada");
                 }
         );
+    }
+
+    public void deleteExpressionById(Long id) {
+        if(expressionRepository.findById(id).isPresent()) {
+            expressionRepository.deleteById(id);
+        } else {
+            throw new ExpressionNotFoundException("La expresión no existe o ya fue eliminada");
+        }
     }
 
     public List<Expression> getSuggestions(String query) {

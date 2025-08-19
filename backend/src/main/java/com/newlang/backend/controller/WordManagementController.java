@@ -11,6 +11,7 @@ import com.newlang.backend.exceptions.WordAlreadyExistException;
 import com.newlang.backend.exceptions.WordNotFoundException;
 import com.newlang.backend.service.WordManagementService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -118,6 +119,18 @@ public class WordManagementController {
         } catch (WordNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/admin/word/delete-by-id/{id}")
+    public ResponseEntity<?> deleteWordById(@PathVariable("id") Long id){
+        try {
+            wordManagementService.deleteWordById(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (WordNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -112,6 +112,14 @@ public class WordManagementService {
          );
     }
 
+    public void deleteWordById(Long id) {
+        if(wordRepository.findById(id).isPresent()) {
+            wordRepository.deleteById(id);
+        } else {
+            throw new WordNotFoundException("La palabra no existe o ya fue eliminada");
+        }
+    }
+
     // ---- Función para traer la lista de palabras asociadas a las letras que se vayan digitando ----
     public List<Word> getSuggestions(String query) {
 
@@ -154,5 +162,4 @@ public class WordManagementService {
 
         return wordRepository.findByLevel(level);
     }
-
 }
