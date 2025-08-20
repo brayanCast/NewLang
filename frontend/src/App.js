@@ -44,6 +44,7 @@ function App() {
               <Route element={<ProtectedRoute adminOnly={true} />}>
                 <Route path="/user-management" element={<UserManagementPage />} />
                 <Route path="/create-word-expression" element={<CreateWordExpression />} />
+                <Route path="/list-word-expression" element={<ListWordExpression />} />
               </Route>
 
               {/* Ruta Catch-all */}
