@@ -27,21 +27,21 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-height: 50px;
 }
 
 .search-bar-container input {
- padding: 5px 80px;
- font-size: 16px;
+ font-size: 14px;
  text-align: left;
  justify-content: left;
  border: none;
  border-bottom-left-radius: 10px;
  border-top-left-radius: 10px;
-
 }
 
 .search-bar-container button{
-  padding: 0 5px;
+  padding: 7px 10px;
+  margin-left: -10px;
   cursor: pointer;
   background-color: #000739;
   text-decoration: none;

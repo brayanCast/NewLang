@@ -55,7 +55,6 @@ function HomePage() {
                 // Call the searchBar method from PageService with the search query
                 const data = await PageService.searchBar(searchQuery);
                 setSearchResults(data); // Set search results
-                console.log('Datos recibidos', data); // Log the received data 
 
                 if (data.length > 0) {
                     setShowSuggestions(true); // Show suggestions if results are found
@@ -140,7 +139,6 @@ function HomePage() {
             <Footer />
         </div>
     );
-
 }
 
 export default HomePage;

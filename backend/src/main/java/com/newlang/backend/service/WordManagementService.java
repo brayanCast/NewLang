@@ -49,8 +49,8 @@ public class WordManagementService {
 
         //Crea el objeto newWord y guarda los la palabra en inglés y español, la categoría y el nivel (guarda la entidad Word)
         Word newWord = new Word();
-        newWord.setEnglishWord(wordRequestDTO.getEnglishWord());
-        newWord.setSpanishWord(wordRequestDTO.getSpanishWord());
+        newWord.setEnglishWord(wordRequestDTO.getEnglishWord().trim());
+        newWord.setSpanishWord(wordRequestDTO.getSpanishWord().trim());
         newWord.setImageUrl(wordRequestDTO.getImageUrl());
         newWord.setCategory(category);
         newWord.setLevel(level);

@@ -12,6 +12,8 @@ import HomePage from './components/pages/HomePage';
 import ProtectedRoute from './components/route/ProtectedRoute';
 import SearchTextPage from './components/pages/SearchTextPage';
 import CreateWordExpression from './components/pages/CreateWordExpression';
+import ListWordExpression from '../src/components/pages/ListWordExpression';
+import ModifyWordExpression from '../src/components/pages/ModifyWordExpression';
 import { LoadingProvider } from './components/context/LoadingContext';
 
 
@@ -45,6 +47,7 @@ function App() {
                 <Route path="/user-management" element={<UserManagementPage />} />
                 <Route path="/create-word-expression" element={<CreateWordExpression />} />
                 <Route path="/list-word-expression" element={<ListWordExpression />} />
+                <Route path="/modify-word-expression/:type/:id" element={<ModifyWordExpression />} />
               </Route>
 
               {/* Ruta Catch-all */}

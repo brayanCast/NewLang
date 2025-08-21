@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import UserService from '../service/UserService';
 import profilePage from '../userspage/ProfilePage';
-import createWordExpression from '../pages/CreateWordExpression'
+import homePage from '../pages/HomePage';
+import createWordExpression from '../pages/CreateWordExpression';
+import ListWordExpression from '../pages/ListWordExpression';
 import { useNavigate } from 'react-router-dom';
 import { useLoading } from '../context/LoadingContext';
 import profileIcon from '../../img/perfil.png';
@@ -38,9 +40,21 @@ function Navbar() {
     }
   };
 
+  const handleHomePage = () => {
+    startLoading();
+    navigate("/homepage");
+    stopLoading();
+  }
+
   const handleCreateWordExpression = () => {
     startLoading();
     navigate("/create-word-expression");
+    stopLoading();
+  };
+
+  const handleListWordExpression = () => {
+    startLoading();
+    navigate("/list-word-expression");
     stopLoading();
   };
 
@@ -63,36 +77,60 @@ function Navbar() {
 
   return (
     <nav>
-      <a href="http://localhost:3000/homepage">
+      <a href={homePage}
+        rel="noopener noreferrer"
+        onClick={handleHomePage}>
         <img src={imgLogo} id="img-logo" alt="Logo NewLang" />
       </a>
       <ul className="nav-bar">
         <li>
-          <a href="http://localhost:3000/homepage">Inicio</a>
+          <a
+            href={homePage}
+            rel="noopener noreferrer"
+            onClick={handleHomePage}>
+            Inicio
+          </a>
         </li>
 
         {isAdmin && (
           <li>
-            <a href="#">Gestionar</a>
+            <a
+              href={homePage}
+              rel="noopener noreferrer"
+              onClick={handleHomePage}
+            >
+              Gestionar
+            </a>
             <ul>
               <li>
-                <a href="create-routine.html" rel="noopener noreferrer">
+                <a
+                  href={homePage}
+                  rel="noopener noreferrer"
+                  onClick={handleHomePage}
+                >
                   Usuarios
                 </a>
               </li>
               <li>
-                <a href="modify-routine.html" rel="noopener noreferrer">
+                <a 
+                    href={ListWordExpression}
+                    rel="noopener noreferrer"
+                    onClick={handleListWordExpression}
+                >
                   Palabras o Expresiones
                 </a>
                 <ul className="manage-text">
 
                   <li><a href={createWordExpression}
-                   rel="noopener noreferrer"
-                   onClick={handleCreateWordExpression}
-                   >Crear Palabras/Expresiones</a>
-                   </li>
+                    rel="noopener noreferrer"
+                    onClick={handleCreateWordExpression}
+                  >Crear Palabras/Expresiones</a>
+                  </li>
 
-                  <li><a href="" rel="noopener noreferrer">Modificar Palabras/Expresiones</a></li>
+                  <li><a href={ListWordExpression}
+                    rel="noopener noreferrer"
+                    onClick={handleListWordExpression}
+                  >Modificar Palabras/Expresiones</a></li>
                 </ul>
               </li>
             </ul>

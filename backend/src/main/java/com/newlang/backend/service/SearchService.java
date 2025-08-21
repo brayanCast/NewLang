@@ -50,7 +50,7 @@ public class SearchService {
         List<SearchResultDto> expressionSuggestions = expressionManagementService.getSuggestions(query.toLowerCase()).stream()
                 .flatMap(expression -> {List<SearchResultDto> dtos = new ArrayList<>();
 
-                    if (expression.getEnglishExpression() != null && expression.getSpanishExpression().
+                    if (expression.getEnglishExpression() != null && expression.getEnglishExpression().
                             toLowerCase().startsWith(query.toLowerCase())){
                         dtos.add(new SearchResultDto(expression.getIdExpression(), "expression",
                                 expression.getEnglishExpression()));

@@ -1,14 +1,15 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ActionServices from '../service/ActionServices';
+import { Eye, Edit, Trash2, Search } from 'lucide-react';
 import { useLoading } from '../context/LoadingContext';
 import Navbar from '../common/Navbar';
 import Footer from '../common/Footer';
 import '../../styles/ListWordExpression.css';
 
-
 function ListWordExpression() {
     const { startLoading, stopLoading } = useLoading();
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [error, setError] = useState(null);
@@ -16,15 +17,7 @@ function ListWordExpression() {
     const [filterType, setFilterType] = useState('all'); // 'all', 'word', 'expression'
     // Mock de ActionServices para demostración
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        filterData();
-    }, [searchQuery, filterType, data]);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             startLoading();
             const [wordsResponse, expressionsResponse] = await Promise.all([
@@ -34,25 +27,27 @@ function ListWordExpression() {
 
             // Transformar palabras
             const wordsData = wordsResponse.map(word => ({
-                id: word.idWord,
+                id: word.id,
                 type: 'word',
                 englishText: word.englishWord,
                 spanishText: word.spanishWord,
-                categoryName: word.category?.nameCategory || 'Sin categoría',
-                levelName: word.level?.nameLevel || 'Sin nivel',
+                categoryName: word.categoryResponseDTO.nameCategory || 'Sin categoría',
+                levelName: word.levelResponseDTO.nameLevel || 'Sin nivel',
                 imageUrl: word.imageUrl
             }));
+            console.log(wordsResponse);
 
             // Transformar expresiones
             const expressionsData = expressionsResponse.map(expression => ({
-                id: expression.idExpression,
+                id: expression.id,
                 type: 'expression',
                 englishText: expression.englishExpression,
                 spanishText: expression.spanishExpression,
-                categoryName: expression.category?.nameCategory || 'Sin categoría',
-                levelName: expression.level?.nameLevel || 'Sin nivel',
+                categoryName: expression.categoryResponseDTO.nameCategory || 'Sin categoría',
+                levelName: expression.levelResponseDTO.nameLevel || 'Sin nivel',
                 imageUrl: expression.imageUrl
             }));
+            console.log(expressionsResponse);
 
             const combinedData = [...wordsData, ...expressionsData];
             setData(combinedData);
@@ -63,10 +58,11 @@ function ListWordExpression() {
         } finally {
             stopLoading();
         }
-    };
+    }, [startLoading, stopLoading]);
 
-    const filterData = () => {
-        let filtered = data;
+    const filterData = useCallback(() => {
+        let filtered = null;
+        filtered = data;
 
         // Filtrar por tipo
         if (filterType !== 'all') {
@@ -84,18 +80,35 @@ function ListWordExpression() {
         }
 
         setFilteredData(filtered);
-    };
+    }, [data, searchQuery, filterType]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    useEffect(() => {
+        filterData();
+    }, [filterData]);
 
     const handleView = (item) => {
         // Para implementación real: navigate(`/${item.type}-detail/${item.id}`)
+
         alert(`Ver detalles de ${item.type}: ${item.englishText} / ${item.spanishText}`);
         console.log('Navegando a vista de detalles:', item);
+        let query = null;
+        if (item.englishText.trim() !== '') {
+            query = item.englishText.trim();
+            navigate(`/search-sugestions/${encodeURIComponent(query)}`);
+        } else if (item.spanishText.trim() !== '') {
+            query = item.spanishText.trim();
+            navigate(`/search-sugestions/${encodeURIComponent(query)}`);
+        }
     };
 
     const handleEdit = (item) => {
-        // Para implementación real: navigate(`/edit-${item.type}/${item.id}`)
-        alert(`Editar ${item.type}: ${item.englishText} / ${item.spanishText}`);
-        console.log('Navegando a edición:', item);
+        startLoading();
+        navigate(`/modify-word-expression/${item.type}/${item.id}`);
+        stopLoading();
     };
 
     const handleDelete = async (item) => {

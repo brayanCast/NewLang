@@ -49,8 +49,8 @@ public class ExpressionManagementService {
                 .orElseThrow(() -> new LevelNotFoundException("El nivel no fue encontrado con ID " + expressionRequestDTO.getLevelId()));
 
         Expression newExpression = new Expression();
-        newExpression.setEnglishExpression(expressionRequestDTO.getEnglishExpression());
-        newExpression.setSpanishExpression(expressionRequestDTO.getSpanishExpression());
+        newExpression.setEnglishExpression(expressionRequestDTO.getEnglishExpression().trim());
+        newExpression.setSpanishExpression(expressionRequestDTO.getSpanishExpression().trim());
         newExpression.setImageUrl(expressionRequestDTO.getImageUrl());
         newExpression.setCategory(category);
         newExpression.setLevel(level);
@@ -82,9 +82,9 @@ public class ExpressionManagementService {
         Level newLevel = levelRepository.findById(expressionRequestDTO.getLevelId())
                 .orElseThrow(() -> new LevelNotFoundException("El nivel no fue encontrado con el ID " + expressionRequestDTO.getLevelId()));
 
-        existingExpression.setEnglishExpression(expressionRequestDTO.getEnglishExpression());
-        existingExpression.setSpanishExpression(expressionRequestDTO.getSpanishExpression());
-        existingExpression.setSpanishExpression(expressionRequestDTO.getImageUrl());
+        existingExpression.setEnglishExpression(expressionRequestDTO.getEnglishExpression().trim());
+        existingExpression.setSpanishExpression(expressionRequestDTO.getSpanishExpression().trim());
+        existingExpression.setImageUrl(expressionRequestDTO.getImageUrl());
         existingExpression.setCategory(newCategory);
         existingExpression.setLevel(newLevel);
 
