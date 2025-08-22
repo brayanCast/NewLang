@@ -6,7 +6,7 @@ import PageService from '../service/PageService'; // Service for API calls
 import UserService from '../service/UserService'; // Service for user-related API calls
 import TypingEffect from '../effects/TypingEffect'; // Custom typing effect component
 //import { useLoading } from '../context/LoadingContext'; // Custom hook for loading state management
-import '../../styles/HomePage.css'; // Import the CSS file for styling
+import '../styles/HomePage.css'; // Import the CSS file for styling
 import searchIcon from '../../img/search_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png'; // Import the search icon
 
 
