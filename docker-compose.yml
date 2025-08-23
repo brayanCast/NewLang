@@ -1,35 +1,68 @@
+
+version: '3.8'
+
 services:
-  # Servicio del Frontend (React)
-  frontend:
-    build: ./frontend # Ruta a la carpeta de tu frontend
-    ports:
-      - "3000:80" # Mapea el puerto del frontend a un puerto local (ej. 3000)
-    depends_on:
-      - web # Asegura que el backend esté listo antes de que el frontend se inicie
-
-  # Servicio del Backend (Spring Boot)
-  web:
-    build: ./backend
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/newlang
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-
   # Servicio de la base de datos MySQL
   db:
     image: mysql:8.0
     container_name: mysql-db
+    restart: always
     ports:
-      - "3307:3306"
+      - "3307:3306"  # Puerto externo 3307, interno 3306
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=newlang
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - newlang-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Servicio del Backend (Spring Boot)
+  web:
+    build: ./backend
+    container_name: newlang-backend
+    restart: on-failure:3
+    ports:
+      - "8080:8080"
+    environment:
+      # CLAVE: Usar 'db' como hostname (nombre del servicio MySQL)
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/newlang?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - newlang-network
+
+  # Servicio del Frontend (React)
+  frontend:
+    build: ./frontend
+    container_name: newlang-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+    depends_on:
+      - web
+    networks:
+      - newlang-network
 
 volumes:
   mysql-data:
+
+networks:
+  newlang-network:
+    driver: bridge
