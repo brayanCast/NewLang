@@ -29,18 +29,25 @@ RUN npm run build && \
     npm cache clean --force && \
     rm -rf node_modules
 
-# Stage 2: Nginx for Railway
+# Stage 2: Nginx for Railway with dynamic port
 FROM nginx:alpine
 
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install envsubst for environment variable substitution
+RUN apk add --no-cache gettext
+
+# Copy nginx template
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy built files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Railway uses PORT environment variable
+# Create startup script
+RUN echo '#!/bin/sh\n\
+echo "Starting Nginx on port $PORT"\n\
+envsubst < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf\n\
+nginx -g "daemon off;"\n\
+' > /start.sh && chmod +x /start.sh
+
 EXPOSE $PORT
 
-# Update nginx config to use Railway's PORT
-CMD sed -i "s/listen 80/listen $PORT/g" /etc/nginx/conf.d/default.conf && \
-    nginx -g "daemon off;"
+CMD ["/start.sh"]
