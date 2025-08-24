@@ -1,4 +1,4 @@
-# Multi-stage build optimizado para espacio
+# Multi-stage build optimizado para Railway
 FROM node:22-alpine AS builder
 
 WORKDIR /app
@@ -6,30 +6,31 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ONLY production dependencies initially
+# Install dependencies
 RUN npm ci --only=production --silent --no-audit --no-fund && \
     npm cache clean --force
 
-# Install dev dependencies for build (temporarily)
+# Install dev dependencies for build
 RUN npm install --silent --no-audit --no-fund
 
 # Copy source code
 COPY . .
 
-# Build with space optimizations
+# Build with Railway optimizations
 ENV GENERATE_SOURCEMAP=false
 ENV DISABLE_ESLINT_PLUGIN=true
 ENV NODE_OPTIONS="--max-old-space-size=1024"
+
+# Use Railway environment variable for API URL during build
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 RUN npm run build && \
     npm cache clean --force && \
     rm -rf node_modules
 
-# Stage 2: Minimal Nginx
+# Stage 2: Nginx for Railway
 FROM nginx:alpine
-
-# Install curl for healthcheck (minimal)
-RUN apk add --no-cache curl && \
-    rm -rf /var/cache/apk/*
 
 # Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -37,12 +38,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Set permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html
+# Railway uses PORT environment variable
+EXPOSE $PORT
 
-EXPOSE 80
-
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD curl -f http://localhost/ || exit 1
-
-CMD ["nginx", "-g", "daemon off;"]
+# Update nginx config to use Railway's PORT
+CMD sed -i "s/listen 80/listen $PORT/g" /etc/nginx/conf.d/default.conf && \
+    nginx -g "daemon off;"
