@@ -38,22 +38,25 @@ RUN apk add --no-cache gettext
 # Copy built files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Create nginx config directly (no external file needed)
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Create nginx config that works with Railway
 RUN echo 'server {\
-    listen $PORT;\
+    listen 0.0.0.0:$PORT;\
     server_name _;\
     root /usr/share/nginx/html;\
-    index index.html;\
+    index index.html index.htm;\
     location / {\
         try_files $uri $uri/ /index.html;\
     }\
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {\
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {\
         expires 1y;\
         add_header Cache-Control "public, immutable";\
+        try_files $uri =404;\
     }\
+    error_page 404 /index.html;\
 }' > /etc/nginx/conf.d/default.conf.template
 
-EXPOSE $PORT
-
-# Single command startup
-CMD sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+# Single command startup with proper binding
+CMD sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
