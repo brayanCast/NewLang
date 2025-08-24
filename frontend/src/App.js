@@ -16,7 +16,7 @@ import ListWordExpression from '../src/components/pages/ListWordExpression';
 import ModifyWordExpression from '../src/components/pages/ModifyWordExpression';
 import { LoadingProvider } from './components/context/LoadingContext';
 
-
+console.log('API URL:', process.env.REACT_APP_API_URL);
 function App() {
   return (
     <BrowserRouter>
