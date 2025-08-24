@@ -35,18 +35,25 @@ FROM nginx:alpine
 # Install envsubst for environment variable substitution
 RUN apk add --no-cache gettext
 
-# Copy nginx template
-COPY nginx.conf.template /etc/nginx/templates/default.conf.template
-
 # Copy built files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Create startup script
-RUN printf '#!/bin/sh\n\
-echo "Starting Nginx on port $PORT"\n\
-envsubst '"'"'$PORT'"'"' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf\n\
-nginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
+# Create nginx config directly (no external file needed)
+RUN echo 'server {\
+    listen $PORT;\
+    server_name _;\
+    root /usr/share/nginx/html;\
+    index index.html;\
+    location / {\
+        try_files $uri $uri/ /index.html;\
+    }\
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {\
+        expires 1y;\
+        add_header Cache-Control "public, immutable";\
+    }\
+}' > /etc/nginx/conf.d/default.conf.template
 
 EXPOSE $PORT
 
-CMD ["/start.sh"]
+# Single command startup
+CMD sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
