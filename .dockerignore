@@ -1,27 +1,48 @@
-# Archivos y carpetas generados por Maven (Backend)
-**/target/
-**/.mvn/wrapper/
-**/src/test/
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Archivos y carpetas generados por Node.js (Frontend)
-**/node_modules/
-**/dist/
-**/build/
+# Production build (evitar duplicados)
+build
+dist
 
-# Entornos de desarrollo
-.env
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
 .DS_Store
-
-# Archivos específicos de Docker
-Dockerfile* # Ignore all Dockerfiles, not just the one in the root
-docker-compose.yml    
-.dockerignore         
+Thumbs.db
 
 # Git
 .git
 .gitignore
 
-# Editores y IDEs
-.vscode/
-.idea/
+# Test files
+coverage
+**/__tests__
+**/*.test.js
+**/*.spec.js
+
+# Documentation
+README.md
+*.md
+
+# Logs
+logs
 *.log
+
+# Cache
+.cache
+.npm
+.eslintcache

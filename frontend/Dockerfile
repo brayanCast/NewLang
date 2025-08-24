@@ -1,44 +1,48 @@
-# Stage 1: Build the application with Node.js
+# Multi-stage build optimizado para espacio
 FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files for better caching
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies with cache optimization
-RUN npm ci --only=production --silent
+# Install ONLY production dependencies initially
+RUN npm ci --only=production --silent --no-audit --no-fund && \
+    npm cache clean --force
 
-# Copy the rest of the application code
+# Install dev dependencies for build (temporarily)
+RUN npm install --silent --no-audit --no-fund
+
+# Copy source code
 COPY . .
 
-# Build the app for production with optimizations
+# Build with space optimizations
 ENV GENERATE_SOURCEMAP=false
 ENV DISABLE_ESLINT_PLUGIN=true
-RUN npm run build
+ENV NODE_OPTIONS="--max-old-space-size=1024"
+RUN npm run build && \
+    npm cache clean --force && \
+    rm -rf node_modules
 
-# Stage 2: Serve the application with Nginx
+# Stage 2: Minimal Nginx
 FROM nginx:alpine
 
-# Install curl for healthchecks (opcional)
-RUN apk add --no-cache curl
+# Install curl for healthcheck (minimal)
+RUN apk add --no-cache curl && \
+    rm -rf /var/cache/apk/*
 
-# Copy custom Nginx configuration
+# Copy nginx config
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy the static build files from the builder stage
+# Copy built files
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Create nginx user and set permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# Set permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html
 
-# Expose port 80
 EXPOSE 80
 
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
   CMD curl -f http://localhost/ || exit 1
 
-# Command to start Nginx
 CMD ["nginx", "-g", "daemon off;"]
