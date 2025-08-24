@@ -42,11 +42,10 @@ COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Create startup script
-RUN echo '#!/bin/sh\n\
+RUN printf '#!/bin/sh\n\
 echo "Starting Nginx on port $PORT"\n\
-envsubst < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf\n\
-nginx -g "daemon off;"\n\
-' > /start.sh && chmod +x /start.sh
+envsubst '"'"'$PORT'"'"' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf\n\
+nginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
 
 EXPOSE $PORT
 
