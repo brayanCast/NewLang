@@ -1,4 +1,3 @@
-
 version: '3.8'
 
 services:
@@ -26,7 +25,9 @@ services:
 
   # Servicio del Backend (Spring Boot)
   web:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: newlang-backend
     restart: on-failure:3
     ports:
@@ -48,7 +49,9 @@ services:
 
   # Servicio del Frontend (React)
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: newlang-frontend
     restart: always
     ports:
