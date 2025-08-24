@@ -58,5 +58,14 @@ RUN echo 'server {\
     error_page 404 /index.html;\
 }' > /etc/nginx/conf.d/default.conf.template
 
-# Single command startup with proper binding
-CMD sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+# Debugging startup
+CMD sh -c "echo 'PORT is: '$PORT && \
+envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && \
+echo 'Generated nginx config:' && \
+cat /etc/nginx/conf.d/default.conf && \
+echo 'Testing nginx config:' && \
+nginx -t && \
+echo 'Files in html directory:' && \
+ls -la /usr/share/nginx/html/ && \
+echo 'Starting nginx...' && \
+nginx -g 'daemon off;'"
