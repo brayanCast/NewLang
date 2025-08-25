@@ -136,10 +136,10 @@ function CreateWordExpression() {
       <form onSubmit={handleSubmit}>
         {/* Selección del tipo */}
         <div className="form-group">
-          <label htmlFor="formType">Type:</label>
+          <label htmlFor="formType">Tipo:</label>
           <select id="formType" name="formType" value={formType} onChange={(e) => setFormType(e.target.value)}>
-            <option value="word">Word</option>
-            <option value="expression">Expression</option>
+            <option value="word">Palabra</option>
+            <option value="expression">Expresión</option>
           </select>
         </div>
 
@@ -147,22 +147,22 @@ function CreateWordExpression() {
         {formType === 'word' ? (
           <>
             <div className="form-group">
-              <label htmlFor="englishWord">English Word:</label>
+              <label htmlFor="englishWord">Palabra en Inglés:</label>
               <input type="text" id="englishWord" name="englishWord" value={formData.englishWord} onChange={handleChange} required />
             </div>
             <div className="form-group">
-              <label htmlFor="spanishWord">Spanish Word:</label>
+              <label htmlFor="spanishWord">Palabra en Español:</label>
               <input type="text" id="spanishWord" name="spanishWord" value={formData.spanishWord} onChange={handleChange} required />
             </div>
           </>
         ) : (
           <>
             <div className="form-group">
-              <label htmlFor="englishExpression">English Expression:</label>
+              <label htmlFor="englishExpression">Expresión en Inglés:</label>
               <input type="text" id="englishExpression" name="englishExpression" value={formData.englishExpression} onChange={handleChange} required />
             </div>
             <div className="form-group">
-              <label htmlFor="spanishExpression">Spanish Expression:</label>
+              <label htmlFor="spanishExpression">Expresión en Español:</label>
               <input type="text" id="spanishExpression" name="spanishExpression" value={formData.spanishExpression} onChange={handleChange} required />
             </div>
           </>
@@ -170,14 +170,14 @@ function CreateWordExpression() {
 
         {/* Campos comunes */}
         <div className="form-group">
-          <label htmlFor="imageUrl">Image URL</label>
+          <label htmlFor="imageUrl">URL de Imagen:</label>
           <input type="url" id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} required />
         </div>
 
         <div className="form-group">
-          <label htmlFor="categoryId">Category:</label>
+          <label htmlFor="categoryId">Categoría:</label>
           <select id="categoryId" name="categoryId" value={formData.categoryId} onChange={handleChange} required>
-            <option value="">Select a Category</option>
+            <option value="">Seleccionar una Categoría</option>
             {categories.map(category => (
               <option key={category.idCategory} value={category.idCategory}>
                 {category.nameCategory}
@@ -187,9 +187,9 @@ function CreateWordExpression() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="levelId">Level:</label>
+          <label htmlFor="levelId">Nivel:</label>
           <select id="levelId" name="levelId" value={formData.levelId} onChange={handleChange} required>
-            <option value="">Select a Level</option>
+            <option value="">Seleccionar un Nivel</option>
             {levels.map(level => (
               <option key={level.idLevel} value={level.idLevel}>
                 {level.nameLevel}
@@ -198,7 +198,7 @@ function CreateWordExpression() {
           </select>
         </div>
 
-        <button type="submit" className="submit-button">Create</button>
+        <button type="submit" className="submit-button">Crear</button>
 
         {message && (
           <p className={`form-message ${isSuccess ? 'success' : 'error'}`}>

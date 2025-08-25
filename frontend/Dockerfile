@@ -23,7 +23,8 @@ ENV NODE_OPTIONS="--max-old-space-size=1024"
 
 # Use Railway environment variable for API URL during build
 ARG REACT_APP_API_URL
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
+# ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_API_URL="http://localhost:8080"
 
 RUN npm run build && \
     npm cache clean --force && \

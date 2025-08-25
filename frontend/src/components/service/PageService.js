@@ -1,7 +1,8 @@
 import axiosInstance from "../../utils/AxiosInstances";
 
 class PageService {
-    static BASE_URL = process.env.REACT_APP_API_URL + "/auth/search";
+    //static BASE_URL = process.env.REACT_APP_API_URL + "/auth/search"; //URL base PARA DESPLIEGUE
+    static BASE_URL = "http://localhost:8080/auth/search"; //URL base PARA DESARROLLO
 
 
     static async searchBar(query) {

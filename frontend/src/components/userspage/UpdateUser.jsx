@@ -46,8 +46,8 @@ function UpdateUser() {
       }
 
     } catch (error) {
-        console.error("Error al obtener la información del usuario:", error);
-        alert(`Error al cargar los datos: ${error.message || "Error desconocido"}`);
+      console.error("Error al obtener la información del usuario:", error);
+      alert(`Error al cargar los datos: ${error.message || "Error desconocido"}`);
 
     } finally {
       stopLoading();
@@ -67,8 +67,7 @@ function UpdateUser() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleUpdateProfile = async (e) => {
 
     const confirmUpdate = window.confirm("Estás seguro de que quieres actualizar tu perfil");
     if (!confirmUpdate) {
@@ -88,7 +87,7 @@ function UpdateUser() {
       const response = await UserService.updateMyProfile(dataToSend);
       const emailChanged = userData.email !== originalEmailRef.current;
 
-      alert(response.message || "Perfil actualizado correctamente");
+      alert("Perfil actualizado correctamente" || response.message);
 
       //Condicional para redirigir al login en caso de que el email haya sido actualizado también
       if (emailChanged) {
@@ -148,7 +147,7 @@ function UpdateUser() {
 
       <div className="update-profile-container">
         <div className="update-profile-left">
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="form-group">
               <label>Nombre del Usuario:</label>
               <input
@@ -185,11 +184,12 @@ function UpdateUser() {
               <label>Rol:</label>
               <input type="text" name="role" value={userData.role} readOnly />
             </div>
-
-            <div className="update-profile-button">
-              <button type="submit">Actualizar Perfil</button>
-            </div>
           </form>
+
+          <div className="update-profile-button">
+            <button type="button" onClick={handleUpdateProfile}>Actualizar Perfil</button>
+          </div>
+
         </div>
 
         <div className="update-profile-right">

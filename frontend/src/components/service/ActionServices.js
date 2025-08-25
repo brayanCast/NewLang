@@ -3,7 +3,8 @@ import axiosInstance from "../../utils/AxiosInstances";
 
 class ActionServices {
 
-    static BASE_URL = process.env.REACT_APP_API_URL;
+    //static BASE_URL = process.env.REACT_APP_API_URL;  PARA COMUNIACION CON BACKEDN AL MOMENTO DEL DESPLIEGUE
+    static BASE_URL = "http://localhost:8080"; //ÁRA COMUNICACIÓN CON EL BACKEND EN DESARROLLO
 
     static async getCategoryList() {
 

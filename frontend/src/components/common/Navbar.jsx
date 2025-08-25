@@ -130,7 +130,7 @@ function Navbar() {
                   <li><a href={ListWordExpression}
                     rel="noopener noreferrer"
                     onClick={handleListWordExpression}
-                  >Modificar Palabras/Expresiones</a></li>
+                  >Lista de Palabras/Expresiones</a></li>
                 </ul>
               </li>
             </ul>
