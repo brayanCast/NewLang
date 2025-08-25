@@ -8,27 +8,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${cors.allowed-origins:http://localhost:3000,http://localhost:3001}")
+    @Value("${cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
-
-    @Value("${spring.profiles.active:development}")
-    private String activeProfile;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        String[] origins;
-
-        // En desarrollo, permitir localhost en varios puertos
-        if ("development".equals(activeProfile)) {
-            origins = new String[]{
-                    "http://localhost:3000",
-                    "http://localhost:3001",
-                    "http://127.0.0.1:3000",
-                    "http://127.0.0.1:3001"
-            };
-        } else {
-            // En producción, usar las URLs configuradas
-            origins = allowedOrigins.split(",");
+        // Dividir las URLs por comas y limpiar espacios
+        String[] origins = allowedOrigins.split(",");
+        for (int i = 0; i < origins.length; i++) {
+            origins[i] = origins[i].trim();
         }
 
         registry.addMapping("/**")
