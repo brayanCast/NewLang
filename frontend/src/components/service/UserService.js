@@ -2,7 +2,7 @@ import axios from "axios"; // Mantén axios para las llamadas sin token si lo de
 import axiosInstance from "../../utils/AxiosInstances"; // Importa la instancia con interceptores
 
 class UserService {
-    static BASE_URL = "http://localhost:8080"; // Esto ya no es tan necesario si usas axiosInstance.baseURL
+    static BASE_URL = process.env.REACT_APP_API_URL; // Esto ya no es tan necesario si usas axiosInstance.baseURL
 
     // Métodos sin token (login, register, OTP, updatePassword)
     // Usan 'axios' directamente o una instancia de axios sin interceptor de token
