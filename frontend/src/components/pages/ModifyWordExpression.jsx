@@ -98,66 +98,70 @@ function ModifyWordExpression() {
         e.preventDefault();
         setMessage('');
         setIsSuccess(false);
+        const confirmMessage = '¿Está seguro que desea eliminar actualizar este elemento?';
 
-        try {
-            startLoading();
-            let response;
-            let payload;
+        if (window.confirm(confirmMessage)) {
 
-            if (type === 'word') {
-                const { englishWord, spanishWord, imageUrl, categoryId, levelId } = formData;
-                payload = {
-                    englishWord,
-                    spanishWord,
-                    imageUrl,
-                    categoryId: Number(categoryId),
-                    levelId: Number(levelId)
-                };
-                response = await ActionServices.updateWordById(id, payload);
-                console.log("Respuesta de actualización de palabra", response);
-            } else if (type === 'expression') {
-                const { englishExpression, spanishExpression, imageUrl, categoryId, levelId } = formData;
-                payload = {
-                    englishExpression,
-                    spanishExpression,
-                    imageUrl,
-                    categoryId: Number(categoryId),
-                    levelId: Number(levelId)
-                };
-                response = await ActionServices.updateExpressionById(id, payload);
-                console.log("Respuesta de actualización de expresión", response);
-            }
+            try {
+                startLoading();
+                let response;
+                let payload;
 
-            setMessage(response.message || 'Elemento actualizado correctamente');
-            setIsSuccess(true);
-
-            setTimeout(() => {
-                navigate(`/list-word-expression`);
-            }, 2000);
-
-        } catch (error) {
-            console.error('Error actualizando el elemento', error);
-            setIsSuccess(false);
-
-            if (error.response) {
-                const status = error.response.status;
-                const errorMessage = error.response.data.message || 'Ocurrió un error desconocido';
-
-                if (status === 409) {
-                    setMessage(`Error: ${errorMessage}`);
-                } else if (status === 404) {
-                    setMessage('Error: Elemento no encontrado');
-                } else {
-                    setMessage(`Error ${status}: ${errorMessage}`);
+                if (type === 'word') {
+                    const { englishWord, spanishWord, imageUrl, categoryId, levelId } = formData;
+                    payload = {
+                        englishWord,
+                        spanishWord,
+                        imageUrl,
+                        categoryId: Number(categoryId),
+                        levelId: Number(levelId)
+                    };
+                    response = await ActionServices.updateWordById(id, payload);
+                    console.log("Respuesta de actualización de palabra", response);
+                } else if (type === 'expression') {
+                    const { englishExpression, spanishExpression, imageUrl, categoryId, levelId } = formData;
+                    payload = {
+                        englishExpression,
+                        spanishExpression,
+                        imageUrl,
+                        categoryId: Number(categoryId),
+                        levelId: Number(levelId)
+                    };
+                    response = await ActionServices.updateExpressionById(id, payload);
+                    console.log("Respuesta de actualización de expresión", response);
                 }
-            } else if (error.request) {
-                setMessage('Error: No se recibió respuesta del servidor');
-            } else {
-                setMessage('Ocurrió un error al preparar la petición');
-            }
 
-        } finally {
-            stopLoading();
+                setMessage(response.message || 'Elemento actualizado correctamente');
+                setIsSuccess(true);
+
+                setTimeout(() => {
+                    navigate(`/list-word-expression`);
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error actualizando el elemento', error);
+                setIsSuccess(false);
+
+                if (error.response) {
+                    const status = error.response.status;
+                    const errorMessage = error.response.data.message || 'Ocurrió un error desconocido';
+
+                    if (status === 409) {
+                        setMessage(`Error: ${errorMessage}`);
+                    } else if (status === 404) {
+                        setMessage('Error: Elemento no encontrado');
+                    } else {
+                        setMessage(`Error ${status}: ${errorMessage}`);
+                    }
+                } else if (error.request) {
+                    setMessage('Error: No se recibió respuesta del servidor');
+                } else {
+                    setMessage('Ocurrió un error al preparar la petición');
+                }
+
+            } finally {
+                stopLoading();
+            }
         }
     };
 

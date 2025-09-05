@@ -115,7 +115,7 @@ function HomePage() {
                             onBlur={handleBlur}
                             className='search-bar-input'
                         />
-                        <button className='search-bar-button' onClick={handleSearchButtonClick}>
+                        <button className='search-bar-button' onClick={handleSearchButtonClick} title='Buscar'>
                             <img src={searchIcon} alt="Buscar" />
                         </button>
                     </div>

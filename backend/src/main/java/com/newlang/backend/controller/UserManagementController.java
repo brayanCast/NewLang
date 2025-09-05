@@ -55,7 +55,7 @@ public class UserManagementController {
             return ResponseEntity.ok(response);
 
         } catch (EmailAlreadyExistException e) {
-            errorResponse.setStatusCode(400);
+            errorResponse.setStatusCode(409);
             errorResponse.setMessage(e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
 
