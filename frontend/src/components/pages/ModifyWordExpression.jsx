@@ -4,6 +4,9 @@ import ActionServices from '../service/ActionServices';
 import Navbar from '../common/Navbar';
 import Footer from '../common/Footer';
 import { useLoading } from '../context/LoadingContext';
+import ConfirmModal from '../common/ConfirmModal';
+import SuccessModal from '../common/SuccessModal';
+import ErrorModal from '../common/ErrorModal';
 import '../../styles/ModifyWordExpression.css';
 
 function ModifyWordExpression() {
@@ -18,23 +21,29 @@ function ModifyWordExpression() {
         spanishExpression: '',
         imageUrl: '',
         categoryId: '',
-        levelId: ''
+        nameCategory: '',
+        levelId: '',
+        nameLevel: ''
     });
 
     const [categories, setCategories] = useState([]);
     const [levels, setLevels] = useState([]);
 
-    const [message, setMessage] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
                 startLoading();
+
                 const [fetchedCategories, fetchedLevels] = await Promise.all([
                     ActionServices.getCategoryList(),
                     ActionServices.getLevelList()
                 ]);
+
                 setCategories(fetchedCategories);
                 setLevels(fetchedLevels);
                 let elementData;
@@ -47,8 +56,10 @@ function ModifyWordExpression() {
                         englishExpression: '',
                         spanishExpression: '',
                         imageUrl: elementData.imageUrl || '',
-                        categoryId: elementData.categoryResponseDTO.categoryId || '',
-                        levelId: elementData.levelResponseDTO.levelId || ''
+                        categoryId: String(elementData.categoryResponseDTO.idCategory) || '',
+                        nameCategory: elementData.categoryResponseDTO.nameCategory || '',
+                        levelId: String(elementData.levelResponseDTO.idLevel) || '',
+                        nameLevel: elementData.levelResponseDTO.nameLevel || ''
                     });
                 } else if (type === 'expression') {
                     elementData = await ActionServices.getExpressionById(id);
@@ -58,19 +69,19 @@ function ModifyWordExpression() {
                         englishExpression: elementData.englishExpression || '',
                         spanishExpression: elementData.spanishExpression || '',
                         imageUrl: elementData.imageUrl || '',
-                        categoryId: elementData.categoryResponseDTO.categoryId || '',
-                        levelId: elementData.levelResponseDTO.levelId || ''
+                        categoryId: String(elementData.categoryResponseDTO.idCategory) || '',
+                        nameCategory: elementData.categoryResponseDTO.nameCategory || '',
+                        levelId: String(elementData.levelResponseDTO.idLevel) || '',
+                        nameLevel: elementData.levelResponseDTO.nameLevel || ''
                     });
                 } else {
                     throw new Error('Tipo de elemento no válido');
                 }
 
-                console.log("Datos cargados", elementData);
-
             } catch (error) {
                 console.error('Error cargando los datos', error);
-                setMessage('Error al cargar los datos del elemento');
-                setIsSuccess(false);
+                setModalMessage('Error cargando los datos iniciales. Intente nuevamente.');
+                setShowErrorModal(true);
             } finally {
                 stopLoading();
             }
@@ -79,8 +90,8 @@ function ModifyWordExpression() {
         if (type && id && (type === 'word' || type === 'expression')) {
             fetchInitialData();
         } else {
-            setMessage('Parámetros de url inválidos');
-            setIsSuccess(false);
+            setModalMessage('Parámetros de URL inválidos');
+            setShowErrorModal(true);
             stopLoading();
         }
 
@@ -88,81 +99,110 @@ function ModifyWordExpression() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+
+        if (name === 'categoryId') {
+            const selectedCategory = categories.find(cat => String(cat.idCategory) === String(value));
+            setFormData(prevState => ({
+                ...prevState,
+                categoryId: value,
+                nameCategory: selectedCategory ? selectedCategory.nameCategory : ''
+
+            }));
+
+        } else if (name === 'levelId') {
+            const selectedLevel = levels.find(cat => String(cat.idLevel) === String(value));
+            setFormData(prevState => ({
+                ...prevState,
+                levelId: value,
+                nameLevel: selectedLevel ? selectedLevel.nameLevel : ''
+            }));
+        } else {
+            setFormData(prevState => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
-        setIsSuccess(false);
-        const confirmMessage = '¿Está seguro que desea eliminar actualizar este elemento?';
+        setShowConfirmModal(true);
+    };
 
-        if (window.confirm(confirmMessage)) {
+    // Función para manejar la confirmación de la actualización y enviar la petición a la API
+    const handleConfirmUpdate = async () => {
+        setShowConfirmModal(false);
 
-            try {
-                startLoading();
-                let response;
-                let payload;
+        try {
+            startLoading();
+            let response;
+            let payload;
 
-                if (type === 'word') {
-                    const { englishWord, spanishWord, imageUrl, categoryId, levelId } = formData;
-                    payload = {
-                        englishWord,
-                        spanishWord,
-                        imageUrl,
-                        categoryId: Number(categoryId),
-                        levelId: Number(levelId)
-                    };
-                    response = await ActionServices.updateWordById(id, payload);
-                    console.log("Respuesta de actualización de palabra", response);
-                } else if (type === 'expression') {
-                    const { englishExpression, spanishExpression, imageUrl, categoryId, levelId } = formData;
-                    payload = {
-                        englishExpression,
-                        spanishExpression,
-                        imageUrl,
-                        categoryId: Number(categoryId),
-                        levelId: Number(levelId)
-                    };
-                    response = await ActionServices.updateExpressionById(id, payload);
-                    console.log("Respuesta de actualización de expresión", response);
-                }
+            if (type === 'word') {
+                const { englishWord, spanishWord, imageUrl, categoryId, levelId } = formData;
+                payload = {
+                    englishWord,
+                    spanishWord,
+                    imageUrl,
+                    categoryId: Number(categoryId),
+                    levelId: Number(levelId)
+                };
+                response = await ActionServices.updateWordById(id, payload);
+                console.log("Respuesta de actualización de palabra", response);
 
-                setMessage(response.message || 'Elemento actualizado correctamente');
-                setIsSuccess(true);
+                setModalMessage('Palabra actualizada correctamente');
 
-                setTimeout(() => {
-                    navigate(`/list-word-expression`);
-                }, 2000);
+            } else if (type === 'expression') {
+                const { englishExpression, spanishExpression, imageUrl, categoryId, levelId } = formData;
+                payload = {
+                    englishExpression,
+                    spanishExpression,
+                    imageUrl,
+                    categoryId: Number(categoryId),
+                    levelId: Number(levelId)
+                };
+                response = await ActionServices.updateExpressionById(id, payload);
+                console.log("Respuesta de actualización de expresión", response);
 
-            } catch (error) {
-                console.error('Error actualizando el elemento', error);
-                setIsSuccess(false);
-
-                if (error.response) {
-                    const status = error.response.status;
-                    const errorMessage = error.response.data.message || 'Ocurrió un error desconocido';
-
-                    if (status === 409) {
-                        setMessage(`Error: ${errorMessage}`);
-                    } else if (status === 404) {
-                        setMessage('Error: Elemento no encontrado');
-                    } else {
-                        setMessage(`Error ${status}: ${errorMessage}`);
-                    }
-                } else if (error.request) {
-                    setMessage('Error: No se recibió respuesta del servidor');
-                } else {
-                    setMessage('Ocurrió un error al preparar la petición');
-                }
-
-            } finally {
-                stopLoading();
+                setModalMessage('Expresión actualizada correctamente');
             }
+
+        } catch (error) {
+            console.error('Error actualizando el elemento', error);
+            let errorMessage = 'Ocurrió un error desconocido';
+
+            if (error.response) {
+                const status = error.response.status;
+                const responseMessage = error.response.data.message || 'Ocurrió un error desconocido';
+
+                if (status === 409) {
+                    errorMessage = responseMessage;
+                } else if (status === 404) {
+                    errorMessage = `Error: ${type} no encontrado`;
+                } else {
+                    errorMessage = `Error ${status}: ${errorMessage}`;
+                }
+            } else if (error.request) {
+                errorMessage = 'Error: No se recibió respuesta del servidor';
+            } else {
+                errorMessage = 'Ocurrió un error al preparar la petición';
+            }
+
+            setModalMessage(errorMessage);
+            setShowErrorModal(true);
+
+        } finally {
+            stopLoading();
+            if (!showErrorModal) setShowSuccessModal(true);
+
         }
+    };
+
+    const handleSuccessModalClose = () => {
+        setShowSuccessModal(false);
+        setTimeout(() => {
+            navigate('/list-word-expression');
+        }, 1000);
     };
 
     const handleCancel = () => {
@@ -270,12 +310,15 @@ function ModifyWordExpression() {
                         onChange={handleChange}
                         required
                     >
-                        <option value="">Select a Category</option>
-                        {categories.map(category => (
-                            <option key={category.idCategory} value={category.idCategory}>
-                                {category.nameCategory}
-                            </option>
-                        ))}
+                        <option value={formData.categoryId}>{formData.nameCategory}</option>
+
+                        {categories
+                            .filter(category => String(category.idCategory) !== String(formData.categoryId))
+                            .map(category => (
+                                <option key={category.idCategory} value={String(category.idCategory)}>
+                                    {category.nameCategory}
+                                </option>
+                            ))}
                     </select>
                 </div>
 
@@ -288,12 +331,14 @@ function ModifyWordExpression() {
                         onChange={handleChange}
                         required
                     >
-                        <option value="">Select a Level</option>
-                        {levels.map(level => (
-                            <option key={level.idLevel} value={level.idLevel}>
-                                {level.nameLevel}
-                            </option>
-                        ))}
+                        <option value={formData.levelId}>{formData.nameLevel}</option>
+                        {levels
+                            .filter(level => String(level.idLevel) !== String(formData.levelId))
+                            .map(level => (
+                                <option key={level.idLevel} value={level.idLevel}>
+                                    {level.nameLevel}
+                                </option>
+                            ))}
                     </select>
                 </div>
 
@@ -306,14 +351,28 @@ function ModifyWordExpression() {
                         Cancelar
                     </button>
                 </div>
-
-                {message && (
-                    <p className={`form-message ${isSuccess ? 'success' : 'error'}`}>
-                        {message}
-                    </p>
-                )}
-
             </form>
+
+            {/* Modales */}
+            <ConfirmModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={handleConfirmUpdate}
+                message="¿Está seguro que desea actualizar este elemento?"
+            />
+
+            <SuccessModal
+                isOpen={showSuccessModal}
+                onClose={handleSuccessModalClose}
+                message={modalMessage}
+            />
+
+            <ErrorModal
+                isOpen={showErrorModal}
+                onClose={() => setShowErrorModal(false)}
+                message={modalMessage}
+            />
+
             <Footer />
         </div>
     );

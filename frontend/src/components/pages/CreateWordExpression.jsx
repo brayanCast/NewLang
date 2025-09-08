@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ActionServices from '../service/ActionServices';
 import Navbar from '../common/Navbar';
 import Footer from '../common/Footer';
 import { useLoading } from '../context/LoadingContext';
+import ConfirmModal from '../common/ConfirmModal';
+import SuccessModal from '../common/SuccessModal';
+import ErrorModal from '../common/ErrorModal';
 import '../../styles/CreateWordExpression.css';
 
 function CreateWordExpression() {
   const { startLoading, stopLoading } = useLoading();
   const [formType, setFormType] = useState('word'); // 'word' o 'expression'
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     englishWord: '',
     spanishWord: '',
@@ -23,9 +28,10 @@ function CreateWordExpression() {
   const [levels, setLevels] = useState([]);
 
   // Estado para mostrar mensajes al usuario
-  const [message, setMessage] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
-
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   // Obtener categorías y niveles cuando el componente se monta
   useEffect(() => {
@@ -42,13 +48,13 @@ function CreateWordExpression() {
 
       } catch (error) {
         console.error("Error actualizando los datos:", error);
-        setMessage('Falla al cargar las categorías o niveles.');
-        setIsSuccess(false);
+        setModalMessage('Falla al cargar las categorías o niveles.');
+        setShowErrorModal(true);
       }
     };
     fetchData();
 
-    const intervalId = setInterval(fetchData, 60000); 
+    const intervalId = setInterval(fetchData, 60000);
 
     return () => {
       clearInterval(intervalId);
@@ -65,13 +71,17 @@ function CreateWordExpression() {
   // Manejador para el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setIsSuccess(false);
-    startLoading();
+    setShowConfirmModal(true);
+  }
+
+  const handleConfirmCreate = async () => {
+    setShowConfirmModal(true);
 
     try {
+      startLoading();
       let response;
       let payload;
+
       if (formType === 'word') {
         const { englishWord, spanishWord, imageUrl, categoryId, levelId } = formData;
         // Validar que los campos de 'word' no estén vacíos
@@ -79,19 +89,19 @@ function CreateWordExpression() {
         payload = { englishWord, spanishWord, imageUrl, categoryId: Number(categoryId), levelId: Number(levelId) };
         response = await ActionServices.createWord(payload);
         console.log("Creación de la palabra con la información", payload);
+        setModalMessage("Palabra creada exitosamente", response.message);
 
       } else if (formType === 'expression') {
         const { englishExpression, spanishExpression, imageUrl, categoryId, levelId } = formData;
         payload = { englishExpression, spanishExpression, imageUrl, categoryId: Number(categoryId), levelId: Number(levelId) };
         response = await ActionServices.createExpression(payload);
         console.log("Creación de la expresión con la información", payload);
+        setModalMessage("Expresión creada exitosamente", response.message);
 
       } else {
         console.error("Tipo de formulario no válido o no se generó correctamente");
       }
 
-      setMessage("creado exitosamente", response.message);
-      setIsSuccess(true);
       // Reiniciar los campos del formulario
       setFormData({
         englishWord: '',
@@ -103,31 +113,45 @@ function CreateWordExpression() {
         levelId: ''
       });
 
+      setShowSuccessModal(true);
+
     } catch (error) {
-      console.error("Error en el envío:", error);
-      setIsSuccess(false);
+      console.log('Falla al crear el elemento.', error.message);
+      let errorMessage = 'Ocurrio un error al crear el elemento';
 
       if (error.response) {
         const status = error.response.status;
-        const errorMessage = error.response.data.message || 'Ocurrió un error desconocido';
+        const responseMessage = error.response.data.message || 'Ocurrió un error desconocido';
 
         if (status === 409) {
-          setMessage(`Error: ${errorMessage}`);
+          errorMessage = responseMessage;
         } else {
-          setMessage(`Error ${status}: ${errorMessage}`);
+          errorMessage = `Error ${status}: ${errorMessage}`;
         }
 
       } else if (error.request) {
-        setMessage('Error al conectar con el servidor, por favor intente más tarde.');
+        errorMessage = 'Error al conectar con el servidor, por favor intente más tarde.';
 
       } else {
-        setMessage('Ocurrió un error al preparar la petición');
+        errorMessage = 'Ocurrió un error al preparar la petición';
       }
+
+      setModalMessage(errorMessage);
+      setShowErrorModal(true);
 
     } finally {
       stopLoading();
     }
   };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    setTimeout(() => {
+      navigate('/list-word-expression');
+    }, 1000);
+  };
+
+
 
   return (
     <div className="form-container">
@@ -200,12 +224,28 @@ function CreateWordExpression() {
 
         <button type="submit" className="submit-button">Crear</button>
 
-        {message && (
-          <p className={`form-message ${isSuccess ? 'success' : 'error'}`}>
-            {message}
-          </p>
-        )}
       </form>
+
+      {/* Modales para confirmación, éxito y error */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmCreate}
+        message="¿Estás seguro de que deseas crear este elemento?"
+      />
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        message={modalMessage}
+      />
+
+      <ErrorModal
+        isOpen={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        message={modalMessage}
+      />
+
       <Footer />
     </div>
   );
