@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ActionServices from '../service/ActionServices';
+import UserService from '../service/UserService';
 import { Eye, Edit, Trash2, Search } from 'lucide-react';
 import { useLoading } from '../context/LoadingContext';
 import Navbar from '../common/Navbar';
@@ -8,161 +8,122 @@ import Footer from '../common/Footer';
 import ConfirmModal from '../common/ConfirmModal';
 import SuccessModal from '../common/SuccessModal';
 import ErrorModal from '../common/ErrorModal';
-import '../../styles/ListWordExpression.css';
+import '../../styles/ListUsers.css';
 
-function ListWordExpression() {
+function ListUsers() {
     const { startLoading, stopLoading } = useLoading();
     const navigate = useNavigate();
-    const [data, setData] = useState([]);
-    const [filteredData, setFilteredData] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [error, setError] = useState(null);
-    const [itemToDelete, setItemToDelete] = useState(null);
+    const [userToDelete, setUserToDelete] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filterType, setFilterType] = useState('all'); // 'all', 'word', 'expression'
-    // Mock de ActionServices para demostración
+    const [filterRole, setFilterRole] = useState('all'); // 'all', 'ADMIN', 'USER'
+
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
-    const fetchData = useCallback(async () => {
+    const fetchUsers = useCallback(async () => {
         try {
             startLoading();
-            const [wordsResponse, expressionsResponse] = await Promise.all([
-                ActionServices.getAllWords(),
-                ActionServices.getAllExpressions()
-            ]);
+            const response = await UserService.getAllUsers();
 
-            // Transformar palabras
-            const wordsData = wordsResponse.map(word => ({
-                id: word.id,
-                type: 'word',
-                englishText: word.englishWord,
-                spanishText: word.spanishWord,
-                categoryName: word.categoryResponseDTO.nameCategory || 'Sin categoría',
-                levelName: word.levelResponseDTO.nameLevel || 'Sin nivel',
-                imageUrl: word.imageUrl
-            }));
-            console.log(wordsResponse);
-
-            // Transformar expresiones
-            const expressionsData = expressionsResponse.map(expression => ({
-                id: expression.id,
-                type: 'expression',
-                englishText: expression.englishExpression,
-                spanishText: expression.spanishExpression,
-                categoryName: expression.categoryResponseDTO.nameCategory || 'Sin categoría',
-                levelName: expression.levelResponseDTO.nameLevel || 'Sin nivel',
-                imageUrl: expression.imageUrl
-            }));
-            console.log(expressionsResponse);
-
-            const combinedData = [...wordsData, ...expressionsData];
-            setData(combinedData);
+            // El backend retorna un objeto RequestResp con userList
+            const usersData = response.userList || [];
+            setUsers(usersData);
             setError(null);
         } catch (err) {
-            console.error('Error fetching data:', err);
-            setError('Error al cargar los datos. Por favor, inténtelo más tarde.');
+            console.error('Error fetching users:', err);
+            setError('Error al cargar los usuarios. Por favor, inténtelo más tarde.');
         } finally {
             stopLoading();
         }
     }, [startLoading, stopLoading]);
 
-    const filterData = useCallback(() => {
-        let filtered = null;
-        filtered = data;
+    const filterUsers = useCallback(() => {
+        let filtered = users;
 
-        // Filtrar por tipo
-        if (filterType !== 'all') {
-            filtered = filtered.filter(item => item.type === filterType);
+        // Filtrar por rol
+        if (filterRole !== 'all') {
+            filtered = filtered.filter(user => user.role === filterRole);
         }
 
-        // Filtrar por búsqueda
+        // Filtrar por búsqueda (nombre o email)
         if (searchQuery.trim()) {
-            filtered = filtered.filter(item =>
-                item.englishText.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                item.spanishText.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                item.categoryName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                item.levelName.toLowerCase().includes(searchQuery.toLowerCase())
+            filtered = filtered.filter(user =>
+                user.nameUser.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
-        setFilteredData(filtered);
-    }, [data, searchQuery, filterType]);
+        setFilteredUsers(filtered);
+    }, [users, searchQuery, filterRole]);
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        fetchUsers();
+    }, [fetchUsers]);
 
     useEffect(() => {
-        filterData();
-    }, [filterData]);
+        filterUsers();
+    }, [filterUsers]);
 
-    const handleView = (item) => {
-        // Para implementación real: navigate(`/${item.type}-detail/${item.id}`)
-
-        console.log('Navegando a vista de detalles:', item);
-        let query = null;
-        if (item.englishText.trim() !== '') {
-            query = item.englishText.trim();
-            navigate(`/search-sugestions/${encodeURIComponent(query)}`);
-        } else if (item.spanishText.trim() !== '') {
-            query = item.spanishText.trim();
-            navigate(`/search-sugestions/${encodeURIComponent(query)}`);
-        }
+    const handleView = (user) => {
+        alert(`Ver detalles del usuario: ${user.nameUser} (${user.email})`);
+        console.log('Ver detalles del usuario:', user);
+        // Puedes implementar navegación a una página de detalles si lo deseas
+        // navigate(`/user-detail/${user.idUser}`);
     };
 
-    const handleEdit = (item) => {
+    const handleEdit = (user) => {
         startLoading();
-        navigate(`/modify-word-expression/${item.type}/${item.id}`);
+        navigate(`/update-user/${user.idUser}`);
         stopLoading();
     };
 
-    const handleDelete = (item) => {
-        setItemToDelete(item); // Guardar el item
-        setModalMessage(`¿Está seguro que desea eliminar ${item.type === 'word' ? 'la palabra' : 'la expresión'}: "${item.englishText} / ${item.spanishText}"?`);
+    const handleDelete = (user) => {
+        setUserToDelete(user); // Guardar el usuario
+        setModalMessage(`¿Está seguro que desea eliminar al usuario "${user.nameUser}" (${user.email})?`);
         setShowConfirmModal(true);
-    };
+    }
 
     const confirmDelete = async () => {
-        if (!itemToDelete) return;
-
-        setShowConfirmModal(false); // Cerrar el modal de confirmación
+        if (!userToDelete) return;
+        setShowConfirmModal(false);
 
         try {
             startLoading();
-            if (itemToDelete.type === 'word') {
-                await ActionServices.deleteWordById(itemToDelete.id);
-            } else {
-                await ActionServices.deleteExpressionById(itemToDelete.id);
-            }
-
-            // Actualizar la lista después de eliminar
-            await fetchData();
-            setModalMessage(`${itemToDelete.type === 'word' ? 'Palabra' : 'Expresión'} eliminada exitosamente.`);
+            await UserService.deleteUser(userToDelete.idUser);
+            await fetchUsers();
+            setModalMessage(`Usuario ${userToDelete.nameUser} eliminado exitosamente.`);
             setShowSuccessModal(true);
-            setItemToDelete(null); // Limpiar el item
+            setUserToDelete(null); // Limpiar el item
+
         } catch (err) {
-            console.error('Error deleting item:', err);
-            setModalMessage('Error al eliminar. Por favor, inténtelo más tarde.');
-            setShowErrorModal(true);
-            setItemToDelete(null); // Limpiar el item
+            console.error('Error deleting user:', err);
+            alert('Error al eliminar el usuario. Por favor, inténtelo más tarde.');
         } finally {
             stopLoading();
         }
-    };
+    }
 
     const cancelDelete = () => {
         setShowConfirmModal(false);
-        setItemToDelete(null); // Limpiar el item
+        setUserToDelete(null); // Limpiar el item
     };
 
     const handleSuccessModalClose = () => {
         setShowSuccessModal(false);
         setTimeout(() => {
-            navigate('/list-word-expression');
+            navigate('/list-users');
         }, 1000);
+    };
+
+
+    const getRoleLabel = (role) => {
+        return role === 'ADMIN' ? 'Administrador' : 'Usuario';
     };
 
     if (error) {
@@ -176,7 +137,7 @@ function ListWordExpression() {
                     </div>
                     <h3 className="error-title">Error de carga</h3>
                     <p className="error-message">{error}</p>
-                    <button onClick={fetchData} className="retry-button">
+                    <button onClick={fetchUsers} className="retry-button">
                         Reintentar
                     </button>
                 </div>
@@ -185,13 +146,13 @@ function ListWordExpression() {
     }
 
     return (
-        <div className="words-expressions-container">
+        <div className="users-container">
             <Navbar />
-            <div className="words-expressions-wrapper">
-                <div className="words-expressions-card">
+            <div className="users-wrapper">
+                <div className="users-card">
                     {/* Header */}
                     <div className="table-header">
-                        <h1 className="table-title">Gestión de Palabras y Expresiones</h1>
+                        <h1 className="table-title">Gestión de Usuarios</h1>
 
                         {/* Filtros y búsqueda */}
                         <div className="filters-container">
@@ -199,26 +160,26 @@ function ListWordExpression() {
                                 <Search className="search-icon" />
                                 <input
                                     type="text"
-                                    placeholder="Buscar por texto en inglés, español, categoría o nivel..."
+                                    placeholder="Buscar por nombre o correo electrónico..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="search-input"
                                 />
                             </div>
                             <select
-                                value={filterType}
-                                onChange={(e) => setFilterType(e.target.value)}
+                                value={filterRole}
+                                onChange={(e) => setFilterRole(e.target.value)}
                                 className="filter-select"
                             >
                                 <option value="all">Todos</option>
-                                <option value="word">Solo Palabras</option>
-                                <option value="expression">Solo Expresiones</option>
+                                <option value="ADMIN">Administradores</option>
+                                <option value="USER">Usuarios</option>
                             </select>
                         </div>
 
                         {/* Contador */}
                         <div className="results-counter">
-                            Mostrando {filteredData.length} de {data.length} elementos
+                            Mostrando {filteredUsers.length} de {users.length} usuarios
                         </div>
                     </div>
 
@@ -227,18 +188,16 @@ function ListWordExpression() {
                         <table className="data-table">
                             <thead className="table-head">
                                 <tr>
-                                    <th className="table-header-cell">Tipo</th>
-                                    <th className="table-header-cell">Texto en Inglés</th>
-                                    <th className="table-header-cell">Texto en Español</th>
-                                    <th className="table-header-cell">Categoría</th>
-                                    <th className="table-header-cell">Nivel</th>
+                                    <th className="table-header-cell">Nombre de Usuario</th>
+                                    <th className="table-header-cell">Correo Electrónico</th>
+                                    <th className="table-header-cell">Rol</th>
                                     <th className="table-header-cell table-header-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="table-body">
-                                {filteredData.length === 0 ? (
+                                {filteredUsers.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="empty-state">
+                                        <td colSpan="4" className="empty-state">
                                             <div className="empty-state-content">
                                                 <Search className="empty-state-icon" />
                                                 <p className="empty-state-title">No se encontraron resultados</p>
@@ -247,43 +206,37 @@ function ListWordExpression() {
                                         </td>
                                     </tr>
                                 ) : (
-                                    filteredData.map((item) => (
-                                        <tr key={`${item.type}-${item.id}`} className="table-row">
-                                            <td className="table-cell">
-                                                <span className={`type-badge ${item.type === 'word' ? 'type-badge-word' : 'type-badge-expression'}`}>
-                                                    {item.type === 'word' ? 'Palabra' : 'Expresión'}
-                                                </span>
-                                            </td>
+                                    filteredUsers.map((user) => (
+                                        <tr key={user.idUser} className="table-row">
                                             <td className="table-cell table-cell-bold">
-                                                {item.englishText}
+                                                {user.nameUser}
                                             </td>
                                             <td className="table-cell table-cell-regular">
-                                                {item.spanishText}
+                                                {user.email}
                                             </td>
-                                            <td className="table-cell table-cell-regular">
-                                                {item.categoryName}
-                                            </td>
-                                            <td className="table-cell table-cell-regular">
-                                                {item.levelName}
+                                            <td className="table-cell">
+                                                <span className={`role-badge ${user.role === 'ADMIN' ? 'role-badge-admin' : 'role-badge-user'}`}>
+                                                    {getRoleLabel(user.role)}
+                                                </span>
                                             </td>
                                             <td className="table-cell table-cell-center">
                                                 <div className="actions-container">
                                                     <button
-                                                        onClick={() => handleView(item)}
+                                                        onClick={() => handleView(user)}
                                                         className="action-button action-button-view"
                                                         title="Ver detalles"
                                                     >
                                                         <Eye className="action-icon" />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleEdit(item)}
+                                                        onClick={() => handleEdit(user)}
                                                         className="action-button action-button-edit"
                                                         title="Editar"
                                                     >
                                                         <Edit className="action-icon" />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(item)}
+                                                        onClick={() => handleDelete(user)}
                                                         className="action-button action-button-delete"
                                                         title="Eliminar"
                                                     >
@@ -299,14 +252,14 @@ function ListWordExpression() {
                     </div>
 
                     {/* Footer con información adicional */}
-                    {filteredData.length > 0 && (
+                    {filteredUsers.length > 0 && (
                         <div className="table-footer">
                             <div className="footer-content">
                                 <div className="footer-stats">
-                                    Palabras: {filteredData.filter(item => item.type === 'word').length} |
-                                    Expresiones: {filteredData.filter(item => item.type === 'expression').length}
+                                    Administradores: {filteredUsers.filter(user => user.role === 'ADMIN').length} |
+                                    Usuarios: {filteredUsers.filter(user => user.role === 'USER').length}
                                 </div>
-                                <button onClick={fetchData} className="refresh-button">
+                                <button onClick={fetchUsers} className="refresh-button">
                                     Actualizar datos
                                 </button>
                             </div>
@@ -335,9 +288,10 @@ function ListWordExpression() {
                 message={modalMessage}
             />
 
+
             <Footer />
         </div>
     );
-}
+};
 
-export default ListWordExpression;
+export default ListUsers;

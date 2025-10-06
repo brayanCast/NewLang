@@ -1,7 +1,5 @@
 package com.newlang.backend.dto.responseDto;
 
-
-
 public class WordResponseDTO {
 
     private Long id;

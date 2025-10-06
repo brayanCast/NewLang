@@ -4,6 +4,7 @@ import profilePage from '../userspage/ProfilePage';
 import homePage from '../pages/HomePage';
 import createWordExpression from '../pages/CreateWordExpression';
 import ListWordExpression from '../pages/ListWordExpression';
+import ListUsers from "../pages/ListUsers";
 import { useNavigate } from 'react-router-dom';
 import { useLoading } from '../context/LoadingContext';
 import profileIcon from '../../img/perfil.png';
@@ -58,6 +59,12 @@ function Navbar() {
     stopLoading();
   };
 
+  const handleListUsers = () => {
+    startLoading();
+    navigate("/list-users");
+    stopLoading();
+  };
+
   const checkUserRole = useCallback(async () => {
     try {
       const user = await UserService.getMyProfile();
@@ -95,18 +102,18 @@ function Navbar() {
         {isAdmin && (
           <li>
             <a
-              href={homePage}
+              href={ListUsers}
               rel="noopener noreferrer"
-              onClick={handleHomePage}
+              onClick={handleListUsers}
             >
               Gestionar
             </a>
             <ul>
               <li>
                 <a
-                  href={homePage}
+                  href={ListUsers}
                   rel="noopener noreferrer"
-                  onClick={handleHomePage}
+                  onClick={handleListUsers}
                 >
                   Usuarios
                 </a>

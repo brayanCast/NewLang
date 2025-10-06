@@ -100,6 +100,34 @@ public class UsersManagementService {
     public RequestResp refreshToken(RequestResp refreshTokenRequest) {
         RequestResp response = new RequestResp();
         try {
+            String email = jwtUtils.extractUsername(refreshTokenRequest.getToken());
+            User users = userRepository.findByEmail(email).orElseThrow();
+
+            if (jwtUtils.isTokenValid(refreshTokenRequest.getToken(), users)) {
+                var jwt = jwtUtils.generateToken(users);
+
+                response.setStatusCode(200);
+                response.setToken(jwt);
+                response.setRefreshToken(refreshTokenRequest.getToken());
+                response.setExpirationTime("24 hours");
+                response.setMessage("Successfully Refreshed Token");
+            } else {
+                response.setStatusCode(401);
+                response.setMessage("Invalid refresh token");
+            }
+            return response;
+
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage(e.getMessage());
+            return response;
+        }
+    }
+
+
+    /*public RequestResp refreshToken(RequestResp refreshTokenRequest) {
+        RequestResp response = new RequestResp();
+        try {
 
             String email = jwtUtils.extractUsername(refreshTokenRequest.getToken());
             User users = userRepository.findByEmail(email).orElseThrow();
@@ -122,7 +150,7 @@ public class UsersManagementService {
             return  response;
         }
 
-    }
+    }*/
 
     public RequestResp getAllUsers() {
         RequestResp requestResp = new RequestResp();

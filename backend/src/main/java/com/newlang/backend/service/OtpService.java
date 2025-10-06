@@ -1,6 +1,173 @@
 package com.newlang.backend.service;
 
-import com.newlang.backend.dto.requestDto.RequestResp;
+import com.newlang.backend.entity.User;
+import com.newlang.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Service
+public class OtpService {
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // Estructura thread-safe para almacenar OTPs con su tiempo de expiración
+    private final Map<String, OtpData> otpStorage = new ConcurrentHashMap<>();
+
+    // Estructura thread-safe para usuarios verificados (email -> timestamp de verificación)
+    private final Map<String, LocalDateTime> verifiedUsers = new ConcurrentHashMap<>();
+
+    private static final int OTP_EXPIRATION_MINUTES = 5;
+    private static final int VERIFIED_USER_EXPIRATION_MINUTES = 10;
+
+    private static class OtpData {
+        String otp;
+        LocalDateTime expirationTime;
+
+        OtpData(String otp, LocalDateTime expirationTime) {
+            this.otp = otp;
+            this.expirationTime = expirationTime;
+        }
+    }
+
+    public void sendOtp(String email) {
+        // Validar que el email exista
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("El email no está registrado"));
+
+        // Generar OTP de 6 dígitos
+        String otp = generateOtp();
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
+
+        // Almacenar OTP con su tiempo de expiración
+        otpStorage.put(email, new OtpData(otp, expirationTime));
+
+        // Enviar email
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Código de verificación");
+            message.setText("Tu código OTP es: " + otp + "\nEste código expirará en " +
+                    OTP_EXPIRATION_MINUTES + " minutos.");
+            mailSender.send(message);
+        } catch (Exception e) {
+            otpStorage.remove(email); // Limpiar si falla el envío
+            throw new RuntimeException("Error al enviar el correo: " + e.getMessage());
+        }
+    }
+
+    public boolean verifyOtp(String email, String otp) {
+        OtpData otpData = otpStorage.get(email);
+
+        if (otpData == null) {
+            return false;
+        }
+
+        // Verificar si el OTP ha expirado
+        if (LocalDateTime.now().isAfter(otpData.expirationTime)) {
+            otpStorage.remove(email);
+            return false;
+        }
+
+        // Verificar si el OTP coincide
+        if (otpData.otp.equals(otp)) {
+            // Marcar al usuario como verificado
+            verifiedUsers.put(email, LocalDateTime.now().plusMinutes(VERIFIED_USER_EXPIRATION_MINUTES));
+            // Limpiar el OTP usado
+            otpStorage.remove(email);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        // Verificar que el usuario esté en la lista de verificados
+        LocalDateTime verificationExpiry = verifiedUsers.get(email);
+
+        if (verificationExpiry == null) {
+            throw new RuntimeException("No se ha verificado el OTP para este usuario");
+        }
+
+        // Verificar que la verificación no haya expirado
+        if (LocalDateTime.now().isAfter(verificationExpiry)) {
+            verifiedUsers.remove(email);
+            throw new RuntimeException("La verificación ha expirado. Por favor, solicita un nuevo OTP");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Limpiar la verificación después de actualizar la contraseña
+        verifiedUsers.remove(email);
+    }
+
+    public boolean isUserVerified(String email) {
+        LocalDateTime verificationExpiry = verifiedUsers.get(email);
+
+        if (verificationExpiry == null) {
+            return false;
+        }
+
+        if (LocalDateTime.now().isAfter(verificationExpiry)) {
+            verifiedUsers.remove(email);
+            return false;
+        }
+
+        return true;
+    }
+
+    public void clearVerifiedUser(String email) {
+        verifiedUsers.remove(email);
+    }
+
+    private String generateOtp() {
+        SecureRandom random = new SecureRandom();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+
+    // Método para limpiar OTPs y verificaciones expiradas (puede ejecutarse periódicamente)
+    public void cleanupExpiredData() {
+        LocalDateTime now = LocalDateTime.now();
+
+        // Limpiar OTPs expirados
+        otpStorage.entrySet().removeIf(entry -> now.isAfter(entry.getValue().expirationTime));
+
+        // Limpiar verificaciones expiradas
+        verifiedUsers.entrySet().removeIf(entry -> now.isAfter(entry.getValue()));
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+/*package com.newlang.backend.service;
+
 import com.newlang.backend.entity.User;
 import com.newlang.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,4 +368,4 @@ public class OtpService {
         clearExpiredOtps();
         return otpStorage.size();
     }
-}
+}*/

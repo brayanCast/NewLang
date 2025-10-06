@@ -14,6 +14,7 @@ import SearchTextPage from './components/pages/SearchTextPage';
 import CreateWordExpression from './components/pages/CreateWordExpression';
 import ListWordExpression from '../src/components/pages/ListWordExpression';
 import ModifyWordExpression from '../src/components/pages/ModifyWordExpression';
+import ListUsers from './components/pages/ListUsers';
 import { LoadingProvider } from './components/context/LoadingContext';
 
 console.log('API URL:', process.env.REACT_APP_API_URL);
@@ -48,6 +49,8 @@ function App() {
                 <Route path="/create-word-expression" element={<CreateWordExpression />} />
                 <Route path="/list-word-expression" element={<ListWordExpression />} />
                 <Route path="/modify-word-expression/:type/:id" element={<ModifyWordExpression />} />
+                <Route path="/modify-word-expression" element={<ModifyWordExpression />} />
+                <Route path="/list-users" element={<ListUsers />} />
               </Route>
 
               {/* Ruta Catch-all */}

@@ -8,6 +8,4 @@ public class ExpressionNotFoundException extends RuntimeException {
     public ExpressionNotFoundException(String message) {
         super(message);
     }
-
-    public ExpressionNotFoundException(String message, Throwable cause) {super(message, cause);}
 }

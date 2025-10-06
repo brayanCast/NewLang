@@ -68,7 +68,7 @@ class ActionServices {
         try {
             const response = await axiosInstance.get(`${this.BASE_URL}/auth/word/get-word/${wordId}`);
             return response.data;
-        } catch (err){
+        } catch (err) {
             throw err;
         }
     }
@@ -118,6 +118,123 @@ class ActionServices {
             throw err;
         }
     }
+
+
+    /***********************************nuevos pendientes por revisar su lógica *******************************/
+    static async createLearningRoutine(routineData) {
+        try {
+            const response = await axiosInstance.post(`${this.BASE_URL}/auth/routine/create`, routineData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getLearningRoutineById(routineId) {
+        try {
+            const response = await axiosInstance.get(`${this.BASE_URL}/auth/routine/get-learning-by-id/${routineId}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getMyLearningRoutines() {
+        try {
+            const response = await axiosInstance.get(`${this.BASE_URL}/auth/routine/get-my-routines`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getLearningRoutinesByUserId(userId) {
+        try {
+            const response = await axiosInstance.get(`${this.BASE_URL}/auth/routine/get-routine-by-user/${userId}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateLearningRoutine(routineId, routineData) {
+        try {
+            const response = await axiosInstance.put(`${this.BASE_URL}/auth/routine/update-routine/${routineId}`, routineData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async deleteLearningRoutine(routineId, userEmail) {
+        try {
+            const response = await axiosInstance.delete(`${this.BASE_URL}/auth/routine/delete/${routineId}`, {
+                params: { userEmail }
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    // ==================== WORDS IN ROUTINES ====================
+
+    static async addWordToRoutine(routineId, wordData) {
+        try {
+            const response = await axiosInstance.post(`${this.BASE_URL}/auth/routine/create-routine/${routineId}/word`, wordData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateWordInRoutine(routineId, wordId, wordData) {
+        try {
+            const response = await axiosInstance.put(`${this.BASE_URL}/auth/routine/update-routine/${routineId}/word/${wordId}`, wordData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async removeWordFromRoutine(routineId, wordId) {
+        try {
+            const response = await axiosInstance.delete(`${this.BASE_URL}/auth/routine/delete-routine/${routineId}/word/${wordId}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    // ==================== EXPRESSIONS IN ROUTINES ====================
+
+    static async addExpressionToRoutine(routineId, expressionData) {
+        try {
+            const response = await axiosInstance.post(`${this.BASE_URL}/auth/routine/create-routine/${routineId}/expression`, expressionData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async updateExpressionInRoutine(routineId, expressionId, expressionData) {
+        try {
+            const response = await axiosInstance.put(`${this.BASE_URL}/auth/routine/update-routine/${routineId}/expression/${expressionId}`, expressionData);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async removeExpressionFromRoutine(routineId, expressionId) {
+        try {
+            const response = await axiosInstance.delete(`${this.BASE_URL}/auth/routine/delete-routine/${routineId}/expression/${expressionId}`);
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
 }
 
 export default ActionServices;

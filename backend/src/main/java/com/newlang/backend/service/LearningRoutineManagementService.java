@@ -8,14 +8,12 @@ import com.newlang.backend.dto.responseDto.*;
 import com.newlang.backend.entity.*;
 import com.newlang.backend.exceptions.*;
 import com.newlang.backend.repository.*;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 

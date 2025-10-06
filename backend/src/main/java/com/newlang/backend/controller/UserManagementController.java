@@ -122,6 +122,32 @@ public class UserManagementController {
     }
 
     //Metodo para la actualización de la contraseña siempre que el email esté verificado
+
+    @PutMapping("/update-password")
+    public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> request) {
+        String password = request.get("password");
+        String email = request.get("email"); // Ahora recibimos el email en el request
+
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("El email es requerido");
+        }
+
+        if (!otpService.isUserVerified(email)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("No se ha verificado el OTP para este email");
+        }
+
+        try {
+            otpService.updatePassword(email, password);
+            otpService.clearVerifiedUser(email);
+            return ResponseEntity.ok("La contraseña se actualizó correctamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al actualizar la contraseña: " + e.getMessage());
+        }
+    }
+    /*
     @PutMapping("/update-password")
     public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> request) {
         String password = request.get("password");
@@ -139,7 +165,7 @@ public class UserManagementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al actualizar la contraseña " + e.getMessage());
         }
-    }
+    }*/
 
     @GetMapping("/auth/get-profile")
     public ResponseEntity<RequestResp> getMyProfile() {
